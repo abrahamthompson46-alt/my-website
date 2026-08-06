@@ -53,6 +53,19 @@ The app runs on port **8000**. Health check: `GET /health/`
 - [ ] Optional: set `SENTRY_DSN` for error monitoring
 - [ ] Optional: configure `AWS_*` vars for S3 media storage
 
+### Manual deployment (VPS — Nginx + Gunicorn)
+
+See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for the general guide, or **[docs/DEPLOYMENT-ZRETA.md](docs/DEPLOYMENT-ZRETA.md)** for the zreta.com VPS (`162.35.179.20`).
+
+Quick reference:
+
+```bash
+sudo bash deploy/scripts/provision-vps.sh      # first time only
+sudo bash deploy/scripts/deploy-app.sh
+sudo DOMAIN=yourdomain.com bash deploy/scripts/setup-nginx.sh
+sudo bash deploy/scripts/bootstrap-marketing.sh
+```
+
 ### Manual deployment (without Docker)
 
 ```bash

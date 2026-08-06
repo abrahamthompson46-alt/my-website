@@ -1,0 +1,34 @@
+[Unit]
+Description=Marketing Website (Gunicorn)
+Documentation=https://github.com/abrahamthompson46-alt/my-website
+After=network-online.target postgresql.service redis-server.service
+Wants=network-online.target postgresql.service redis-server.service
+
+[Service]
+Type=notify
+User=marketing
+Group=www-data
+WorkingDirectory=/var/www/marketing-site
+EnvironmentFile=/var/www/marketing-site/.env
+Environment=PYTHONPATH=/var/www/marketing-site
+
+RuntimeDirectory=zreta
+RuntimeDirectoryMode=0750
+
+ExecStart=/var/www/marketing-site/.venv/bin/gunicorn config.wsgi:application \
+    --config /var/www/marketing-site/deploy/gunicorn/gunicorn.conf.py
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=5
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/www/marketing-site/media /var/www/marketing-site/logs /var/log/marketing-site
+
+[Install]
+WantedBy=multi-user.target
