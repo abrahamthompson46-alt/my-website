@@ -23,6 +23,9 @@ Open http://localhost:8000 — sign in via `/accounts/login/` or bootstrap data 
 
 ## Production deployment
 
+**zreta.com with ChurchHub on apex:** [docs/MIGRATION-ZRETA-SUBDOMAINS.md](docs/MIGRATION-ZRETA-SUBDOMAINS.md)  
+**General VPS guide:** [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) · [docs/DEPLOYMENT-ZRETA.md](docs/DEPLOYMENT-ZRETA.md)
+
 ### 1. Configure environment
 
 Copy the production template and fill in real values:

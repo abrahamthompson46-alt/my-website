@@ -1,7 +1,7 @@
 # Deploy zreta.com — production runbook
 
-> **Shared VPS?** Read **[DEPLOYMENT-ZRETA-SAFE-PLAN.md](DEPLOYMENT-ZRETA-SAFE-PLAN.md)** first.  
-> Run `bash deploy/scripts/audit-vps.sh` before deploying alongside existing sites.
+> **ChurchHub already on zreta.com?** Use the phased migration: **[MIGRATION-ZRETA-SUBDOMAINS.md](MIGRATION-ZRETA-SUBDOMAINS.md)**  
+> **Shared VPS (no ChurchHub on apex)?** See **[DEPLOYMENT-ZRETA-SAFE-PLAN.md](DEPLOYMENT-ZRETA-SAFE-PLAN.md)**
 
 | Setting | Value |
 |---------|--------|

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Safe Nginx install for zreta.com — does NOT remove other sites or default vhost.
-# Run on VPS: sudo bash deploy/scripts/setup-nginx-zreta.sh
+# Install Nginx config for zreta.com — GREENFIELD ONLY (empty VPS).
+# If ChurchHub is on zreta.com, use MIGRATION-ZRETA-SUBDOMAINS.md instead.
 set -euo pipefail
 
 APP_DIR="/var/www/marketing-site"
@@ -9,6 +9,13 @@ SITE_ENABLED="/etc/nginx/sites-enabled/zreta.com"
 
 if [[ "$(id -u)" -ne 0 ]]; then
     echo "Run as root: sudo bash deploy/scripts/setup-nginx-zreta.sh"
+    exit 1
+fi
+
+if grep -Rqh "127.0.0.1:8000" /etc/nginx/sites-enabled/ 2>/dev/null; then
+    echo "ERROR: Existing config proxies zreta.com to port 8000 (likely ChurchHub)."
+    echo "       Use deploy/scripts/phase1-churchhub-app-subdomain.sh and phase3-cutover-zreta-marketing.sh"
+    echo "       See docs/MIGRATION-ZRETA-SUBDOMAINS.md"
     exit 1
 fi
 
