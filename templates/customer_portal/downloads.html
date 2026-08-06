@@ -1,0 +1,60 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags graphics_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Downloads" subtitle="Installers, SDKs, and resources for your subscribed products." %}
+
+
+
+<div class="portal-panel">
+
+    <div class="portal-panel__body portal-panel__body--flush">
+
+        {% for download in downloads %}
+
+        <div class="portal-list__item">
+
+            <div>
+
+                <p class="portal-list__title">{{ download.title }}</p>
+
+                <p class="portal-list__meta">
+
+                    {% if download.product %}{{ download.product.name }} · {% endif %}
+
+                    {{ download.get_category_display }}{% if download.version %} · v{{ download.version }}{% endif %}
+
+                </p>
+
+                {% if download.description %}<p class="portal-list__meta">{{ download.description }}</p>{% endif %}
+
+            </div>
+
+            {% if download.file %}
+
+            <a href="{{ download.file.url }}" class="btn btn--secondary btn--sm" download>Download</a>
+
+            {% endif %}
+
+        </div>
+
+        {% empty %}
+        {% ui_empty_state illustration="downloads" message="No downloads available." compact=True %}
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

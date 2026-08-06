@@ -1,0 +1,83 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}News — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        <h1 class="section__title">News</h1>
+
+        <p class="section__subtitle">Company announcements and product updates.</p>
+
+    </div>
+
+</section>
+
+
+
+<section class="section">
+
+    <div class="container">
+
+        {% if articles %}
+
+        <div class="grid grid--3">
+
+            {% for article in articles %}
+
+            <article class="news-card">
+
+                {% if article.featured_image %}
+
+                <img src="{{ article.featured_image.url }}" alt="" loading="lazy">
+
+                {% endif %}
+
+                <div class="news-card__meta">
+
+                    {% if article.category %}{% ui_badge label=article.category variant="primary" %}{% endif %}
+
+                    {% if article.published_at %}<time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"F j, Y" }}</time>{% endif %}
+
+                </div>
+
+                <h2 class="news-card__title"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h2>
+
+                <p class="news-card__excerpt">{{ article.excerpt }}</p>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <p class="text-secondary">No news articles published yet.</p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

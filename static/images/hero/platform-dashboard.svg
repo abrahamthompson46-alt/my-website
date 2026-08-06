@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380" role="img" aria-label="Enterprise platform dashboard preview">
+  <defs>
+    <linearGradient id="hero-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#faf9f7"/>
+      <stop offset="100%" stop-color="#eef2f7"/>
+    </linearGradient>
+    <linearGradient id="hero-gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c9a227"/>
+      <stop offset="100%" stop-color="#e8d5a3"/>
+    </linearGradient>
+    <linearGradient id="hero-chart" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2d508c"/>
+      <stop offset="100%" stop-color="#1e3a5f"/>
+    </linearGradient>
+    <filter id="hero-shadow" x="-8%" y="-8%" width="116%" height="116%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0a1628" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="520" height="380" rx="16" fill="url(#hero-bg)" stroke="#e8e4dd" filter="url(#hero-shadow)"/>
+  <rect width="520" height="44" rx="16" fill="#1e3a5f"/>
+  <rect y="28" width="520" height="16" fill="#1e3a5f"/>
+  <circle cx="24" cy="22" r="5" fill="#5373a3"/>
+  <circle cx="40" cy="22" r="5" fill="#7e96ba"/>
+  <circle cx="56" cy="22" r="5" fill="#c9a227"/>
+  <rect x="88" y="14" width="220" height="16" rx="8" fill="rgba(255,255,255,0.12)"/>
+  <rect x="0" y="43" width="520" height="3" fill="url(#hero-gold)"/>
+  <rect x="24" y="64" width="110" height="54" rx="8" fill="#fff" stroke="#e8e4dd"/>
+  <rect x="32" y="76" width="48" height="8" rx="4" fill="#d4cfc5"/>
+  <rect x="32" y="92" width="72" height="14" rx="4" fill="#1e3a5f"/>
+  <rect x="148" y="64" width="110" height="54" rx="8" fill="#fff" stroke="#e8e4dd"/>
+  <rect x="156" y="76" width="48" height="8" rx="4" fill="#d4cfc5"/>
+  <rect x="156" y="92" width="64" height="14" rx="4" fill="#2d508c"/>
+  <rect x="272" y="64" width="110" height="54" rx="8" fill="#fff" stroke="#e8e4dd"/>
+  <rect x="280" y="76" width="48" height="8" rx="4" fill="#d4cfc5"/>
+  <rect x="280" y="92" width="56" height="14" rx="4" fill="#12845c"/>
+  <rect x="24" y="134" width="358" height="130" rx="10" fill="#fff" stroke="#e8e4dd"/>
+  <text x="40" y="158" fill="#5c5750" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="600">Revenue overview</text>
+  <path d="M40 240 L80 210 L120 220 L160 185 L200 195 L240 160 L280 170 L320 145 L360 155" fill="none" stroke="url(#hero-chart)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M40 240 L80 210 L120 220 L160 185 L200 195 L240 160 L280 170 L320 145 L360 155 L360 250 L40 250 Z" fill="#2d508c" opacity="0.08"/>
+  <rect x="396" y="64" width="100" height="200" rx="10" fill="#1e3a5f"/>
+  <rect x="412" y="84" width="68" height="8" rx="4" fill="rgba(255,255,255,0.35)"/>
+  <rect x="412" y="108" width="68" height="28" rx="6" fill="rgba(255,255,255,0.08)" stroke="rgba(201,162,39,0.45)"/>
+  <rect x="412" y="148" width="68" height="28" rx="6" fill="rgba(255,255,255,0.06)"/>
+  <rect x="412" y="188" width="68" height="28" rx="6" fill="rgba(255,255,255,0.06)"/>
+  <rect x="412" y="228" width="68" height="20" rx="6" fill="url(#hero-gold)"/>
+  <rect x="24" y="280" width="472" height="76" rx="10" fill="#fff" stroke="#e8e4dd"/>
+  <rect x="40" y="300" width="120" height="10" rx="4" fill="#1e3a5f" opacity="0.85"/>
+  <rect x="180" y="300" width="80" height="10" rx="4" fill="#d4cfc5"/>
+  <rect x="280" y="300" width="60" height="10" rx="4" fill="#d4cfc5"/>
+  <rect x="380" y="296" width="72" height="18" rx="9" fill="#edf7f2" stroke="#8fd4b4"/>
+  <rect x="40" y="324" width="90" height="10" rx="4" fill="#d4cfc5"/>
+  <rect x="180" y="324" width="80" height="10" rx="4" fill="#d4cfc5"/>
+  <rect x="280" y="324" width="60" height="10" rx="4" fill="#d4cfc5"/>
+  <rect x="380" y="320" width="72" height="18" rx="9" fill="#eef4fa" stroke="#a9b9d1"/>
+</svg>

@@ -1,0 +1,50 @@
+{% load ui_tags %}
+<footer class="site-footer" role="contentinfo">
+    <div class="container site-footer__inner">
+        <div class="site-footer__brand">
+            <a href="{% url 'website:home' %}" class="brand-link brand-link--inverse">
+                <span class="brand-mark" aria-hidden="true"></span>
+                <span class="brand-text">{{ SITE_NAME }}</span>
+            </a>
+            <p class="site-footer__tagline">{{ SITE_TAGLINE|default:"Trusted enterprise software for regulated industries worldwide." }}</p>
+            <div class="site-footer__social">
+                <a href="#" class="site-footer__social-link" aria-label="LinkedIn">
+                    <svg class="icon icon--sm" aria-hidden="true" data-icon="linkedin"></svg>
+                </a>
+                <a href="#" class="site-footer__social-link" aria-label="X">
+                    <svg class="icon icon--sm" aria-hidden="true" data-icon="twitter"></svg>
+                </a>
+                <a href="#" class="site-footer__social-link" aria-label="YouTube">
+                    <svg class="icon icon--sm" aria-hidden="true" data-icon="youtube"></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="site-footer__columns">
+            {% for column in PUBLIC_FOOTER_COLUMNS %}
+            <div class="site-footer__column">
+                <h3 class="site-footer__heading">{{ column.title }}</h3>
+                <ul class="site-footer__list">
+                    {% for link in column.links %}
+                    <li>
+                        <a href="{% if link.url_name %}{% url link.url_name %}{% else %}{{ link.url|default:'#' }}{% endif %}"
+                           class="site-footer__link">
+                            {{ link.label }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="site-footer__bottom">
+        <div class="container site-footer__bottom-inner">
+            <p class="site-footer__copyright">{% if FOOTER_COPYRIGHT %}{{ FOOTER_COPYRIGHT }}{% else %}&copy; {% now "Y" %} {{ SITE_NAME }}. All rights reserved.{% endif %}</p>
+            <div class="site-footer__bottom-actions">
+                {% ui_theme_switcher variant="segmented" %}
+            </div>
+        </div>
+    </div>
+</footer>

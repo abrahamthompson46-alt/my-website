@@ -1,0 +1,157 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}About — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+{% if hero %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        {% if hero.eyebrow %}<p class="section__eyebrow">{{ hero.eyebrow }}</p>{% endif %}
+
+        <h1 class="section__title">{{ hero.headline }}</h1>
+
+        {% if hero.subheadline %}<p class="section__subtitle">{{ hero.subheadline }}</p>{% endif %}
+
+    </div>
+
+</section>
+
+{% elif cms_page %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        <h1 class="section__title">{{ cms_page.title }}</h1>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+
+{% for key, data in sections.items %}
+
+{% if key != "team" %}
+
+<section class="section{% if forloop.counter0|divisibleby:2 %} section--alt{% endif %}">
+
+    <div class="container{% if data.section.body %} container-prose{% endif %}">
+
+        {% include "cms/partials/section_header.html" with section=data.section %}
+
+        {% if data.section.body %}
+
+        <div class="product-prose">{{ data.section.body|linebreaks }}</div>
+
+        {% endif %}
+
+        {% if data.items %}
+
+        <div class="grid grid--3" style="margin-top: var(--space-8);">
+
+            {% for item in data.items %}
+
+            <div class="feature-block">
+
+                {% if item.icon %}
+
+                <div class="feature-block__icon">
+
+                    <svg class="icon icon--lg" aria-hidden="true" data-icon="{{ item.icon }}"></svg>
+
+                </div>
+
+                {% endif %}
+
+                <h3 class="feature-block__title">{{ item.title }}</h3>
+
+                {% if item.description %}<p class="feature-block__description">{{ item.description }}</p>{% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+{% endfor %}
+
+
+
+{% if team_members %}
+
+<section class="section section--alt" aria-labelledby="team-heading">
+
+    <div class="container">
+
+        {% with team_section=sections.team.section %}
+
+        {% include "cms/partials/section_header.html" with section=team_section eyebrow="Our Team" title="Leadership & experts" subtitle="The people building the platform organizations trust worldwide." %}
+
+        {% endwith %}
+
+        <div class="grid grid--3" style="margin-top: var(--space-8);">
+
+            {% for member in team_members %}
+
+            <article class="team-card">
+
+                {% if member.photo %}
+
+                <img src="{{ member.photo.url }}" alt="{{ member.full_name }}" loading="lazy" decoding="async" class="team-card__photo">
+
+                {% else %}
+
+                <div class="team-card__avatar" aria-hidden="true">{{ member.full_name|slice:":1" }}</div>
+
+                {% endif %}
+
+                <h3 class="team-card__name">{{ member.full_name }}</h3>
+
+                <p class="team-card__role">{{ member.role }}</p>
+
+                {% if member.bio %}<p class="team-card__bio">{{ member.bio }}</p>{% endif %}
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+{% endblock %}
+
+

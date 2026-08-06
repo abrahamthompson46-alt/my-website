@@ -1,0 +1,65 @@
+{% extends "base_public.html" %}
+{% load static ui_tags graphics_tags %}
+
+{% block title %}{{ product.name }} Pricing — {{ SITE_NAME }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/products.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+{% ui_breadcrumbs items=breadcrumb_items %}
+{% endblock %}
+
+{% block content %}
+<section class="section products-pricing">
+    <div class="container">
+        {% include "components/layout/page_header.html" with title=product.name|add:" Pricing" subtitle="Choose the plan that fits your organization." %}
+
+        {% if plans %}
+        <div class="grid grid--3 pricing-grid">
+            {% for plan in plans %}
+            <article class="pricing-card{% if plan.is_popular %} pricing-card--popular{% endif %}">
+                {% if plan.is_popular %}<span class="pricing-card__badge">Most Popular</span>{% endif %}
+                <h3 class="pricing-card__name">{{ plan.name }}</h3>
+                {% if plan.description %}<p class="pricing-card__desc">{{ plan.description }}</p>{% endif %}
+                <div class="pricing-card__price">
+                    {% with tier=plan.tiers.first %}
+                    {% if tier %}
+                    <span class="pricing-card__amount">{{ tier.display_price }}</span>
+                    {% if not plan.is_contact_sales and tier.amount %}
+                    <span class="pricing-card__interval">/ {{ plan.get_billing_interval_display|lower }}</span>
+                    {% endif %}
+                    {% else %}
+                    <span class="pricing-card__amount">Contact Sales</span>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                {% if plan.plan_features.exists %}
+                <ul class="pricing-card__features">
+                    {% for pf in plan.plan_features.all %}
+                    <li class="{% if not pf.is_included %}is-excluded{% endif %}">
+                        <svg class="icon icon--xs" aria-hidden="true" data-icon="{% if pf.is_included %}check{% else %}x{% endif %}"></svg>
+                        {{ pf.text }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <div class="pricing-card__action">
+                    {% if plan.is_contact_sales %}
+                    <a href="#demo" class="btn btn--secondary btn--md btn--full">Contact Sales</a>
+                    {% else %}
+                    {% ui_button label="Get Started" url_name="contact:form" variant="primary" size="md" extra_class="btn--full" %}
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        {% ui_empty_state illustration="billing" title="Pricing unavailable" message="Pricing is not yet available for this product." action_label="Contact Sales" action_url="#demo" %}
+        {% endif %}
+    </div>
+</section>
+
+{% include "products/partials/demo_request.html" with product=product form=demo_form %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title=menu.name subtitle="Edit the JSON structure for this navigation surface. Use url_name for Django routes or url for external links." %}
+
+<form method="post" class="control-form">
+    {% csrf_token %}
+    <section class="ops-panel">
+        <div class="ops-panel__body control-form__grid">
+            {% ui_field field=form.name %}
+            {% ui_field field=form.is_active %}
+            {% ui_field field=form.structure_json extra_class="form-field--full" %}
+        </div>
+    </section>
+    <div class="control-form__actions">
+        {% ui_button label="Back" url_name="control_room:navigation" variant="ghost" %}
+        {% ui_button label="Save navigation" type="submit" variant="primary" %}
+    </div>
+</form>
+{% endblock %}

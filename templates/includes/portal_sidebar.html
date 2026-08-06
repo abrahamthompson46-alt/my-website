@@ -1,0 +1,49 @@
+<aside class="portal-sidebar" role="navigation" aria-label="Portal navigation" data-sidebar>
+    <div class="portal-sidebar__header">
+        <a href="{% url 'website:home' %}" class="brand-link brand-link--compact">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-text">{{ SITE_NAME }}</span>
+        </a>
+        <button type="button"
+                class="btn btn--ghost btn--sm btn--icon-only portal-sidebar__collapse"
+                aria-label="Collapse sidebar"
+                data-sidebar-collapse>
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="panel-left-close"></svg>
+        </button>
+    </div>
+
+    <nav class="portal-sidebar__nav">
+        <ul class="sidebar-nav">
+            {% for item in SIDEBAR_NAV %}
+            {% if item.section %}
+            <li class="sidebar-nav__section" aria-hidden="true">{{ item.section }}</li>
+            {% else %}
+            <li class="sidebar-nav__item">
+                {% with current=request.resolver_match.view_name active_items=item.active_on %}
+                <a href="{% if item.url_name %}{% url item.url_name %}{% else %}#{% endif %}"
+                   class="sidebar-nav__link{% if current == item.url_name or active_items and current in active_items %} is-active{% endif %}"
+                   {% if item.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                    {% if item.icon %}
+                    <svg class="icon icon--md sidebar-nav__icon" aria-hidden="true" data-icon="{{ item.icon }}"></svg>
+                    {% endif %}
+                    <span class="sidebar-nav__label">{{ item.label }}</span>
+                    {% if item.external %}
+                    <svg class="icon icon--xs sidebar-nav__external" aria-hidden="true" data-icon="external-link"></svg>
+                    {% endif %}
+                </a>
+                {% endwith %}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+
+    <div class="portal-sidebar__footer">
+        {% if user.is_authenticated %}
+        <div class="sidebar-user">
+            <span class="sidebar-user__avatar" aria-hidden="true">{{ user.email|first|upper }}</span>
+            <span class="sidebar-user__email">{{ user.email }}</span>
+        </div>
+        {% endif %}
+    </div>
+</aside>

@@ -1,0 +1,40 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="URL Redirects" subtitle="Create path redirects without redeploying code." action_label="Add redirect" action_url_name="control_room:redirect_create" %}
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rule in redirects %}
+                <tr>
+                    <td><code>{{ rule.from_path }}</code></td>
+                    <td>{% if rule.to_path %}<code>{{ rule.to_path }}</code>{% else %}<code>{{ rule.to_url_name }}</code>{% endif %}</td>
+                    <td>{{ rule.get_redirect_type_display }}</td>
+                    <td>{% if rule.is_active %}<span class="control-badge control-badge--success">Active</span>{% else %}<span class="control-badge">Off</span>{% endif %}</td>
+                    <td class="ops-table__actions">
+                        <a href="{% url 'control_room:redirect_edit' rule.pk %}" class="btn btn--ghost btn--sm">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No redirects configured.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
+{% endblock %}

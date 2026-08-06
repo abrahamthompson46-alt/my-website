@@ -1,0 +1,68 @@
+{% extends "base_public.html" %}
+{% load static ui_tags %}
+
+{% block title %}Resources — {{ SITE_NAME }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages/marketing.css' %}">{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+<section class="marketing-hero section section--compact">
+    <div class="container">
+        <h1 class="section__title">Resources</h1>
+        <p class="section__subtitle">Blog, events, case studies, white papers, and tools to help you succeed.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="marketing-hub-grid grid grid--3">
+            <a href="{% url 'marketing:blog_list' %}" class="marketing-hub-card">
+                <svg class="icon icon--lg" data-icon="newspaper"></svg>
+                <h2>Blog</h2>
+                <p>Insights, guides, and product updates.</p>
+            </a>
+            <a href="{% url 'marketing:events' %}" class="marketing-hub-card">
+                <svg class="icon icon--lg" data-icon="calendar"></svg>
+                <h2>Events</h2>
+                <p>Webinars, workshops, and conferences.</p>
+            </a>
+            <a href="{% url 'marketing:success_stories' %}" class="marketing-hub-card">
+                <svg class="icon icon--lg" data-icon="star"></svg>
+                <h2>Success Stories</h2>
+                <p>Customer wins and outcomes.</p>
+            </a>
+            <a href="{% url 'marketing:case_studies' %}" class="marketing-hub-card">
+                <svg class="icon icon--lg" data-icon="briefcase"></svg>
+                <h2>Case Studies</h2>
+                <p>In-depth implementation stories.</p>
+            </a>
+            <a href="{% url 'marketing:whitepapers' %}" class="marketing-hub-card">
+                <svg class="icon icon--lg" data-icon="file-text"></svg>
+                <h2>White Papers</h2>
+                <p>Research and strategic guides.</p>
+            </a>
+            <a href="{% url 'marketing:resources' %}" class="marketing-hub-card">
+                <svg class="icon icon--lg" data-icon="folder"></svg>
+                <h2>Resources</h2>
+                <p>Templates, checklists, and toolkits.</p>
+            </a>
+        </div>
+
+        {% if featured_posts %}
+        <section class="marketing-section">
+            <h2 class="marketing-section__title">Latest from the blog</h2>
+            <div class="grid grid--3">
+                {% for post in featured_posts %}
+                <article class="marketing-card">
+                    <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                    <p>{{ post.excerpt }}</p>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+

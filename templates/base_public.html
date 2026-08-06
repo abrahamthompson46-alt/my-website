@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static ui_tags %}
+
+{% block body_class %}layout-public{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/control_room.css' %}">
+{% endblock %}
+
+{% block body %}
+    {% include "components/site_announcements.html" %}
+    {% include "includes/header.html" %}
+    {% include "components/flash_messages.html" %}
+    <main id="main-content" class="main-content" tabindex="-1">
+        {% block breadcrumbs %}{% endblock %}
+        {% block content %}{% endblock %}
+    </main>
+    {% include "includes/footer.html" %}
+    {% include "components/search/search_overlay.html" %}
+{% endblock %}

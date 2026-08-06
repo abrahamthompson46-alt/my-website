@@ -1,0 +1,37 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}Case Studies — {{ SITE_NAME }}{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section section--compact"><div class="container"><h1 class="section__title">Case Studies</h1><p class="section__subtitle">Detailed stories of customer implementations and outcomes.</p></div></section>
+
+<section class="section"><div class="container"><div class="grid grid--2">
+
+{% for cs in case_studies %}
+
+<article class="marketing-card">
+
+    <h3><a href="{{ cs.get_absolute_url }}">{{ cs.title }}</a></h3>
+
+    <p class="text-secondary">{{ cs.client_name }}{% if cs.industry %} · {{ cs.industry }}{% endif %}</p>
+
+    <p>{{ cs.excerpt }}</p>
+
+</article>
+
+{% empty %}<p class="text-secondary">No case studies yet.</p>{% endfor %}
+
+</div></div></section>
+
+{% endblock %}
+
+

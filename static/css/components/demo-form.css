@@ -1,0 +1,105 @@
+/* Compact demo request form — shared across homepage and product pages */
+
+.home-demo__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .home-demo__grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: var(--space-12);
+    align-items: center;
+  }
+}
+
+.home-demo__info .section__title {
+  font-size: var(--text-heading-lg);
+}
+
+.home-demo__benefits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  list-style: none;
+  padding: 0;
+}
+
+.home-demo__benefits li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-body-sm);
+  color: var(--text-secondary);
+}
+
+.home-demo__benefits .icon {
+  color: var(--color-success-icon);
+  flex-shrink: 0;
+}
+
+.home-demo__form-panel {
+  width: 100%;
+  max-width: 22rem;
+  margin-inline: auto;
+  padding: var(--space-6);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 1024px) {
+  .home-demo__form-panel {
+    margin-inline: auto 0;
+    justify-self: end;
+  }
+}
+
+.form--compact {
+  gap: var(--space-4);
+}
+
+.form--compact .form__fields {
+  gap: var(--space-3);
+}
+
+.form--compact .form-label {
+  font-size: var(--text-caption);
+  letter-spacing: 0.01em;
+}
+
+.form--compact .form-control {
+  min-height: 2.375rem;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-body-sm);
+}
+
+.form--compact .form-control--textarea {
+  min-height: 4.5rem;
+  max-height: 8rem;
+}
+
+.form--compact .form-actions {
+  padding-top: var(--space-1);
+}
+
+.form--compact .form-actions .btn {
+  min-width: 100%;
+}
+
+@media (min-width: 480px) {
+  .form--demo-grid .form__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--space-3);
+    row-gap: var(--space-3);
+  }
+
+  .form--demo-grid .form-field--full {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,0 +1,87 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title=ticket.subject subtitle=ticket.reference %}
+
+
+
+<div class="grid grid--2" style="margin-bottom: var(--space-8);">
+
+    <p>{% ui_badge label=ticket.get_status_display variant="primary" %} {% ui_badge label=ticket.get_priority_display variant="default" %}</p>
+
+    <p class="text-secondary">Opened {{ ticket.created_at|date:"F j, Y g:i A" }}{% if ticket.product %} · {{ ticket.product.name }}{% endif %}</p>
+
+</div>
+
+
+
+<section class="portal-panel" style="margin-bottom: var(--space-8);">
+
+    <div class="portal-panel__header"><h2 class="portal-panel__title">Conversation</h2></div>
+
+    <div class="portal-panel__body ticket-thread">
+
+        {% for message in ticket.messages.all %}
+
+        <article class="ticket-message{% if message.is_staff %} ticket-message--staff{% endif %}">
+
+            <div class="ticket-message__meta">
+
+                <span>{% if message.is_staff %}Support Team{% else %}{{ message.author.get_full_name|default:message.author.email }}{% endif %}</span>
+
+                <time datetime="{{ message.created_at|date:'c' }}">{{ message.created_at|date:"M j, Y g:i A" }}</time>
+
+            </div>
+
+            <p>{{ message.body|linebreaksbr }}</p>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+
+{% if ticket.status != "closed" %}
+
+<section class="portal-panel">
+
+    <div class="portal-panel__header"><h2 class="portal-panel__title">Reply</h2></div>
+
+    <div class="portal-panel__body">
+
+        <form method="post" class="form stack" novalidate>
+
+            {% csrf_token %}
+
+            {% ui_field field=reply_form.body %}
+
+            <div class="form-actions">
+
+                {% ui_button label="Send reply" variant="primary" size="md" type="submit" %}
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+{% endblock %}
+
+

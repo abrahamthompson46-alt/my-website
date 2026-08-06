@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements/base.txt
+          pip install redis
+
+      - name: Django checks
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+        run: |
+          python manage.py check --deploy --settings=config.settings.test
+          python manage.py makemigrations --check --dry-run --settings=config.settings.test
+
+      - name: Run tests
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+        run: python manage.py test --settings=config.settings.test --verbosity=2

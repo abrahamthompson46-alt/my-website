@@ -1,0 +1,17 @@
+{% if SITE_ANNOUNCEMENTS %}
+<div class="site-announcements" role="region" aria-label="Site announcements">
+    {% for announcement in SITE_ANNOUNCEMENTS %}
+    <div class="site-announcement site-announcement--{{ announcement.variant }}" data-announcement>
+        <div class="container site-announcement__inner">
+            <div class="site-announcement__content">
+                {% if announcement.title %}<strong class="site-announcement__title">{{ announcement.title }}</strong>{% endif %}
+                <span class="site-announcement__message">{{ announcement.message }}</span>
+            </div>
+            {% if announcement.link_url and announcement.link_label %}
+            <a href="{{ announcement.link_url }}" class="site-announcement__link">{{ announcement.link_label }}</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

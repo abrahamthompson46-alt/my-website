@@ -1,0 +1,207 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags humanize %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Security Settings" subtitle="Manage password, sessions, MFA, and account security." %}
+
+
+
+<section class="portal-panel security-section">
+
+    <div class="portal-panel__header"><h2 class="portal-panel__title">Account status</h2></div>
+
+    <div class="portal-panel__body stack">
+
+        <div class="security-status-grid">
+
+            <div>
+
+                <p class="text-secondary">Email verification</p>
+
+                {% if security_profile.email_verified %}
+
+                {% ui_badge label="Verified" variant="success" %}
+
+                {% else %}
+
+                {% ui_badge label="Not verified" variant="warning" %}
+
+                <p style="margin-top: var(--space-2);"><a href="{% url 'accounts:verify_email_prompt' %}">Verify your email</a></p>
+
+                {% endif %}
+
+            </div>
+
+            <div>
+                <p class="text-secondary">Multi-factor authentication</p>
+                {% if security_profile.mfa_enabled %}
+                {% ui_badge label="Enabled" variant="success" %}
+                <p class="text-secondary" style="margin-top: var(--space-2);">Method: {{ security_profile.get_mfa_method_display }}</p>
+                <form method="post" action="{% url 'accounts:mfa_disable' %}" class="stack" style="margin-top: var(--space-4);">
+                    {% csrf_token %}
+                    {% ui_field field=mfa_disable_form.password %}
+                    {% ui_field field=mfa_disable_form.code show_optional=True %}
+                    {% ui_button label="Disable MFA" variant="secondary" size="sm" type="submit" %}
+                </form>
+                {% else %}
+                {% ui_badge label="Not enabled" variant="secondary" %}
+                <p style="margin-top: var(--space-3);">
+                    {% ui_button label="Enable authenticator app" url_name="accounts:mfa_enroll" variant="primary" size="sm" type="link" %}
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <p class="text-secondary">Last login: {% if user.last_login %}{{ user.last_login|date:"F j, Y g:i A" }}{% else %}Never{% endif %}</p>
+
+        {% if security_profile.password_changed_at %}
+
+        <p class="text-secondary">Password last changed: {{ security_profile.password_changed_at|date:"F j, Y g:i A" }}</p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+
+<section class="portal-panel security-section" style="margin-top: var(--space-6);">
+
+    <div class="portal-panel__header"><h2 class="portal-panel__title">Change password</h2></div>
+
+    <div class="portal-panel__body">
+
+        <form method="post" class="form stack" novalidate>
+
+            {% csrf_token %}
+
+            <input type="hidden" name="change_password" value="1">
+
+            {% if password_form.non_field_errors %}<div class="form__errors">{{ password_form.non_field_errors }}</div>{% endif %}
+
+            {% ui_field field=password_form.old_password label="Current password" %}
+
+            {% ui_field field=password_form.new_password1 label="New password" %}
+
+            {% ui_field field=password_form.new_password2 label="Confirm new password" %}
+
+            <div class="form-actions">
+
+                {% ui_button label="Update password" variant="primary" size="md" type="submit" %}
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+
+<section class="portal-panel security-section" style="margin-top: var(--space-6);">
+
+    <div class="portal-panel__header">
+
+        <h2 class="portal-panel__title">Active sessions</h2>
+
+    </div>
+
+    <div class="portal-panel__body stack">
+
+        {% if active_sessions %}
+
+        <div class="portal-table-wrap">
+
+            <table class="portal-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Device</th>
+
+                        <th>IP address</th>
+
+                        <th>Last seen</th>
+
+                        <th></th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for session in active_sessions %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ session.device_label|default:"Unknown device" }}
+
+                            {% if session.is_current %}{% ui_badge label="Current" variant="primary" %}{% endif %}
+
+                        </td>
+
+                        <td>{{ session.ip_address|default:"—" }}</td>
+
+                        <td>{{ session.last_seen_at|naturaltime }}</td>
+
+                        <td>
+
+                            {% if not session.is_current %}
+
+                            <form method="post" action="{% url 'accounts:session_revoke' session.id %}">
+
+                                {% csrf_token %}
+
+                                {% ui_button label="Revoke" variant="secondary" size="sm" type="submit" %}
+
+                            </form>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <form method="post" action="{% url 'accounts:sessions_revoke_others' %}">
+
+            {% csrf_token %}
+
+            {% ui_button label="Sign out all other sessions" variant="secondary" size="md" type="submit" %}
+
+        </form>
+
+        {% else %}
+
+        <p class="text-secondary">No active sessions tracked yet. Sessions appear after your next login.</p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+

@@ -1,0 +1,54 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags humanize graphics_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Invoices" subtitle="Review billing history and payment status." %}
+
+
+
+<div class="portal-panel">
+
+    <div class="portal-panel__body portal-panel__body--flush">
+
+        {% for invoice in invoices %}
+
+        <div class="portal-list__item">
+
+            <div>
+
+                <p class="portal-list__title"><a href="{% url 'customer_portal:invoice_detail' pk=invoice.pk %}">{{ invoice.invoice_number }}</a></p>
+
+                <p class="portal-list__meta">{{ invoice.description|default:"Subscription billing" }} · Issued {{ invoice.issued_at|date:"M j, Y" }}</p>
+
+            </div>
+
+            <div class="cluster">
+
+                <span>${{ invoice.amount|floatformat:2|intcomma }}</span>
+
+                {% ui_badge label=invoice.get_status_display variant="default" %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+        {% ui_empty_state illustration="invoices" message="No invoices yet." compact=True %}
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

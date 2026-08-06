@@ -1,0 +1,21 @@
+<form class="search-bar search-bar--{{ variant }} search-bar--{{ size }} {{ extra_class }}"
+      action="{{ action }}"
+      method="get"
+      role="search">
+    <label for="search-{{ name }}" class="visually-hidden">Search</label>
+    <span class="search-bar__icon" aria-hidden="true">
+        <svg class="icon icon--sm" data-icon="search"></svg>
+    </span>
+    <input type="search"
+           id="search-{{ name }}"
+           class="search-bar__input"
+           name="{{ name }}"
+           value="{{ value }}"
+           placeholder="{{ placeholder }}"
+           autocomplete="off">
+    {% if value %}
+    <button type="button" class="search-bar__clear btn btn--ghost btn--xs btn--icon-only" aria-label="Clear search" data-search-clear>
+        <svg class="icon icon--xs" aria-hidden="true" data-icon="x"></svg>
+    </button>
+    {% endif %}
+</form>

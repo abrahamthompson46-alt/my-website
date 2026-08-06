@@ -1,0 +1,83 @@
+{% extends "documentation/base_docs.html" %}
+{% load ui_tags %}
+
+{% block title %}Search — Documentation{% endblock %}
+
+{% block docs_content %}
+<div class="docs-page">
+    <header class="docs-page__header">
+        <h1 class="docs-page__title">Search documentation</h1>
+        {% if query %}<p class="docs-page__subtitle">{{ result_count }} result{{ result_count|pluralize }} for “{{ query }}”</p>{% endif %}
+    </header>
+
+    <form method="get" action="{% url 'documentation:search' %}" class="docs-search-form docs-search-form--page" role="search">
+        {% if doc_product %}<input type="hidden" name="product" value="{{ doc_product.slug }}">{% endif %}
+        <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Search guides, API, downloads…">
+        {% ui_button label="Search" variant="primary" size="md" type="submit" %}
+    </form>
+
+    {% if query %}
+    {% if results.articles %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">Articles</h2>
+        <ul class="docs-result-list">
+            {% for article in results.articles %}
+            <li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a>{% if article.category %} · {{ article.category.name }}{% endif %}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if results.api_endpoints %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">API endpoints</h2>
+        <ul class="docs-result-list">
+            {% for endpoint in results.api_endpoints %}
+            <li><a href="{% url 'documentation:api' %}#{{ endpoint.pk }}"><code>{{ endpoint.method }}</code> {{ endpoint.path }}</a> — {{ endpoint.summary }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if results.videos %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">Videos</h2>
+        <ul class="docs-result-list">
+            {% for video in results.videos %}
+            <li><a href="{% url 'documentation:videos' %}">{{ video.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if results.downloads %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">Downloads</h2>
+        <ul class="docs-result-list">
+            {% for download in results.downloads %}
+            <li><a href="{% url 'documentation:downloads' %}">{{ download.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if results.categories %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">Categories</h2>
+        <ul class="docs-result-list">
+            {% for category in results.categories %}
+            <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if result_count == 0 %}
+    <p class="text-secondary">No results found. Try different keywords or browse categories.</p>
+    {% endif %}
+    {% else %}
+    <p class="text-secondary">Enter at least 2 characters to search.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

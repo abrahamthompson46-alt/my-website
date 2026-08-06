@@ -1,0 +1,31 @@
+{% load seo_tags %}
+{% if seo_meta %}
+<title>{{ seo_meta.title }}</title>
+<meta name="description" content="{{ seo_meta.description|truncatechars:160 }}">
+<meta name="robots" content="{{ seo_meta.robots }}">
+<link rel="canonical" href="{{ seo_meta.canonical_url }}">
+
+<meta property="og:site_name" content="{{ SITE_NAME|default:'Website' }}">
+<meta property="og:title" content="{{ seo_meta.title }}">
+<meta property="og:description" content="{{ seo_meta.description|truncatechars:200 }}">
+<meta property="og:type" content="{{ seo_meta.og_type }}">
+<meta property="og:url" content="{{ seo_meta.canonical_url }}">
+<meta property="og:locale" content="{{ seo_meta.locale }}">
+{% if seo_meta.og_image %}
+<meta property="og:image" content="{{ seo_meta.og_image }}">
+<meta property="og:image:alt" content="{{ seo_meta.title }}">
+{% endif %}
+
+<meta name="twitter:card" content="{{ seo_meta.twitter_card }}">
+<meta name="twitter:title" content="{{ seo_meta.title }}">
+<meta name="twitter:description" content="{{ seo_meta.description|truncatechars:200 }}">
+{% if seo_meta.og_image %}
+<meta name="twitter:image" content="{{ seo_meta.og_image }}">
+{% endif %}
+{% if SEO_TWITTER_HANDLE %}
+<meta name="twitter:site" content="{{ SEO_TWITTER_HANDLE }}">
+{% endif %}
+{% if seo_meta.schema_data %}
+{% schema_json_ld seo_meta.schema_data %}
+{% endif %}
+{% endif %}

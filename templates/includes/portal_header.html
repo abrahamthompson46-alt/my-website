@@ -1,0 +1,25 @@
+{% load ui_tags %}
+<header class="portal-header" role="banner">
+    <div class="portal-header__start">
+        <button type="button"
+                class="btn btn--ghost btn--sm btn--icon-only portal-header__menu"
+                aria-label="Open navigation"
+                data-sidebar-open>
+            <svg class="icon icon--md" aria-hidden="true" data-icon="menu"></svg>
+        </button>
+        {% block portal_breadcrumbs %}{% endblock %}
+    </div>
+    <div class="portal-header__actions">
+        {% ui_search variant="compact" placeholder="Search portal…" %}
+        <a href="{% url 'customer_portal:notifications' %}"
+           class="btn btn--ghost btn--sm btn--icon-only portal-header__notify"
+           aria-label="Notifications{% if UNREAD_NOTIFICATIONS %} ({{ UNREAD_NOTIFICATIONS }} unread){% endif %}">
+            <svg class="icon icon--md" aria-hidden="true" data-icon="bell"></svg>
+            {% if UNREAD_NOTIFICATIONS %}
+            <span class="portal-header__badge">{{ UNREAD_NOTIFICATIONS }}</span>
+            {% endif %}
+        </a>
+        {% ui_theme_switcher variant="icon" %}
+        {% include "components/logout_form.html" %}
+    </div>
+</header>

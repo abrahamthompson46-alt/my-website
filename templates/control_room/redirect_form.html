@@ -1,0 +1,26 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title=object|default_if_none:"Add redirect"|yesno:"Edit redirect,Add redirect" subtitle="Map an old path to a new destination." %}
+
+<form method="post" class="control-form">
+    {% csrf_token %}
+    <section class="ops-panel">
+        <div class="ops-panel__body control-form__grid">
+            {% for field in form %}
+            {% ui_field field=field %}
+            {% endfor %}
+        </div>
+    </section>
+    <div class="control-form__actions">
+        {% ui_button label="Cancel" url_name="control_room:redirects" variant="ghost" %}
+        {% ui_button label="Save redirect" type="submit" variant="primary" %}
+        {% if object %}
+        <button formaction="{% url 'control_room:redirect_delete' object.pk %}" formmethod="post" class="btn btn--destructive-outline btn--sm" onclick="return confirm('Delete this redirect?');">Delete</button>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base_ops.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% block list_header %}
+{% include "operations/partials/page_header.html" with title=list_title subtitle=list_subtitle %}
+{% endblock %}
+{% block list_filters %}{% endblock %}
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead>{% block table_head %}{% endblock %}</thead>
+            <tbody>{% block table_body %}{% endblock %}</tbody>
+        </table>
+    </div>
+</div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
+{% endblock %}

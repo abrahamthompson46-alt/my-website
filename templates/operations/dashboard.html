@@ -1,0 +1,150 @@
+{% extends "base_ops.html" %}
+{% load ui_tags humanize %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "operations/partials/page_header.html" with title="Admin Dashboard" subtitle="Real-time overview of products, customers, revenue, and platform health." %}
+
+<div class="ops-stats ops-stats--6">
+    <div class="ops-stat ops-stat--primary">
+        <p class="ops-stat__label">Revenue (30d)</p>
+        <p class="ops-stat__value">${{ stats.revenue_30d|floatformat:0|intcomma }}</p>
+        <p class="ops-stat__meta">${{ stats.revenue_7d|floatformat:0|intcomma }} last 7 days</p>
+    </div>
+    <div class="ops-stat">
+        <p class="ops-stat__label">Customers</p>
+        <p class="ops-stat__value">{{ stats.customers }}</p>
+        <p class="ops-stat__meta">+{{ stats.new_customers_30d }} this month</p>
+    </div>
+    <div class="ops-stat">
+        <p class="ops-stat__label">Active subscriptions</p>
+        <p class="ops-stat__value">{{ stats.active_subscriptions }}</p>
+    </div>
+    <div class="ops-stat">
+        <p class="ops-stat__label">Open tickets</p>
+        <p class="ops-stat__value">{{ stats.open_tickets }}</p>
+    </div>
+    <div class="ops-stat">
+        <p class="ops-stat__label">New demo requests</p>
+        <p class="ops-stat__value">{{ stats.demo_requests_new }}</p>
+    </div>
+    <div class="ops-stat">
+        <p class="ops-stat__label">Newsletter leads</p>
+        <p class="ops-stat__value">{{ stats.leads_total }}</p>
+    </div>
+</div>
+
+<div class="ops-grid ops-grid--2-1">
+    <section class="ops-panel">
+        <div class="ops-panel__header">
+            <h2 class="ops-panel__title">Revenue trend</h2>
+            {% ui_button label="Analytics" url_name="operations:analytics" variant="ghost" size="sm" %}
+        </div>
+        <div class="ops-panel__body">
+            <div class="ops-chart">
+                {% for row in revenue_chart %}
+                <div class="ops-chart__bar-wrap" title="{{ row.day }}: ${{ row.total|default:0 }}">
+                    <div class="ops-chart__bar" style="height: {% widthratio row.total|default:0 stats.revenue_30d|default:1 100 %}%; min-height: 4px;"></div>
+                    <span class="ops-chart__label">{{ row.day|date:"d" }}</span>
+                </div>
+                {% empty %}
+                <p class="text-secondary">No revenue data yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="ops-panel">
+        <div class="ops-panel__header">
+            <h2 class="ops-panel__title">System health</h2>
+            {% ui_button label="Details" url_name="operations:system_health" variant="ghost" size="sm" %}
+        </div>
+        <div class="ops-panel__body stack">
+            <div class="ops-health-overall ops-health-overall--{{ health.overall }}">
+                <span class="ops-health-dot"></span>
+                {{ health.overall|title }}
+            </div>
+            {% for name, check in health.checks.items %}
+            <div class="ops-health-row">
+                <span>{{ name|title }}</span>
+                <span class="ops-health-status ops-health-status--{{ check.status }}">{{ check.message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<div class="ops-grid ops-grid--2">
+    <section class="ops-panel">
+        <div class="ops-panel__header">
+            <h2 class="ops-panel__title">Recent activity</h2>
+            {% ui_button label="All logs" url_name="operations:activity" variant="ghost" size="sm" %}
+        </div>
+        <div class="ops-panel__body ops-panel__body--flush">
+            {% for item in recent_activity %}
+            <div class="ops-activity-item">
+                <span class="ops-activity-item__icon"><svg class="icon icon--sm" data-icon="{{ item.icon }}"></svg></span>
+                <div class="ops-activity-item__content">
+                    <p class="ops-activity-item__title">{{ item.title }}</p>
+                    <p class="ops-activity-item__meta">{{ item.meta }}</p>
+                </div>
+                <time class="ops-activity-item__time">{{ item.timestamp|naturaltime }}</time>
+            </div>
+            {% empty %}
+            <p class="ops-panel__body text-secondary">No recent activity.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="ops-panel">
+        <div class="ops-panel__header">
+            <h2 class="ops-panel__title">Subscriptions by product</h2>
+        </div>
+        <div class="ops-panel__body stack">
+            {% for row in product_breakdown %}
+            <div class="ops-progress-row">
+                <span>{{ row.product__name|default:"Unknown" }}</span>
+                <div class="ops-progress"><div class="ops-progress__fill" style="width: {% widthratio row.count stats.active_subscriptions|default:1 100 %}%;"></div></div>
+                <span class="ops-progress__value">{{ row.count }}</span>
+            </div>
+            {% empty %}
+            <p class="text-secondary">No subscription data.</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<div class="ops-quick-nav">
+    <a href="{% url 'operations:products' %}" class="ops-quick-card">
+        <svg class="icon icon--lg" data-icon="package"></svg>
+        <span>Products</span>
+        <strong>{{ stats.products }}</strong>
+    </a>
+    <a href="{% url 'operations:customers' %}" class="ops-quick-card">
+        <svg class="icon icon--lg" data-icon="users"></svg>
+        <span>Customers</span>
+        <strong>{{ stats.customers }}</strong>
+    </a>
+    <a href="{% url 'operations:demo_requests' %}" class="ops-quick-card">
+        <svg class="icon icon--lg" data-icon="calendar"></svg>
+        <span>Demo Requests</span>
+        <strong>{{ stats.demo_requests_new }}</strong>
+    </a>
+    <a href="{% url 'operations:payments' %}" class="ops-quick-card">
+        <svg class="icon icon--lg" data-icon="credit-card"></svg>
+        <span>Payments</span>
+        <strong>{{ stats.payments_pending }}</strong>
+    </a>
+    <a href="{% url 'operations:support' %}" class="ops-quick-card">
+        <svg class="icon icon--lg" data-icon="life-buoy"></svg>
+        <span>Support</span>
+        <strong>{{ stats.open_tickets }}</strong>
+    </a>
+    <a href="{% url 'operations:marketing' %}" class="ops-quick-card">
+        <svg class="icon icon--lg" data-icon="megaphone"></svg>
+        <span>Marketing</span>
+        <strong>{{ stats.blog_posts }}</strong>
+    </a>
+</div>
+{% endblock %}

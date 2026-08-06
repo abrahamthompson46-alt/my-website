@@ -1,0 +1,246 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags humanize static %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+<section class="superdash-hero">
+    <div class="superdash-hero__content">
+        <p class="superdash-hero__eyebrow">Platform Administration</p>
+        <h1 class="superdash-hero__title">{{ platform_settings.site_name }}</h1>
+        <p class="superdash-hero__subtitle">{{ platform_settings.site_tagline|default:"Complete control of your website — no code, no terminal, no deploys." }}</p>
+        <div class="superdash-hero__actions">
+            {% ui_button label="Platform Setup" url_name="control_room:setup" variant="primary" icon="database" %}
+            {% ui_button label="Site Settings" url_name="control_room:settings" variant="secondary" icon="settings" %}
+            <a href="{% url 'website:home' %}" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">View live site</a>
+        </div>
+    </div>
+    <div class="superdash-hero__status">
+        <div class="superdash-status-pill{% if platform_settings.maintenance_mode %} superdash-status-pill--warning{% else %} superdash-status-pill--ok{% endif %}">
+            <span class="superdash-status-pill__dot"></span>
+            {% if platform_settings.maintenance_mode %}Maintenance mode{% else %}Live{% endif %}
+        </div>
+        <div class="superdash-status-pill superdash-status-pill--neutral">
+            <span class="superdash-status-pill__dot"></span>
+            {{ stats.feature_flags }} flags active
+        </div>
+        <div class="superdash-status-pill superdash-status-pill--neutral">
+            <span class="superdash-status-pill__dot"></span>
+            {{ health.overall|default:"healthy"|title }}
+        </div>
+    </div>
+</section>
+
+{% if platform_settings.maintenance_mode %}
+<div class="control-alert control-alert--warning">
+    <strong>Maintenance mode is active.</strong> Public visitors see the maintenance page. Staff retain full access.
+</div>
+{% endif %}
+
+<div class="superdash-metrics">
+    <article class="superdash-metric superdash-metric--highlight">
+        <div class="superdash-metric__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="dollar-sign"></svg></div>
+        <div>
+            <p class="superdash-metric__label">Revenue (30d)</p>
+            <p class="superdash-metric__value">${{ business_stats.revenue_30d|floatformat:0|intcomma }}</p>
+        </div>
+    </article>
+    <article class="superdash-metric">
+        <div class="superdash-metric__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="users"></svg></div>
+        <div>
+            <p class="superdash-metric__label">Customers</p>
+            <p class="superdash-metric__value">{{ business_stats.customers }}</p>
+        </div>
+    </article>
+    <article class="superdash-metric">
+        <div class="superdash-metric__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="life-buoy"></svg></div>
+        <div>
+            <p class="superdash-metric__label">Open tickets</p>
+            <p class="superdash-metric__value">{{ business_stats.open_tickets }}</p>
+        </div>
+    </article>
+    <article class="superdash-metric">
+        <div class="superdash-metric__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="calendar"></svg></div>
+        <div>
+            <p class="superdash-metric__label">New demos</p>
+            <p class="superdash-metric__value">{{ business_stats.demo_requests_new }}</p>
+        </div>
+    </article>
+</div>
+
+<section class="superdash-section">
+    <div class="superdash-section__header">
+        <div>
+            <h2 class="superdash-section__title">Control modules</h2>
+            <p class="superdash-section__subtitle">Every platform surface in one place.</p>
+        </div>
+    </div>
+    <div class="superdash-modules">
+        {% for module in control_modules %}
+        <a href="{% url module.url_name %}" class="superdash-module superdash-module--{{ module.accent }}">
+            <span class="superdash-module__icon" aria-hidden="true"><svg class="icon icon--lg" data-icon="{{ module.icon }}"></svg></span>
+            <span class="superdash-module__title">{{ module.title }}</span>
+            <span class="superdash-module__desc">{{ module.description }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="superdash-grid">
+    <section class="superdash-panel superdash-panel--bootstrap">
+        <div class="superdash-panel__header">
+            <div>
+                <h2 class="superdash-panel__title">Platform bootstrap</h2>
+                <p class="superdash-panel__subtitle">Load demo data and defaults with one click — no commands needed.</p>
+            </div>
+            <form method="post" action="{% url 'control_room:seed_run_all' %}" class="control-seed-form" data-seed-form>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'control_room:dashboard' %}">
+                {% ui_button label="Run all seeds" type="submit" variant="primary" icon="play" extra_class="control-seed-form__submit" %}
+            </form>
+        </div>
+        <div class="superdash-panel__body">
+            {% include "control_room/partials/seed_buttons.html" with compact=True next_url='control_room:dashboard' %}
+            <p class="superdash-panel__footnote">
+                {% ui_button label="Open full setup console" url_name="control_room:setup" variant="link" size="sm" %}
+            </p>
+        </div>
+    </section>
+
+    <section class="superdash-panel superdash-panel--cache">
+        <div class="superdash-panel__header">
+            <div>
+                <h2 class="superdash-panel__title">Cache &amp; Redis</h2>
+                <p class="superdash-panel__subtitle">Live backend status, probe latency, and what is using cache.</p>
+            </div>
+            <div class="superdash-cache-badge superdash-cache-badge--{% if cache_diagnostics.redis_active %}ok{% elif cache_diagnostics.backend == 'redis' %}warning{% else %}neutral{% endif %}">
+                {% if cache_diagnostics.redis_active %}Redis active{% elif cache_diagnostics.backend == 'redis' %}Redis configured{% else %}Local memory{% endif %}
+            </div>
+        </div>
+        <div class="superdash-panel__body">
+            {% if cache_diagnostics.recommendation %}
+            <div class="control-alert control-alert--info superdash-cache-alert">
+                {{ cache_diagnostics.recommendation }}
+            </div>
+            {% endif %}
+
+            <dl class="superdash-cache-meta">
+                <div class="superdash-cache-meta__row">
+                    <dt>Backend</dt>
+                    <dd>{{ cache_diagnostics.backend_label }}</dd>
+                </div>
+                <div class="superdash-cache-meta__row">
+                    <dt>Connection</dt>
+                    <dd><code>{{ cache_diagnostics.redis_url }}</code></dd>
+                </div>
+                <div class="superdash-cache-meta__row">
+                    <dt>Sessions</dt>
+                    <dd>{{ cache_diagnostics.session_engine|title }}</dd>
+                </div>
+                <div class="superdash-cache-meta__row">
+                    <dt>Probe</dt>
+                    <dd>
+                        {% if cache_diagnostics.probe.ok %}
+                        OK · {{ cache_diagnostics.probe.latency_ms }} ms
+                        {% else %}
+                        Failed{% if cache_diagnostics.probe.error %} · {{ cache_diagnostics.probe.error }}{% endif %}
+                        {% endif %}
+                    </dd>
+                </div>
+                {% if cache_diagnostics.redis_info and not cache_diagnostics.redis_info.error %}
+                <div class="superdash-cache-meta__row">
+                    <dt>Redis version</dt>
+                    <dd>{{ cache_diagnostics.redis_info.version }}</dd>
+                </div>
+                <div class="superdash-cache-meta__row">
+                    <dt>Memory</dt>
+                    <dd>{{ cache_diagnostics.redis_info.used_memory_human }}</dd>
+                </div>
+                <div class="superdash-cache-meta__row">
+                    <dt>Clients</dt>
+                    <dd>{{ cache_diagnostics.redis_info.connected_clients }}</dd>
+                </div>
+                <div class="superdash-cache-meta__row">
+                    <dt>Uptime</dt>
+                    <dd>{{ cache_diagnostics.redis_info.uptime_days }} day{{ cache_diagnostics.redis_info.uptime_days|pluralize }}</dd>
+                </div>
+                {% elif cache_diagnostics.redis_info.error %}
+                <div class="superdash-cache-meta__row">
+                    <dt>Redis error</dt>
+                    <dd>{{ cache_diagnostics.redis_info.error }}</dd>
+                </div>
+                {% endif %}
+            </dl>
+
+            <h3 class="superdash-cache-subtitle">Cached workloads</h3>
+            <ul class="superdash-cache-uses">
+                {% for item in cache_diagnostics.uses %}
+                <li class="superdash-cache-uses__item">
+                    <span class="superdash-cache-uses__status superdash-cache-uses__status--{% if item.active %}on{% else %}off{% endif %}" aria-hidden="true"></span>
+                    <span class="superdash-cache-uses__name">{{ item.name }}</span>
+                    <span class="superdash-cache-uses__detail">{{ item.detail }}</span>
+                    <span class="superdash-cache-uses__ttl">{{ item.ttl }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+
+            {% if cache_diagnostics.recent_probes %}
+            <h3 class="superdash-cache-subtitle">Recent probes</h3>
+            <ul class="superdash-cache-probes">
+                {% for probe in cache_diagnostics.recent_probes %}
+                <li class="superdash-cache-probes__item superdash-cache-probes__item--{{ probe.status }}">
+                    <span class="superdash-cache-probes__time">{{ probe.at|timesince }} ago</span>
+                    <span class="superdash-cache-probes__status">{{ probe.status|title }}</span>
+                    {% if probe.latency_ms %}<span class="superdash-cache-probes__latency">{{ probe.latency_ms }} ms</span>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="superdash-panel">
+        <div class="superdash-panel__header">
+            <h2 class="superdash-panel__title">System health</h2>
+        </div>
+        <div class="superdash-panel__body">
+            <ul class="superdash-health">
+                {% for name, check in health.checks.items %}
+                <li class="superdash-health__item superdash-health__item--{{ check.status }}">
+                    <span class="superdash-health__label">{{ name|title }}</span>
+                    <span class="superdash-health__message">{{ check.message }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <section class="superdash-panel">
+        <div class="superdash-panel__header">
+            <h2 class="superdash-panel__title">Recent changes</h2>
+            {% ui_button label="Full log" url_name="control_room:changelog" variant="ghost" size="sm" %}
+        </div>
+        <div class="superdash-panel__body">
+            <ul class="control-changelog">
+                {% for change in recent_changes %}
+                <li class="control-changelog__item">
+                    <span class="control-changelog__area">{{ change.area }}</span>
+                    <span class="control-changelog__summary">{{ change.summary }}</span>
+                    <span class="control-changelog__meta">{{ change.created_at|timesince }} ago{% if change.user %} · {{ change.user.email }}{% endif %}</span>
+                </li>
+                {% empty %}
+                <li class="text-secondary">No changes logged yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+</div>
+
+{% if last_seed_results %}
+{% include "control_room/partials/seed_results.html" %}
+{% endif %}
+{% endblock %}
+
+{% block control_js %}
+<script src="{% static 'js/control_room.js' %}" defer></script>
+{% endblock %}

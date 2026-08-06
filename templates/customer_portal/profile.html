@@ -1,0 +1,121 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Profile" subtitle="Manage your account details and notification preferences." %}
+
+
+
+<div class="profile-grid">
+
+    <section class="portal-panel">
+
+        <div class="portal-panel__header"><h2 class="portal-panel__title">Personal information</h2></div>
+
+        <div class="portal-panel__body">
+
+            <form method="post" class="form stack" novalidate>
+
+                {% csrf_token %}
+
+                <input type="hidden" name="save_name" value="1">
+
+                {% ui_field field=name_form.first_name %}
+
+                {% ui_field field=name_form.last_name %}
+
+                <p class="text-secondary">Email: {{ user.email }}</p>
+
+                <div class="form-actions">
+
+                    {% ui_button label="Save name" variant="primary" size="md" type="submit" %}
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="portal-panel">
+
+        <div class="portal-panel__header"><h2 class="portal-panel__title">Organization</h2></div>
+
+        <div class="portal-panel__body">
+
+            <form method="post" class="form stack" novalidate>
+
+                {% csrf_token %}
+
+                <input type="hidden" name="save_profile" value="1">
+
+                {% ui_field field=profile_form.company %}
+
+                {% ui_field field=profile_form.job_title %}
+
+                {% ui_field field=profile_form.phone show_optional=True %}
+
+                {% ui_field field=profile_form.country show_optional=True %}
+
+                {% ui_field field=profile_form.timezone %}
+
+                <div class="form-actions">
+
+                    {% ui_button label="Save profile" variant="primary" size="md" type="submit" %}
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="portal-panel">
+
+        <div class="portal-panel__header"><h2 class="portal-panel__title">Notification preferences</h2></div>
+
+        <div class="portal-panel__body">
+
+            <form method="post" class="form stack" novalidate>
+
+                {% csrf_token %}
+
+                <input type="hidden" name="save_profile" value="1">
+
+                {% ui_field field=profile_form.email_notifications %}
+
+                {% ui_field field=profile_form.product_updates %}
+
+                {% ui_field field=profile_form.billing_alerts %}
+
+                <div class="form-actions">
+
+                    {% ui_button label="Save preferences" variant="primary" size="md" type="submit" %}
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+

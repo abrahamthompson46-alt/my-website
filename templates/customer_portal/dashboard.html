@@ -1,0 +1,335 @@
+{% extends "base_portal.html" %}
+
+
+
+{% load ui_tags humanize graphics_tags %}
+
+
+
+
+
+
+
+{% block breadcrumbs %}
+
+
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+{% block content %}
+
+
+
+<div class="portal-page">
+
+
+
+    <section class="portal-welcome">
+
+        <div class="portal-welcome__content">
+
+            <p class="portal-welcome__eyebrow">Customer portal</p>
+
+            <h1 class="portal-welcome__title">Welcome back{% if user.first_name %}, {{ user.first_name }}{% endif %}</h1>
+
+            <p class="portal-welcome__subtitle">Here is an overview of your subscriptions, billing, and support activity.</p>
+
+        </div>
+
+        <div class="portal-welcome__meta">
+
+            {% if user.last_login %}
+
+            <p class="portal-welcome__last-login">Last sign-in: {{ user.last_login|date:"M j, Y g:i A" }}</p>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+
+    <nav class="portal-quick-actions" aria-label="Quick actions">
+
+        <a href="{% url 'customer_portal:ticket_create' %}" class="portal-quick-action">
+
+            <span class="portal-quick-action__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="life-buoy"></svg></span>
+
+            <span class="portal-quick-action__label">New ticket</span>
+
+        </a>
+
+        <a href="{% url 'customer_portal:invoices' %}" class="portal-quick-action">
+
+            <span class="portal-quick-action__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="credit-card"></svg></span>
+
+            <span class="portal-quick-action__label">Invoices</span>
+
+        </a>
+
+        <a href="{% url 'customer_portal:subscriptions' %}" class="portal-quick-action">
+
+            <span class="portal-quick-action__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="package"></svg></span>
+
+            <span class="portal-quick-action__label">Subscriptions</span>
+
+        </a>
+
+        <a href="{% url 'customer_portal:security' %}" class="portal-quick-action">
+
+            <span class="portal-quick-action__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="shield-check"></svg></span>
+
+            <span class="portal-quick-action__label">Security</span>
+
+        </a>
+
+        <a href="{% url 'customer_portal:documentation' %}" class="portal-quick-action">
+
+            <span class="portal-quick-action__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="book-open"></svg></span>
+
+            <span class="portal-quick-action__label">Documentation</span>
+
+        </a>
+
+    </nav>
+
+
+
+    <div class="portal-stats">
+
+        <div class="portal-stat portal-stat--subscriptions">
+
+            <div class="portal-stat__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="package"></svg></div>
+
+            <p class="portal-stat__label">Active subscriptions</p>
+
+            <p class="portal-stat__value">{{ stats.active_subscriptions }}</p>
+
+        </div>
+
+        <div class="portal-stat portal-stat--licenses">
+
+            <div class="portal-stat__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="file-check"></svg></div>
+
+            <p class="portal-stat__label">Active licenses</p>
+
+            <p class="portal-stat__value">{{ stats.active_licenses }}</p>
+
+        </div>
+
+        <div class="portal-stat portal-stat--invoices">
+
+            <div class="portal-stat__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="credit-card"></svg></div>
+
+            <p class="portal-stat__label">Open invoices</p>
+
+            <p class="portal-stat__value">{{ stats.open_invoices }}</p>
+
+        </div>
+
+        <div class="portal-stat portal-stat--tickets">
+
+            <div class="portal-stat__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="life-buoy"></svg></div>
+
+            <p class="portal-stat__label">Open tickets</p>
+
+            <p class="portal-stat__value">{{ stats.open_tickets }}</p>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="grid grid--2 portal-dashboard-grid">
+
+
+
+        <section class="portal-panel">
+
+            <div class="portal-panel__header">
+
+                <h2 class="portal-panel__title">Subscriptions</h2>
+
+                {% ui_button label="View all" url_name="customer_portal:subscriptions" variant="ghost" size="sm" %}
+
+            </div>
+
+            <div class="portal-panel__body portal-panel__body--flush">
+
+                {% for sub in subscriptions %}
+
+                <div class="portal-list__item">
+
+                    <div>
+
+                        <p class="portal-list__title">{{ sub.product.name }}</p>
+
+                        <p class="portal-list__meta">{{ sub.plan_name }} · Renews {{ sub.renews_at|date:"M j, Y" }}</p>
+
+                    </div>
+
+                    {% ui_badge label=sub.get_status_display variant="primary" %}
+
+                </div>
+
+                {% empty %}
+
+                {% ui_empty_state illustration="subscriptions" message="No subscriptions yet." action_label="Browse products" action_url_name="products:list" compact=True %}
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+        <section class="portal-panel">
+
+            <div class="portal-panel__header">
+
+                <h2 class="portal-panel__title">Recent invoices</h2>
+
+                {% ui_button label="View all" url_name="customer_portal:invoices" variant="ghost" size="sm" %}
+
+            </div>
+
+            <div class="portal-panel__body portal-panel__body--flush">
+
+                {% for invoice in recent_invoices %}
+
+                <div class="portal-list__item">
+
+                    <div>
+
+                        <p class="portal-list__title">{{ invoice.invoice_number }}</p>
+
+                        <p class="portal-list__meta">Due {{ invoice.due_at|date:"M j, Y" }}</p>
+
+                    </div>
+
+                    <div class="cluster">
+
+                        <span>${{ invoice.amount|floatformat:2|intcomma }}</span>
+
+                        {% ui_badge label=invoice.get_status_display variant="default" %}
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                {% ui_empty_state illustration="invoices" message="No invoices yet." compact=True %}
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+        <section class="portal-panel">
+
+            <div class="portal-panel__header">
+
+                <h2 class="portal-panel__title">Support tickets</h2>
+
+                {% ui_button label="New ticket" url_name="customer_portal:ticket_create" variant="ghost" size="sm" %}
+
+            </div>
+
+            <div class="portal-panel__body portal-panel__body--flush">
+
+                {% for ticket in recent_tickets %}
+
+                <div class="portal-list__item">
+
+                    <div>
+
+                        <p class="portal-list__title"><a href="{% url 'customer_portal:ticket_detail' pk=ticket.pk %}">{{ ticket.subject }}</a></p>
+
+                        <p class="portal-list__meta">{{ ticket.reference }} · {{ ticket.created_at|date:"M j, Y" }}</p>
+
+                    </div>
+
+                    {% ui_badge label=ticket.get_status_display variant="default" %}
+
+                </div>
+
+                {% empty %}
+
+                {% ui_empty_state illustration="tickets" message="No support tickets." action_label="Open a ticket" action_url_name="customer_portal:ticket_create" compact=True %}
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+        <section class="portal-panel">
+
+            <div class="portal-panel__header">
+
+                <h2 class="portal-panel__title">Product updates</h2>
+
+                {% ui_button label="View all" url_name="customer_portal:updates" variant="ghost" size="sm" %}
+
+            </div>
+
+            <div class="portal-panel__body portal-panel__body--flush">
+
+                {% for update in recent_updates %}
+
+                <div class="portal-list__item">
+
+                    <div>
+
+                        <p class="portal-list__title">{{ update.title }}</p>
+
+                        <p class="portal-list__meta">{{ update.product.name }}{% if update.version %} · v{{ update.version }}{% endif %}</p>
+
+                    </div>
+
+                    <span class="text-secondary">{{ update.published_at|date:"M j" }}</span>
+
+                </div>
+
+                {% empty %}
+
+                {% ui_empty_state illustration="generic" message="No updates for your products." compact=True %}
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+{% endblock %}
+
+

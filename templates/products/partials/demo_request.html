@@ -1,0 +1,26 @@
+{% load ui_tags %}
+<section class="section section--alt" id="demo">
+    <div class="container">
+        <div class="home-demo__grid">
+            <div class="home-demo__info">
+                <h2 class="section__title">{{ heading|default:"Request a demo" }}</h2>
+                <p class="section__subtitle">See {% if product %}{{ product.name }}{% else %}our platform{% endif %} in action with a personalized walkthrough from our team.</p>
+            </div>
+            <div class="home-demo__form-panel">
+                <form method="post" action="{{ product.get_absolute_url }}#demo" class="form form--compact form--demo-grid" novalidate>
+                    {% csrf_token %}
+                    <div class="form__fields">
+                        {% ui_field field=form.full_name %}
+                        {% ui_field field=form.work_email %}
+                        {% ui_field field=form.company %}
+                        {% ui_field field=form.phone show_optional=True %}
+                        {% ui_field field=form.message show_optional=True extra_class="form-field--full" %}
+                    </div>
+                    <div class="form-actions form-actions--end">
+                        {% ui_button label=submit_label|default:"Request Demo" variant="primary" size="md" type="submit" %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

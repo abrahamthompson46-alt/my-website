@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static ui_tags %}
+
+{% block body_class %}layout-portal layout-control-room{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/portal.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/operations.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/control_room.css' %}">
+{% block control_css %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<div class="portal-layout" data-portal="control-room">
+    {% include "includes/control_sidebar.html" %}
+    <div class="portal-shell">
+        {% include "includes/control_header.html" %}
+        {% include "components/flash_messages.html" %}
+        <main id="main-content" class="portal-main ops-main control-main" tabindex="-1">
+            {% block breadcrumbs %}{% endblock %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+<div class="sidebar-backdrop" data-sidebar-backdrop hidden></div>
+{% block control_js %}{% endblock %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags control_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Content Hub" subtitle="Central registry of every content domain on the platform — jump to control room tools or Django admin." %}
+
+<div class="control-registry">
+    {% for item in registry %}
+    <article class="control-registry__card">
+        <div class="control-registry__icon" aria-hidden="true">
+            <svg class="icon icon--lg" data-icon="{{ item.icon }}"></svg>
+        </div>
+        <div class="control-registry__body">
+            <h2 class="control-registry__title">{{ item.title }}</h2>
+            <p class="control-registry__desc">{{ item.description }}</p>
+            {% if item.count is not None %}
+            <p class="control-registry__meta">{{ item.count }} record{{ item.count|pluralize }}</p>
+            {% endif %}
+        </div>
+        <div class="control-registry__actions">
+            {% if item.url_name %}
+            {% ui_button label="Manage" url_name=item.url_name variant="secondary" size="sm" %}
+            {% endif %}
+            {% if item.admin_url %}
+            <a href="{{ item.admin_url }}" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">Admin</a>
+            {% endif %}
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% load ui_tags graphics_tags %}
+<div class="table-wrapper table-wrapper--{{ variant }}{% if compact %} table-wrapper--compact{% endif %} {{ extra_class }}">
+    {% if rows %}
+    <div class="table-scroll">
+        <table class="table{% if striped %} table--striped{% endif %}">
+            <thead class="table__head">
+                <tr>
+                    {% if selectable %}
+                    <th scope="col" class="table__cell table__cell--checkbox">
+                        <input type="checkbox" class="form-check-input" aria-label="Select all rows" data-table-select-all>
+                    </th>
+                    {% endif %}
+                    {% for col in columns %}
+                    <th scope="col"
+                        class="table__cell table__cell--head{% if col.align %} table__cell--{{ col.align }}{% endif %}{% if col.sortable %} table__cell--sortable{% endif %}"
+                        {% if col.sortable %}aria-sort="none"{% endif %}>
+                        {{ col.label }}
+                        {% if col.sortable %}
+                        <svg class="icon icon--xs table__sort-icon" aria-hidden="true" data-icon="chevrons-up-down"></svg>
+                        {% endif %}
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody class="table__body">
+                {% for row in rows %}
+                <tr class="table__row">
+                    {% if selectable %}
+                    <td class="table__cell table__cell--checkbox">
+                        <input type="checkbox" class="form-check-input" aria-label="Select row">
+                    </td>
+                    {% endif %}
+                    {% for col in columns %}
+                    <td class="table__cell{% if col.align %} table__cell--{{ col.align }}{% endif %}"
+                        data-label="{{ col.label }}">
+                        {% if col.key == "actions" and row.actions %}
+                        <div class="table__actions">
+                            {% for action in row.actions %}
+                            {% ui_button label=action.label url=action.url url_name=action.url_name variant="ghost" size="sm" %}
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ row|get_item:col.key }}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="table-empty">
+        {% ui_empty_state illustration="generic" message=empty_message action_label=empty_action_label action_url=empty_action_url action_url_name=empty_action_url_name compact=True %}
+    </div>
+    {% endif %}
+</div>

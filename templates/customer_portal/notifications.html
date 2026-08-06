@@ -1,0 +1,67 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags graphics_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Notifications" subtitle="Stay informed about billing, support, and product updates." %}
+
+{% if notifications %}
+<form method="post" action="{% url 'customer_portal:notifications_read_all' %}" style="margin-bottom: var(--space-4);">
+    {% csrf_token %}
+    {% ui_button label="Mark all as read" variant="secondary" size="sm" type="submit" %}
+</form>
+{% endif %}
+
+
+
+<div class="portal-panel">
+
+    <div class="portal-panel__body portal-panel__body--flush">
+
+        {% for notification in notifications %}
+
+        <div class="notification-item{% if not notification.is_read %} is-unread{% endif %}">
+
+            <div style="flex:1;">
+
+                <p class="notification-item__title">{{ notification.title }}</p>
+
+                <p class="notification-item__message">{{ notification.message }}</p>
+
+                <p class="portal-list__meta">{{ notification.created_at|date:"M j, Y g:i A" }}</p>
+
+            </div>
+
+            {% if not notification.is_read %}
+
+            <form method="post" action="{% url 'customer_portal:notification_read' pk=notification.pk %}">
+
+                {% csrf_token %}
+
+                {% ui_button label="Mark read" variant="ghost" size="sm" type="submit" %}
+
+            </form>
+
+            {% endif %}
+
+        </div>
+
+        {% empty %}
+        {% ui_empty_state illustration="notifications" message="No notifications." compact=True %}
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

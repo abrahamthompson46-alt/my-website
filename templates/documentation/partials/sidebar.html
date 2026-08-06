@@ -1,0 +1,114 @@
+<aside class="docs-sidebar" data-docs-sidebar aria-label="Documentation navigation">
+
+    <div class="docs-sidebar__header">
+
+        <a href="{% url 'documentation:index' %}{% if doc_product %}?product={{ doc_product.slug }}{% endif %}" class="brand-link brand-link--compact">
+
+            <span class="brand-mark" aria-hidden="true"></span>
+
+            <span class="brand-text">Docs</span>
+
+        </a>
+
+        <a href="{% url 'website:home' %}" class="docs-sidebar__home">← {{ SITE_NAME }}</a>
+
+    </div>
+
+
+
+    {% if doc_product %}
+
+    <div class="docs-sidebar__product">
+
+        <p class="docs-sidebar__product-label">Product</p>
+
+        <p class="docs-sidebar__product-name">{{ doc_product.name }}</p>
+
+    </div>
+
+    {% endif %}
+
+
+
+    <nav class="docs-sidebar__nav">
+
+        <p class="docs-sidebar__section-label">Sections</p>
+
+        <ul class="docs-nav">
+
+            <li>
+
+                <a href="{% url 'documentation:index' %}{% if doc_product %}?product={{ doc_product.slug }}{% endif %}"
+
+                   class="docs-nav__link{% if request.resolver_match.view_name == 'documentation:index' %} is-active{% endif %}">
+
+                    Overview
+
+                </a>
+
+            </li>
+
+            {% for section in doc_sections %}
+
+            <li>
+
+                <a href="{% url section.url_name %}{% if doc_product %}?product={{ doc_product.slug }}{% endif %}"
+
+                   class="docs-nav__link{% if section.slug in request.path %} is-active{% endif %}">
+
+                    <svg class="icon icon--sm" aria-hidden="true" data-icon="{{ section.icon }}"></svg>
+
+                    {{ section.label }}
+
+                </a>
+
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+
+
+        {% if doc_categories %}
+
+        <p class="docs-sidebar__section-label">Categories</p>
+
+        <ul class="docs-nav">
+
+            <li>
+
+                <a href="{% url 'documentation:categories' %}{% if doc_product %}?product={{ doc_product.slug }}{% endif %}"
+
+                   class="docs-nav__link{% if request.resolver_match.view_name == 'documentation:categories' %} is-active{% endif %}">
+
+                    All categories
+
+                </a>
+
+            </li>
+
+            {% for category in doc_categories %}
+
+            <li>
+
+                <a href="{{ category.get_absolute_url }}{% if doc_product %}?product={{ doc_product.slug }}{% endif %}"
+
+                   class="docs-nav__link{% if request.resolver_match.view_name == 'documentation:category' and category.slug == view.kwargs.slug %} is-active{% endif %}">
+
+                    {{ category.name }}
+
+                </a>
+
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+        {% endif %}
+
+    </nav>
+
+</aside>
+

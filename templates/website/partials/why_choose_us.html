@@ -1,0 +1,65 @@
+{% load ui_tags graphics_tags %}
+
+<section class="section section--alt home-why" aria-labelledby="why-heading">
+
+
+
+    <div class="container">
+
+
+
+        {% include "cms/partials/section_header.html" with section=why_choose_us_section eyebrow="Why Choose Us" title="Built for enterprise reliability" subtitle="The platform global organizations trust for mission-critical operations." %}
+
+
+
+        <div class="grid grid--3 home-why__grid">
+
+
+
+            {% for item in why_choose_us %}
+
+
+
+            <div class="feature-block">
+
+
+
+                {% if item.icon %}
+
+
+
+                {% ui_icon_badge icon=item.icon size="md" extra_class="feature-block__icon" %}
+
+
+
+                {% endif %}
+
+
+
+                <h3 class="feature-block__title">{{ item.title }}</h3>
+
+
+
+                <p class="feature-block__description">{{ item.description }}</p>
+
+
+
+            </div>
+
+
+
+            {% endfor %}
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</section>
+
+

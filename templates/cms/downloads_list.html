@@ -1,0 +1,81 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}Downloads — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        <h1 class="section__title">Downloads</h1>
+
+        <p class="section__subtitle">Brochures, whitepapers, datasheets, and other resources.</p>
+
+    </div>
+
+</section>
+
+
+
+<section class="section">
+
+    <div class="container">
+
+        {% if downloads %}
+
+        <ul class="download-list">
+
+            {% for download in downloads %}
+
+            <li class="download-list__item">
+
+                <div>
+
+                    <strong>{{ download.title }}</strong>
+
+                    {% if download.description %}<p>{{ download.description }}</p>{% endif %}
+
+                    {% if download.product %}<p class="text-secondary">{{ download.product.name }}</p>{% endif %}
+
+                </div>
+
+                <a href="{{ download.file.url }}" class="btn btn--secondary btn--sm" download>
+
+                    Download {{ download.get_category_display }}
+
+                </a>
+
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+        {% else %}
+
+        <p class="text-secondary">No downloads available yet.</p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

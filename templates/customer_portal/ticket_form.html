@@ -1,0 +1,51 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="New Support Ticket" subtitle="Describe your issue and our team will respond within one business day." %}
+
+
+
+<section class="portal-panel">
+
+    <div class="portal-panel__body">
+
+        <form method="post" class="form stack" novalidate>
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}<div class="form__errors">{{ form.non_field_errors }}</div>{% endif %}
+
+            {% ui_field field=form.product show_optional=True %}
+
+            {% ui_field field=form.subject %}
+
+            {% ui_field field=form.priority %}
+
+            {% ui_field field=form.description %}
+
+            <div class="form-actions cluster">
+
+                {% ui_button label="Submit ticket" variant="primary" size="md" type="submit" %}
+
+                {% ui_button label="Cancel" url_name="customer_portal:tickets" variant="ghost" size="md" type="link" %}
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

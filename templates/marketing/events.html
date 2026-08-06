@@ -1,0 +1,69 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}Events — {{ SITE_NAME }}{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section section--compact">
+
+    <div class="container"><h1 class="section__title">Events</h1><p class="section__subtitle">Webinars, workshops, and conferences.</p></div>
+
+</section>
+
+<section class="section">
+
+    <div class="container">
+
+        {% if upcoming_events %}
+
+        <h2 class="marketing-section__title">Upcoming</h2>
+
+        <div class="grid grid--2">
+
+            {% for event in upcoming_events %}
+
+            <article class="marketing-card">
+
+                {% ui_badge label=event.get_event_type_display variant="primary" %}
+
+                <h3><a href="{{ event.get_absolute_url }}">{{ event.title }}</a></h3>
+
+                <p class="text-secondary">{{ event.starts_at|date:"F j, Y g:i A" }}{% if event.location %} · {{ event.location }}{% endif %}</p>
+
+                <p>{{ event.excerpt }}</p>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+        {% if past_events %}
+
+        <h2 class="marketing-section__title" style="margin-top: var(--space-10);">Past events</h2>
+
+        <ul class="marketing-list">
+
+            {% for event in past_events %}<li><a href="{{ event.get_absolute_url }}">{{ event.title }}</a> · {{ event.starts_at|date:"M j, Y" }}</li>{% endfor %}
+
+        </ul>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

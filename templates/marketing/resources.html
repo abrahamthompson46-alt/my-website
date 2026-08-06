@@ -1,0 +1,31 @@
+{% extends "base_public.html" %}
+{% load ui_tags %}
+
+{% block title %}Resources — {{ SITE_NAME }}{% endblock %}
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+<section class="section section--compact"><div class="container"><h1 class="section__title">Resources</h1><p class="section__subtitle">Guides, templates, checklists, and toolkits.</p></div></section>
+<section class="section"><div class="container">
+<nav class="cluster marketing-filters">
+    <a href="{% url 'marketing:resources' %}" class="btn btn--{% if not active_type %}primary{% else %}ghost{% endif %} btn--sm">All</a>
+    {% for value, label in resource_types %}
+    <a href="?type={{ value }}" class="btn btn--{% if active_type == value %}primary{% else %}ghost{% endif %} btn--sm">{{ label }}</a>
+    {% endfor %}
+</nav>
+<ul class="marketing-download-list">
+{% for resource in resources %}
+<li class="marketing-download-item">
+    <div>
+        <strong>{{ resource.title }}</strong>
+        <p class="text-secondary">{{ resource.get_resource_type_display }}{% if resource.product %} · {{ resource.product.name }}{% endif %}</p>
+        {% if resource.description %}<p>{{ resource.description }}</p>{% endif %}
+    </div>
+    {% if resource.file %}<a href="{{ resource.file.url }}" class="btn btn--secondary btn--sm" download>Download</a>
+    {% elif resource.external_url %}<a href="{{ resource.external_url }}" class="btn btn--secondary btn--sm" target="_blank" rel="noopener">Open</a>{% endif %}
+</li>
+{% empty %}<p class="text-secondary">No resources available.</p>{% endfor %}
+</ul>
+</div></section>
+{% endblock %}
+

@@ -1,0 +1,48 @@
+{% extends "base_portal.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "customer_portal/partials/page_header.html" with title="Partner Dashboard" subtitle="Manage your partner account and referral program." %}
+
+<div class="portal-cards">
+    <div class="portal-mini-card">
+        <p class="portal-mini-card__label">Company</p>
+        <p class="portal-mini-card__value">{{ partner.company_name }}</p>
+    </div>
+    <div class="portal-mini-card">
+        <p class="portal-mini-card__label">Tier</p>
+        <p class="portal-mini-card__value">{{ partner.get_tier_display }}</p>
+    </div>
+    <div class="portal-mini-card">
+        <p class="portal-mini-card__label">Commission rate</p>
+        <p class="portal-mini-card__value">{{ partner.commission_rate }}%</p>
+    </div>
+</div>
+
+<section class="portal-panel" style="margin-top: var(--space-6);">
+    <div class="portal-panel__header"><h2 class="portal-panel__title">Referral program</h2></div>
+    <div class="portal-panel__body stack">
+        <p class="text-secondary">Share your referral link with prospects. Referrals are tracked using your unique code.</p>
+        <div class="stack" style="gap: var(--space-2);">
+            <p><strong>Referral code:</strong> <code>{{ partner.referral_code }}</code></p>
+            <p><strong>Referral link:</strong> <a href="{{ referral_url }}">{{ referral_url }}</a></p>
+        </div>
+        {% if partner.website %}
+        <p class="text-secondary">Website: <a href="{{ partner.website }}" target="_blank" rel="noopener">{{ partner.website }}</a></p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="portal-panel" style="margin-top: var(--space-6);">
+    <div class="portal-panel__header"><h2 class="portal-panel__title">Account</h2></div>
+    <div class="portal-panel__body stack">
+        <p class="text-secondary">Signed in as {{ user.email }}</p>
+        <p class="text-secondary">Partner since {{ partner.created_at|date:"F j, Y" }}</p>
+        {% if partner.notes %}
+        <p class="text-secondary">{{ partner.notes }}</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

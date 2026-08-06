@@ -1,0 +1,52 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags graphics_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Product Updates" subtitle="Release notes and updates for your subscribed products." %}
+
+
+
+<div class="stack stack--lg">
+
+    {% for update in updates %}
+
+    <article class="portal-panel">
+
+        <div class="portal-panel__body">
+
+            <div class="cluster" style="margin-bottom: var(--space-3);">
+
+                {% ui_badge label=update.get_update_type_display variant="primary" %}
+
+                <span class="text-secondary">{{ update.product.name }}{% if update.version %} · v{{ update.version }}{% endif %} · {{ update.published_at|date:"M j, Y" }}</span>
+
+            </div>
+
+            <h2 class="portal-panel__title">{{ update.title }}</h2>
+
+            <p class="portal-list__meta">{{ update.summary }}</p>
+
+            {% if update.body %}<div style="margin-top: var(--space-4);">{{ update.body|linebreaks }}</div>{% endif %}
+
+        </div>
+
+    </article>
+
+    {% empty %}
+    {% ui_empty_state illustration="generic" message="No product updates for your subscriptions." compact=True %}
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
+
+

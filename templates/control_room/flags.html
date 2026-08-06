@@ -1,0 +1,49 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Feature Flags" subtitle="Toggle platform capabilities without code changes." action_label="New flag" action_url_name="control_room:flag_create" %}
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>Label</th>
+                    <th>Key</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for flag in flags %}
+                <tr>
+                    <td><strong>{{ flag.label }}</strong></td>
+                    <td><code>{{ flag.key }}</code></td>
+                    <td class="text-secondary">{{ flag.description|truncatewords:12 }}</td>
+                    <td>
+                        {% if flag.is_enabled %}
+                        <span class="control-badge control-badge--success">Enabled</span>
+                        {% else %}
+                        <span class="control-badge">Disabled</span>
+                        {% endif %}
+                    </td>
+                    <td class="ops-table__actions">
+                        <form method="post" action="{% url 'control_room:flag_toggle' flag.pk %}" class="control-inline-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn--ghost btn--sm">{% if flag.is_enabled %}Disable{% else %}Enable{% endif %}</button>
+                        </form>
+                        <a href="{% url 'control_room:flag_edit' flag.pk %}" class="btn btn--ghost btn--sm">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No feature flags yet. Run seed command or create one.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

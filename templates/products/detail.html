@@ -1,0 +1,265 @@
+{% extends "base_public.html" %}
+{% load static ui_tags graphics_tags %}
+
+{% block title %}{{ product.display_meta_title }} — {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ product.meta_description|default:product.short_description }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/products.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+{% ui_breadcrumbs items=breadcrumb_items %}
+{% endblock %}
+
+{% block content %}
+{% if cms_hero %}
+<section class="product-hero product-hero--{{ product.accent }}">
+    <div class="container product-hero__inner">
+        <div class="product-hero__content">
+            {% if cms_hero.eyebrow %}<p class="product-hero__category">{{ cms_hero.eyebrow }}</p>{% elif product.category %}
+            <p class="product-hero__category">{{ product.category.name }}</p>
+            {% endif %}
+            <h1 class="product-hero__title">{{ cms_hero.headline|default:product.name }}</h1>
+            {% if cms_hero.subheadline %}<p class="product-hero__tagline">{{ cms_hero.subheadline }}</p>{% elif product.tagline %}<p class="product-hero__tagline">{{ product.tagline }}</p>{% endif %}
+            {% if product.short_description %}<p class="product-hero__desc">{{ product.short_description }}</p>{% endif %}
+            <div class="cluster product-hero__actions">
+                {% if cms_hero.cta_primary_url %}
+                <a href="{{ cms_hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ cms_hero.cta_primary_label|default:"Start Free Trial" }}</a>
+                {% else %}
+                {% ui_button label="Start Free Trial" url_name="contact:form" variant="primary" size="lg" %}
+                {% endif %}
+                <a href="#demo" class="btn btn--secondary btn--lg">Request Demo</a>
+                {% if product.plans.exists %}
+                <a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg">View Pricing</a>
+                {% endif %}
+            </div>
+        </div>
+        {% include "products/partials/product_hero_media.html" %}
+    </div>
+</section>
+{% else %}
+<section class="product-hero product-hero--{{ product.accent }}">
+    <div class="container product-hero__inner">
+        <div class="product-hero__content">
+            {% if product.category %}
+            <p class="product-hero__category">{{ product.category.name }}</p>
+            {% endif %}
+            <h1 class="product-hero__title">{{ product.name }}</h1>
+            {% if product.tagline %}<p class="product-hero__tagline">{{ product.tagline }}</p>{% endif %}
+            {% if product.short_description %}<p class="product-hero__desc">{{ product.short_description }}</p>{% endif %}
+            <div class="cluster product-hero__actions">
+                {% ui_button label="Start Free Trial" url_name="contact:form" variant="primary" size="lg" %}
+                <a href="#demo" class="btn btn--secondary btn--lg">Request Demo</a>
+                {% if product.plans.exists %}
+                <a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg">View Pricing</a>
+                {% endif %}
+            </div>
+        </div>
+        {% include "products/partials/product_hero_media.html" %}
+    </div>
+</section>
+{% endif %}
+
+{% if product.long_description %}
+<section class="section">
+    <div class="container container-prose">
+        <div class="product-prose">{{ product.long_description|linebreaks }}</div>
+    </div>
+</section>
+{% endif %}
+
+{% if product.modules.exists %}
+<section class="section section--alt">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">Modules</h2>
+        </header>
+        <div class="grid grid--3">
+            {% for module in product.modules.all %}
+            <div class="feature-block">
+                <h3 class="feature-block__title">{{ module.name }}</h3>
+                {% if module.description %}<p class="feature-block__description">{{ module.description }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if product.features.exists %}
+<section class="section">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">Features</h2>
+        </header>
+        <div class="grid grid--2">
+            {% for feature in product.features.all %}
+            <div class="feature-block{% if feature.is_highlighted %} feature-block--highlight{% endif %}">
+                <h3 class="feature-block__title">{{ feature.title }}</h3>
+                {% if feature.description %}<p class="feature-block__description">{{ feature.description }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if product.screenshots.count > 1 %}
+<section class="section section--alt">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">Screenshots</h2>
+        </header>
+        <div class="screenshot-gallery">
+            {% for shot in product.screenshots.all %}
+            <figure class="screenshot-gallery__item">
+                <img src="{{ shot.image.url }}" alt="{{ shot.alt_text }}" width="800" height="450" loading="lazy" decoding="async">
+                {% if shot.caption %}<figcaption>{{ shot.caption }}</figcaption>{% endif %}
+            </figure>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if product.videos.exists %}
+<section class="section">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">Videos</h2>
+        </header>
+        <div class="grid grid--2">
+            {% for video in product.videos.all %}
+            <article class="video-card">
+                <h3 class="video-card__title">{{ video.title }}</h3>
+                {% if video.description %}<p class="video-card__desc">{{ video.description }}</p>{% endif %}
+                {% if video.embed_code %}
+                <div class="video-card__embed">{{ video.embed_code|safe }}</div>
+                {% elif video.video_url %}
+                <a href="{{ video.video_url }}" class="btn btn--secondary btn--sm" target="_blank" rel="noopener">Watch video</a>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% for section in cms_sections %}
+<section class="section{% if forloop.counter0|divisibleby:2 %} section--alt{% endif %}">
+    <div class="container container-prose">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">{{ section.title }}</h2>
+            {% if section.subtitle %}<p class="section__subtitle">{{ section.subtitle }}</p>{% endif %}
+        </header>
+        {% if section.body %}<div class="product-prose">{{ section.body|linebreaks }}</div>{% endif %}
+    </div>
+</section>
+{% endfor %}
+
+{% if product_testimonials %}
+<section class="section section--alt">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">What customers say</h2>
+        </header>
+        <div class="grid grid--3">
+            {% for item in product_testimonials %}
+            <blockquote class="testimonial-card">
+                <p class="testimonial-card__text">"{{ item.quote }}"</p>
+                <footer class="testimonial-card__author">
+                    <span class="testimonial-card__avatar">{{ item.initials }}</span>
+                    <cite class="testimonial-card__cite">
+                        <span class="testimonial-card__name">{{ item.author_name }}</span>
+                        <span class="testimonial-card__role">{{ item.author_role }}{% if item.company %}, {{ item.company }}{% endif %}</span>
+                    </cite>
+                </footer>
+            </blockquote>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if product_faqs %}
+<section class="section">
+    <div class="container container-prose">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">Frequently asked questions</h2>
+        </header>
+        <dl class="faq-list">
+            {% for faq in product_faqs %}
+            <div class="faq-item" style="margin-top: var(--space-6);">
+                <dt style="font-weight: 600;">{{ faq.question }}</dt>
+                <dd class="text-secondary" style="margin-top: var(--space-2);">{{ faq.answer|linebreaks }}</dd>
+            </div>
+            {% endfor %}
+        </dl>
+    </div>
+</section>
+{% endif %}
+
+{% if cms_downloads %}
+<section class="section section--alt">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">Resources</h2>
+        </header>
+        <ul class="download-list">
+            {% for download in cms_downloads %}
+            <li class="download-list__item">
+                <div>
+                    <strong>{{ download.title }}</strong>
+                    {% if download.description %}<p>{{ download.description }}</p>{% endif %}
+                </div>
+                <a href="{{ download.file.url }}" class="btn btn--secondary btn--sm" download>
+                    Download {{ download.get_category_display }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endif %}
+
+{% if product.downloads.exists %}
+<section class="section section--alt">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">Downloads</h2>
+        </header>
+        <ul class="download-list">
+            {% for download in product.downloads.all %}
+            <li class="download-list__item">
+                <div>
+                    <strong>{{ download.title }}</strong>
+                    {% if download.description %}<p>{{ download.description }}</p>{% endif %}
+                </div>
+                <a href="{{ download.file.url }}" class="btn btn--secondary btn--sm" download>
+                    Download {{ download.get_file_type_display }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endif %}
+
+{% include "products/partials/demo_request.html" with product=product form=demo_form %}
+
+{% if related_products %}
+<section class="section section--alt">
+    <div class="container">
+        <header class="section__header">
+            <h2 class="section__title">Related products</h2>
+        </header>
+        <div class="grid grid--3">
+            {% for related in related_products %}
+            {% include "products/partials/product_card.html" with product=related %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

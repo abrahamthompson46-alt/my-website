@@ -1,0 +1,65 @@
+{% extends "base_public.html" %}
+
+{% load static ui_tags graphics_tags %}
+
+
+
+{% block title %}{{ product.name }} — Coming Soon — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/pages/products.css' %}">
+
+{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section coming-soon">
+
+    <div class="container container-prose coming-soon__inner">
+
+        <div class="coming-soon__visual">
+
+            {% ui_product_visual product=product %}
+
+        </div>
+
+        {% ui_badge label="Coming Soon" variant="warning" size="md" extra_class="coming-soon__badge" %}
+
+        <h1 class="coming-soon__title">{{ product.name }}</h1>
+
+        {% if product.tagline %}<p class="coming-soon__tagline">{{ product.tagline }}</p>{% endif %}
+
+        {% if product.short_description %}<p class="coming-soon__desc">{{ product.short_description }}</p>{% endif %}
+
+        {% if product.launch_date %}
+
+        <p class="coming-soon__date">Expected launch: {{ product.launch_date|date:"F Y" }}</p>
+
+        {% endif %}
+
+        <p class="coming-soon__notify">Join the waitlist to be notified when {{ product.name }} launches.</p>
+
+    </div>
+
+</section>
+
+
+
+{% include "products/partials/demo_request.html" with product=product form=demo_form heading="Join the waitlist" %}
+
+{% endblock %}
+
+

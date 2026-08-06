@@ -1,0 +1,14 @@
+{% load ui_tags %}
+<header class="portal-header ops-header" role="banner">
+    <div class="portal-header__start">
+        <button type="button" class="btn btn--ghost btn--sm btn--icon-only portal-header__menu" aria-label="Open navigation" data-sidebar-open>
+            <svg class="icon icon--md" aria-hidden="true" data-icon="menu"></svg>
+        </button>
+        <span class="ops-header__label">Enterprise Admin</span>
+    </div>
+    <div class="portal-header__actions">
+        <a href="{% url 'website:home' %}" class="btn btn--ghost btn--sm">View site</a>
+        {% ui_theme_switcher variant="icon" %}
+        {% include "components/logout_form.html" %}
+    </div>
+</header>

@@ -1,0 +1,4 @@
+{% load ui_tags graphics_tags %}
+{% if empty_message %}
+{% ui_empty_state illustration=illustration|default:"generic" message=empty_message compact=True %}
+{% endif %}

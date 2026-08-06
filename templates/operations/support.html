@@ -1,0 +1,12 @@
+{% extends "base_ops.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+{% block content %}
+{% include "operations/partials/page_header.html" with title="Support" subtitle="Customer support ticket queue." %}
+<div class="ops-filters">
+    <a href="{% url 'operations:support' %}" class="ops-filter-chip{% if not active_status %} is-active{% endif %}">All</a>
+    {% for value, label in statuses %}<a href="?status={{ value }}" class="ops-filter-chip{% if active_status == value %} is-active{% endif %}">{{ label }}</a>{% endfor %}
+</div>
+<div class="ops-panel"><div class="ops-panel__body ops-table-wrap"><table class="ops-table"><thead><tr><th>Reference</th><th>Subject</th><th>Customer</th><th>Priority</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>{% for t in tickets %}<tr><td>{{ t.reference }}</td><td>{{ t.subject }}</td><td>{{ t.user.email }}</td><td>{{ t.get_priority_display }}</td><td>{{ t.get_status_display }}</td><td>{{ t.created_at|date:"M j, Y" }}</td><td><form method="post" action="{% url 'operations:support_ticket_update' t.pk %}" class="ops-inline-form">{% csrf_token %}<select name="status" class="ops-select">{% for value, label in statuses %}<option value="{{ value }}"{% if t.status == value %} selected{% endif %}>{{ label }}</option>{% endfor %}</select><button type="submit" class="ops-btn ops-btn--sm">Update</button></form></td></tr>{% empty %}<tr><td colspan="7">No tickets.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

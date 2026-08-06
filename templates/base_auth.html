@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static ui_tags %}
+
+{% block body_class %}layout-auth{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/auth.css' %}">
+{% block auth_css %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<div class="auth-layout auth-layout--split">
+    {% include "accounts/partials/auth_brand_panel.html" %}
+
+    <div class="auth-shell">
+        <header class="auth-shell__header">
+            <a href="{% url 'website:home' %}" class="auth-shell__home">
+                <svg class="icon icon--sm" aria-hidden="true" data-icon="arrow-left"></svg>
+                Back to website
+            </a>
+            <div class="auth-shell__header-actions">
+                {% ui_theme_switcher variant="icon" %}
+            </div>
+        </header>
+
+        <div class="auth-shell__mobile-brand">
+            <a href="{% url 'website:home' %}" class="brand-link">
+                <span class="brand-mark" aria-hidden="true"></span>
+                <span class="brand-text">{{ SITE_NAME }}</span>
+            </a>
+        </div>
+
+        {% include "components/flash_messages.html" %}
+
+        <main id="main-content" class="auth-shell__main" tabindex="-1">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="auth-shell__footer">
+            <p>Need help? <a href="{% url 'contact:form' %}">Contact support</a> · <a href="{% url 'documentation:index' %}">Documentation</a></p>
+        </footer>
+    </div>
+</div>
+{% block auth_js %}{% endblock %}
+{% endblock %}

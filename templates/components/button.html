@@ -1,0 +1,38 @@
+{# Reusable button component — use via {% ui_button %} inclusion tag #}
+{% if type == "link" and href %}
+<a href="{{ href }}"
+   class="btn btn--{{ variant }} btn--{{ size }}{% if full_width %} btn--full{% endif %}{% if loading %} is-loading{% endif %} {{ extra_class }}"
+   {% if disabled %}aria-disabled="true" tabindex="-1"{% endif %}
+   aria-label="{{ aria_label }}"
+   {% for key, val in data_attrs.items %}data-{{ key }}="{{ val }}" {% endfor %}>
+    {% if loading %}
+    <span class="btn__spinner" aria-hidden="true"></span>
+    {% elif icon and icon_position == "leading" %}
+    <svg class="icon icon--sm btn__icon" aria-hidden="true" data-icon="{{ icon }}"></svg>
+    {% endif %}
+    <span class="btn__label">{{ label }}</span>
+    {% if icon and icon_position == "trailing" and not loading %}
+    <svg class="icon icon--sm btn__icon" aria-hidden="true" data-icon="{{ icon }}"></svg>
+    {% endif %}
+</a>
+{% else %}
+<button type="{{ type|default:'button' }}"
+        class="btn btn--{{ variant }} btn--{{ size }}{% if full_width %} btn--full{% endif %}{% if loading %} is-loading{% endif %} {{ extra_class }}"
+        {% if disabled %}disabled{% endif %}
+        {% if id %}id="{{ id }}"{% endif %}
+        {% if name %}name="{{ name }}"{% endif %}
+        {% if value %}value="{{ value }}"{% endif %}
+        {% if form %}form="{{ form }}"{% endif %}
+        aria-label="{{ aria_label }}"
+        {% for key, val in data_attrs.items %}data-{{ key }}="{{ val }}" {% endfor %}>
+    {% if loading %}
+    <span class="btn__spinner" aria-hidden="true"></span>
+    {% elif icon and icon_position == "leading" %}
+    <svg class="icon icon--sm btn__icon" aria-hidden="true" data-icon="{{ icon }}"></svg>
+    {% endif %}
+    <span class="btn__label">{{ label }}</span>
+    {% if icon and icon_position == "trailing" and not loading %}
+    <svg class="icon icon--sm btn__icon" aria-hidden="true" data-icon="{{ icon }}"></svg>
+    {% endif %}
+</button>
+{% endif %}

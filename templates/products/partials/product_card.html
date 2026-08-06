@@ -1,0 +1,74 @@
+{% load ui_tags graphics_tags %}
+
+<article class="product-card product-card--{{ product.accent }}">
+
+    <div class="product-card__visual" aria-hidden="true"></div>
+
+    <div class="product-card__icon" aria-hidden="true">
+
+        <span>{{ product.name|slice:":1" }}</span>
+
+    </div>
+
+    {% if product.status == "coming_soon" %}
+
+    {% ui_badge label="Coming Soon" variant="warning" %}
+
+    {% elif product.status == "beta" %}
+
+    {% ui_badge label="Beta" variant="primary" %}
+
+    {% endif %}
+
+    <h3 class="product-card__title">
+
+        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+
+    </h3>
+
+    {% if product.tagline %}
+
+    <p class="product-card__tagline">{{ product.tagline }}</p>
+
+    {% endif %}
+
+    {% if product.short_description %}
+
+    <p class="product-card__description">{{ product.short_description|truncatewords:24 }}</p>
+
+    {% endif %}
+
+    {% if product.features.exists %}
+
+    <ul class="product-card__features">
+
+        {% for feature in product.features.all|slice:":3" %}
+
+        <li>
+
+            <svg class="icon icon--xs" aria-hidden="true" data-icon="check"></svg>
+
+            {{ feature.title }}
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+    {% endif %}
+
+    <div class="product-card__actions">
+
+        <a href="{{ product.get_absolute_url }}" class="btn btn--link btn--sm">Learn more</a>
+
+        {% if product.plans.exists %}
+
+        <a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--secondary btn--sm">Pricing</a>
+
+        {% endif %}
+
+    </div>
+
+</article>
+

@@ -1,0 +1,26 @@
+{% load ui_tags %}
+<div class="control-seed-grid{% if compact %} control-seed-grid--compact{% endif %}">
+    {% for group, items in seed_groups.items %}
+    <div class="control-seed-group">
+        {% if not compact %}<h3 class="control-seed-group__title">{{ group }}</h3>{% endif %}
+        <div class="control-seed-group__items">
+            {% for seed in items %}
+            <form method="post" action="{% url 'control_room:seed_run' seed.key %}" class="control-seed-card" data-seed-form>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% if next_url %}{% url next_url %}{% else %}{% url 'control_room:setup' %}{% endif %}">
+                <div class="control-seed-card__icon" aria-hidden="true">
+                    <svg class="icon icon--md" data-icon="{{ seed.icon }}"></svg>
+                </div>
+                <div class="control-seed-card__body">
+                    <strong class="control-seed-card__title">{{ seed.title }}</strong>
+                    {% if not compact %}<p class="control-seed-card__desc">{{ seed.description }}</p>{% endif %}
+                </div>
+                <button type="submit" class="btn btn--secondary btn--sm control-seed-card__btn" {% if not seed.available %}disabled title="Command not installed"{% endif %}>
+                    Run
+                </button>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>

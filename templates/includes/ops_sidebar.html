@@ -1,0 +1,52 @@
+<aside class="portal-sidebar ops-sidebar" role="navigation" aria-label="Operations navigation" data-sidebar>
+    <div class="portal-sidebar__header">
+        <a href="{% url 'operations:dashboard' %}" class="brand-link brand-link--compact">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-text">Operations</span>
+        </a>
+        <button type="button" class="btn btn--ghost btn--sm btn--icon-only portal-sidebar__collapse" aria-label="Collapse sidebar" data-sidebar-collapse>
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="panel-left-close"></svg>
+        </button>
+    </div>
+    <nav class="portal-sidebar__nav">
+        <ul class="sidebar-nav">
+            {% for item in SIDEBAR_NAV %}
+            {% if item.section %}
+            <li class="sidebar-nav__section" aria-hidden="true">{{ item.section }}</li>
+            {% else %}
+            <li class="sidebar-nav__item">
+                {% with current=request.resolver_match.view_name active_items=item.active_on %}
+                <a href="{% if item.url_name %}{% url item.url_name %}{% else %}#{% endif %}"
+                   class="sidebar-nav__link{% if current == item.url_name or active_items and current in active_items %} is-active{% endif %}"
+                   {% if item.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                    {% if item.icon %}
+                    <svg class="icon icon--md sidebar-nav__icon" aria-hidden="true" data-icon="{{ item.icon }}"></svg>
+                    {% endif %}
+                    <span class="sidebar-nav__label">{{ item.label }}</span>
+                    {% if item.badge %}
+                    <span class="ops-nav-badge">{{ item.badge }}</span>
+                    {% endif %}
+                </a>
+                {% endwith %}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+    <div class="portal-sidebar__footer">
+        <a href="{% url 'control_room:dashboard' %}" class="sidebar-nav__link">
+            <svg class="icon icon--md sidebar-nav__icon" aria-hidden="true" data-icon="sliders"></svg>
+            <span class="sidebar-nav__label">Super Dashboard</span>
+        </a>
+        <a href="{% url 'admin:index' %}" class="sidebar-nav__link" target="_blank" rel="noopener">
+            <svg class="icon icon--md sidebar-nav__icon" aria-hidden="true" data-icon="settings"></svg>
+            <span class="sidebar-nav__label">Content Manager</span>
+        </a>
+        {% if user.is_authenticated %}
+        <div class="sidebar-user">
+            <span class="sidebar-user__avatar" aria-hidden="true">{{ user.email|first|upper }}</span>
+            <span class="sidebar-user__email">{{ user.email }}</span>
+        </div>
+        {% endif %}
+    </div>
+</aside>

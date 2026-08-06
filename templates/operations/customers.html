@@ -1,0 +1,8 @@
+{% extends "base_ops.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+{% block content %}
+{% include "operations/partials/page_header.html" with title="Customers" subtitle="Registered platform users." %}
+<div class="ops-panel"><div class="ops-panel__body ops-table-wrap"><table class="ops-table"><thead><tr><th>Email</th><th>Name</th><th>Subscriptions</th><th>Payments</th><th>Joined</th></tr></thead><tbody>{% for c in customers %}<tr><td>{{ c.email }}</td><td>{{ c.get_full_name|default:"—" }}</td><td>{{ c.subscription_count }}</td><td>{{ c.payment_count }}</td><td>{{ c.date_joined|date:"M j, Y" }}</td></tr>{% empty %}<tr><td colspan="5">No customers.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

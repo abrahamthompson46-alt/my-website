@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /ops/
+Disallow: /app/
+Disallow: /accounts/
+Disallow: /payments/
+
+Sitemap: {{ SITE_URL }}/sitemap.xml

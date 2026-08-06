@@ -1,0 +1,97 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}{{ cms_page.display_meta_title }} — {{ SITE_NAME }}{% endblock %}
+
+{% block meta_description %}{{ cms_page.meta_description }}{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+{% if hero %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        {% if hero.eyebrow %}<p class="section__eyebrow">{{ hero.eyebrow }}</p>{% endif %}
+
+        <h1 class="section__title">{{ hero.headline }}</h1>
+
+        {% if hero.subheadline %}<p class="section__subtitle">{{ hero.subheadline }}</p>{% endif %}
+
+    </div>
+
+</section>
+
+{% else %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        <h1 class="section__title">{{ cms_page.title }}</h1>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+
+{% for key, data in sections.items %}
+
+<section class="section{% if forloop.counter0|divisibleby:2 %} section--alt{% endif %}">
+
+    <div class="container{% if data.section.body %} container-prose{% endif %}">
+
+        {% include "cms/partials/section_header.html" with section=data.section %}
+
+        {% if data.section.body %}
+
+        <div class="product-prose">{{ data.section.body|linebreaks }}</div>
+
+        {% endif %}
+
+        {% if data.items %}
+
+        <div class="grid grid--3" style="margin-top: var(--space-8);">
+
+            {% for item in data.items %}
+
+            <div class="feature-block">
+
+                <h3 class="feature-block__title">{{ item.title }}</h3>
+
+                {% if item.description %}<p class="feature-block__description">{{ item.description }}</p>{% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endfor %}
+
+{% endblock %}
+
+

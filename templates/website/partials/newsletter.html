@@ -1,0 +1,56 @@
+{% load ui_tags %}
+
+<section class="section section--alt home-newsletter" aria-labelledby="newsletter-heading">
+
+    <div class="container">
+
+        <div class="home-newsletter__panel">
+
+            <div class="home-newsletter__content">
+
+                {% if newsletter_section.title %}
+
+                <h2 id="newsletter-heading" class="home-newsletter__title">{{ newsletter_section.title }}</h2>
+
+                {% else %}
+
+                <h2 id="newsletter-heading" class="home-newsletter__title">Stay ahead with product insights</h2>
+
+                {% endif %}
+
+                {% if newsletter_section.subtitle %}
+
+                <p class="home-newsletter__text">{{ newsletter_section.subtitle }}</p>
+
+                {% elif newsletter_section.body %}
+
+                <p class="home-newsletter__text">{{ newsletter_section.body }}</p>
+
+                {% else %}
+
+                <p class="home-newsletter__text">Get monthly updates on new features, industry trends, and best practices — curated for enterprise leaders.</p>
+
+                {% endif %}
+
+            </div>
+
+            <form method="post" action="{% url 'website:home' %}#newsletter" class="home-newsletter__form" id="newsletter" novalidate>
+
+                {% csrf_token %}
+
+                <input type="hidden" name="newsletter_submit" value="1">
+
+                <label class="visually-hidden" for="{{ newsletter_form.email.id_for_label }}">Email address</label>
+
+                {{ newsletter_form.email }}
+
+                {% ui_button label="Subscribe" variant="primary" size="lg" type="submit" %}
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+

@@ -1,0 +1,51 @@
+from django.urls import path
+
+from control_room.views import (
+    AnnouncementCreateView,
+    AnnouncementDeleteView,
+    AnnouncementListView,
+    AnnouncementUpdateView,
+    ChangeLogView,
+    ContentHubView,
+    DashboardView,
+    FeatureFlagCreateView,
+    FeatureFlagListView,
+    FeatureFlagToggleView,
+    FeatureFlagUpdateView,
+    NavigationEditView,
+    NavigationListView,
+    RedirectCreateView,
+    RedirectDeleteView,
+    RedirectListView,
+    RedirectUpdateView,
+    SeedRunAllView,
+    SeedRunView,
+    SettingsView,
+    SetupView,
+)
+
+app_name = "control_room"
+
+urlpatterns = [
+    path("", DashboardView.as_view(), name="dashboard"),
+    path("settings/", SettingsView.as_view(), name="settings"),
+    path("navigation/", NavigationListView.as_view(), name="navigation"),
+    path("navigation/<uuid:pk>/", NavigationEditView.as_view(), name="navigation_edit"),
+    path("redirects/", RedirectListView.as_view(), name="redirects"),
+    path("redirects/new/", RedirectCreateView.as_view(), name="redirect_create"),
+    path("redirects/<uuid:pk>/edit/", RedirectUpdateView.as_view(), name="redirect_edit"),
+    path("redirects/<uuid:pk>/delete/", RedirectDeleteView.as_view(), name="redirect_delete"),
+    path("announcements/", AnnouncementListView.as_view(), name="announcements"),
+    path("announcements/new/", AnnouncementCreateView.as_view(), name="announcement_create"),
+    path("announcements/<uuid:pk>/edit/", AnnouncementUpdateView.as_view(), name="announcement_edit"),
+    path("announcements/<uuid:pk>/delete/", AnnouncementDeleteView.as_view(), name="announcement_delete"),
+    path("flags/", FeatureFlagListView.as_view(), name="flags"),
+    path("flags/new/", FeatureFlagCreateView.as_view(), name="flag_create"),
+    path("flags/<uuid:pk>/edit/", FeatureFlagUpdateView.as_view(), name="flag_edit"),
+    path("flags/<uuid:pk>/toggle/", FeatureFlagToggleView.as_view(), name="flag_toggle"),
+    path("content/", ContentHubView.as_view(), name="content"),
+    path("setup/", SetupView.as_view(), name="setup"),
+    path("setup/run/<slug:key>/", SeedRunView.as_view(), name="seed_run"),
+    path("setup/run-all/", SeedRunAllView.as_view(), name="seed_run_all"),
+    path("changelog/", ChangeLogView.as_view(), name="changelog"),
+]

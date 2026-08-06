@@ -1,0 +1,23 @@
+<section class="superdash-panel superdash-panel--results">
+    <div class="superdash-panel__header">
+        <h2 class="superdash-panel__title">Last seed output</h2>
+    </div>
+    <div class="superdash-panel__body">
+        <div class="control-seed-log">
+            {% for result in last_seed_results %}
+            <article class="control-seed-log__entry{% if not result.ok %} control-seed-log__entry--error{% endif %}">
+                <header class="control-seed-log__header">
+                    <strong>{{ result.title|default:result.command|default:result.key }}</strong>
+                    <span class="control-badge{% if result.ok %} control-badge--success{% endif %}">{% if result.ok %}Success{% else %}Failed{% endif %}</span>
+                </header>
+                {% if result.output %}
+                <pre class="control-seed-log__output">{{ result.output }}</pre>
+                {% endif %}
+                {% if result.error %}
+                <pre class="control-seed-log__error">{{ result.error }}</pre>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>

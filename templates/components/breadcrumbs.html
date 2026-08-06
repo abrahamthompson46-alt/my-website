@@ -1,0 +1,16 @@
+<nav class="breadcrumbs {{ extra_class }}" aria-label="Breadcrumb">
+    <ol class="breadcrumbs__list">
+        {% for item in items %}
+        <li class="breadcrumbs__item">
+            {% if item.url and not item.is_current %}
+            <a href="{{ item.url }}" class="breadcrumbs__link">{{ item.label }}</a>
+            {% else %}
+            <span class="breadcrumbs__current" {% if item.is_current %}aria-current="page"{% endif %}>{{ item.label }}</span>
+            {% endif %}
+            {% if not forloop.last %}
+            <svg class="icon icon--xs breadcrumbs__sep" aria-hidden="true" data-icon="chevron-right"></svg>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ol>
+</nav>

@@ -1,0 +1,37 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}{{ case_study.title }} — Case Study{% endblock %}
+
+{% block meta_description %}{{ case_study.meta_description|default:case_study.excerpt }}{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<article class="section"><div class="container container-prose">
+
+    <h1 class="section__title">{{ case_study.title }}</h1>
+
+    <p class="text-secondary">{{ case_study.client_name }}{% if case_study.industry %} · {{ case_study.industry }}{% endif %}</p>
+
+    {% if case_study.challenge %}<h2>Challenge</h2><p>{{ case_study.challenge|linebreaks }}</p>{% endif %}
+
+    {% if case_study.solution %}<h2>Solution</h2><p>{{ case_study.solution|linebreaks }}</p>{% endif %}
+
+    {% if case_study.results %}<h2>Results</h2><p>{{ case_study.results|linebreaks }}</p>{% endif %}
+
+    {% if case_study.body %}<div class="product-prose">{{ case_study.body|linebreaks }}</div>{% endif %}
+
+    {% if case_study.pdf_file %}<a href="{{ case_study.pdf_file.url }}" class="btn btn--secondary btn--md" download>Download PDF</a>{% endif %}
+
+</div></article>
+
+{% endblock %}
+
+

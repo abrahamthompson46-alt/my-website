@@ -1,0 +1,9 @@
+{% load static %}
+<img
+    src="{{ src }}"
+    alt="{{ alt }}"
+    class="graphic-illustration {{ extra_class }}"
+    {% if lazy %}loading="lazy" decoding="async"{% endif %}
+    width="240"
+    height="180"
+>

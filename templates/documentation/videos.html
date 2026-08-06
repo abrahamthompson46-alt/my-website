@@ -1,0 +1,91 @@
+{% extends "documentation/base_docs.html" %}
+
+{% load static ui_tags graphics_tags %}
+
+
+
+{% block title %}Videos — Documentation{% endblock %}
+
+
+
+{% block docs_content %}
+
+<div class="docs-page">
+
+    <header class="docs-page__header">
+
+        <h1 class="docs-page__title">Videos</h1>
+
+        <p class="docs-page__subtitle">Walkthroughs and tutorials to help you get up and running quickly.</p>
+
+    </header>
+
+
+
+    <div class="docs-video-grid">
+
+        {% for video in videos %}
+
+        <article class="docs-video-card">
+
+            <div class="docs-video-card__media">
+
+                {% if video.embed_code %}
+
+                <div class="docs-video-card__embed">{{ video.embed_code|safe }}</div>
+
+                {% else %}
+
+                <div class="docs-video-card__placeholder">
+
+                    <img src="{% static 'images/illustrations/video-placeholder.svg' %}" alt="" aria-hidden="true">
+
+                    <div class="docs-video-card__play">
+
+                        <svg class="icon icon--lg" aria-hidden="true" data-icon="play-circle"></svg>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            <div class="docs-video-card__body">
+
+                <h2 class="docs-video-card__title">{{ video.title }}</h2>
+
+                {% if video.description %}<p class="docs-video-card__desc">{{ video.description }}</p>{% endif %}
+
+                <div class="cluster">
+
+                    {% if video.duration_display %}<span class="text-secondary">{{ video.duration_display }}</span>{% endif %}
+
+                    {% if video.product %}<span class="text-secondary">{{ video.product.name }}</span>{% endif %}
+
+                    {% if video.video_url %}
+
+                    <a href="{{ video.video_url }}" class="btn btn--secondary btn--sm" target="_blank" rel="noopener">Watch</a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        {% ui_empty_state illustration="documentation" title="No videos yet" message="Video walkthroughs will appear here when published." %}
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

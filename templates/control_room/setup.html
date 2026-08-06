@@ -1,0 +1,40 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags static %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Platform Setup" subtitle="Bootstrap your entire website with one-click seed actions. No terminal commands required." eyebrow="Zero-code setup" %}
+
+<section class="superdash-panel superdash-panel--bootstrap superdash-panel--setup-hero">
+    <div class="superdash-panel__header">
+        <div>
+            <h2 class="superdash-panel__title">Run everything at once</h2>
+            <p class="superdash-panel__subtitle">Executes all seed commands in the correct order: roles → security → control room → products → CMS → marketing → docs → portal → payments.</p>
+        </div>
+        <form method="post" action="{% url 'control_room:seed_run_all' %}" class="control-seed-form" data-seed-form>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'control_room:setup' %}">
+            {% ui_button label="Run all platform seeds" type="submit" variant="primary" icon="play" size="lg" extra_class="control-seed-form__submit" %}
+        </form>
+    </div>
+</section>
+
+{% if last_seed_results %}
+{% include "control_room/partials/seed_results.html" %}
+{% endif %}
+
+<section class="superdash-section">
+    <div class="superdash-section__header">
+        <div>
+            <h2 class="superdash-section__title">Individual seed actions</h2>
+            <p class="superdash-section__subtitle">Run only what you need — each button triggers the same logic as the management command.</p>
+        </div>
+    </div>
+    {% include "control_room/partials/seed_buttons.html" with compact=False next_url='control_room:setup' %}
+</section>
+{% endblock %}
+
+{% block control_js %}
+<script src="{% static 'js/control_room.js' %}" defer></script>
+{% endblock %}

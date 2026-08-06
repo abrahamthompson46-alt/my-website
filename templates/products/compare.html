@@ -1,0 +1,75 @@
+{% extends "base_public.html" %}
+{% load static ui_tags %}
+
+{% block title %}Compare Products — {{ SITE_NAME }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/products.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+{% ui_breadcrumbs items=breadcrumb_items %}
+{% endblock %}
+
+{% block content %}
+<section class="section products-compare">
+    <div class="container">
+        {% include "components/layout/page_header.html" with title="Compare Products" subtitle="Select up to four products to compare features side by side." %}
+
+        <form method="post" class="compare-select-form form" novalidate>
+            {% csrf_token %}
+            <div class="compare-select-form__grid">
+                {% for field in compare_form %}
+                {% ui_field field=field %}
+                {% endfor %}
+            </div>
+            <div class="form-actions form-actions--start">
+                {% ui_button label="Compare Selected" variant="primary" size="md" type="submit" %}
+            </div>
+        </form>
+
+        {% if selected_products|length >= 2 and comparison_matrix %}
+        <div class="table-scroll compare-table-wrap">
+            <table class="table compare-table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="table__cell table__cell--head">Feature</th>
+                        {% for product in selected_products %}
+                        <th scope="col" class="table__cell table__cell--head">{{ product.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in comparison_matrix %}
+                    {% if row.type == "group" %}
+                    <tr class="compare-table__group">
+                        <th scope="row" colspan="{{ selected_products|length|add:1 }}">{{ row.label }}</th>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <th scope="row" class="table__cell">{{ row.attribute.name }}</th>
+                        {% for product in selected_products %}
+                        <td class="table__cell table__cell--center">
+                            {% with val=row.values|get_item:product.slug %}
+                            {% if val == "yes" %}
+                            <svg class="icon icon--sm compare-table__yes" aria-label="Yes" data-icon="check-circle"></svg>
+                            {% elif val == "no" %}
+                            <svg class="icon icon--sm compare-table__no" aria-label="No" data-icon="x-circle"></svg>
+                            {% else %}
+                            {{ val }}
+                            {% endif %}
+                            {% endwith %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% elif selected_products|length == 1 %}
+        <p class="compare-hint">Select at least one more product to compare.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

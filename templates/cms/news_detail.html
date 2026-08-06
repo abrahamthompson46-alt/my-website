@@ -1,0 +1,65 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}{{ article.title }} — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<article class="section">
+
+    <div class="container container-prose">
+
+        <header>
+
+            {% if article.category %}{% ui_badge label=article.category variant="primary" %}{% endif %}
+
+            <h1 class="section__title">{{ article.title }}</h1>
+
+            {% if article.published_at %}
+
+            <p class="text-secondary">{{ article.published_at|date:"F j, Y" }}</p>
+
+            {% endif %}
+
+        </header>
+
+        {% if article.featured_image %}
+
+        <figure style="margin: var(--space-8) 0;">
+
+            <img src="{{ article.featured_image.url }}" alt="" style="width:100%; border-radius: var(--radius-lg);">
+
+        </figure>
+
+        {% endif %}
+
+        {% if article.body %}
+
+        <div class="product-prose">{{ article.body|linebreaks }}</div>
+
+        {% elif article.excerpt %}
+
+        <p>{{ article.excerpt }}</p>
+
+        {% endif %}
+
+    </div>
+
+</article>
+
+{% endblock %}
+
+

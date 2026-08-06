@@ -1,0 +1,27 @@
+{% extends "documentation/base_docs.html" %}
+{% load ui_tags %}
+
+{% block title %}{% if section %}{{ section.label }}{% else %}Documentation{% endif %} — {{ SITE_NAME }}{% endblock %}
+
+{% block docs_content %}
+<div class="docs-page">
+    <header class="docs-page__header">
+        <h1 class="docs-page__title">{{ section.label }}</h1>
+    </header>
+
+    {% if articles %}
+    <div class="docs-article-list">
+        {% for article in articles %}
+        <article class="docs-article-item">
+            <h2 class="docs-article-item__title"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h2>
+            {% if article.excerpt %}<p class="docs-article-item__excerpt">{{ article.excerpt }}</p>{% endif %}
+            {% if article.version %}<p class="docs-article-item__meta">Version {{ article.version }}</p>{% endif %}
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-secondary">No articles published in this section yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,40 @@
+.error-page {
+  display: grid;
+  place-items: center;
+  min-height: min(70vh, 640px);
+  padding: var(--space-10) var(--space-4);
+}
+
+.error-page__inner {
+  max-width: 32rem;
+  text-align: center;
+}
+
+.error-page__code {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: var(--font-bold);
+  line-height: 1;
+  background: linear-gradient(135deg, var(--color-primary-600), var(--color-accent-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.error-page__title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-heading-lg);
+}
+
+.error-page__message {
+  margin: 0 0 var(--space-8);
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.error-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}

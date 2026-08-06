@@ -1,0 +1,62 @@
+{% load static ui_tags %}
+<aside class="auth-brand" aria-label="Platform overview">
+    <div class="auth-brand__mesh" aria-hidden="true"></div>
+    <div class="auth-brand__inner">
+        <a href="{% url 'website:home' %}" class="auth-brand__logo brand-link brand-link--inverse">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-text">{{ SITE_NAME }}</span>
+        </a>
+
+        <div class="auth-brand__content">
+            <p class="auth-brand__eyebrow">Secure enterprise access</p>
+            <h2 class="auth-brand__headline">One portal for your entire platform</h2>
+            <p class="auth-brand__text">Manage subscriptions, billing, licenses, documentation, and support from a single secure dashboard built for enterprise teams.</p>
+
+            <ul class="auth-brand__features">
+                <li>
+                    <span class="auth-brand__feature-icon" aria-hidden="true">
+                        <svg class="icon icon--sm" data-icon="package"></svg>
+                    </span>
+                    <span>Products, renewals, and license keys</span>
+                </li>
+                <li>
+                    <span class="auth-brand__feature-icon" aria-hidden="true">
+                        <svg class="icon icon--sm" data-icon="credit-card"></svg>
+                    </span>
+                    <span>Invoices and payment history</span>
+                </li>
+                <li>
+                    <span class="auth-brand__feature-icon" aria-hidden="true">
+                        <svg class="icon icon--sm" data-icon="life-buoy"></svg>
+                    </span>
+                    <span>Priority support tickets</span>
+                </li>
+                <li>
+                    <span class="auth-brand__feature-icon" aria-hidden="true">
+                        <svg class="icon icon--sm" data-icon="shield-check"></svg>
+                    </span>
+                    <span>MFA, session control, and audit trails</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="auth-brand__stats" aria-hidden="true">
+            <div class="auth-brand__stat">
+                <strong>99.9%</strong>
+                <span>Uptime SLA</span>
+            </div>
+            <div class="auth-brand__stat">
+                <strong>256-bit</strong>
+                <span>Encryption</span>
+            </div>
+            <div class="auth-brand__stat">
+                <strong>24/7</strong>
+                <span>Support</span>
+            </div>
+        </div>
+
+        <div class="auth-brand__visual" aria-hidden="true">
+            <img src="{% static 'images/hero/platform-dashboard.svg' %}" alt="" class="auth-brand__preview" width="520" height="380" decoding="async">
+        </div>
+    </div>
+</aside>

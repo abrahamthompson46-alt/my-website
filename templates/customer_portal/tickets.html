@@ -1,0 +1,55 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags graphics_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Support Tickets" subtitle="Track and manage your support requests." action_label="New ticket" action_url_name="customer_portal:ticket_create" %}
+
+
+
+<div class="portal-panel">
+
+    <div class="portal-panel__body portal-panel__body--flush">
+
+        {% for ticket in tickets %}
+
+        <div class="portal-list__item">
+
+            <div>
+
+                <p class="portal-list__title"><a href="{% url 'customer_portal:ticket_detail' pk=ticket.pk %}">{{ ticket.subject }}</a></p>
+
+                <p class="portal-list__meta">{{ ticket.reference }}{% if ticket.product %} · {{ ticket.product.name }}{% endif %} · {{ ticket.created_at|date:"M j, Y" }}</p>
+
+            </div>
+
+            <div class="cluster">
+
+                {% ui_badge label=ticket.get_priority_display variant="default" %}
+
+                {% ui_badge label=ticket.get_status_display variant="primary" %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        {% ui_empty_state illustration="tickets" title="No tickets yet" message="Open a support ticket when you need help from our team." action_label="New ticket" action_url_name="customer_portal:ticket_create" compact=True %}
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

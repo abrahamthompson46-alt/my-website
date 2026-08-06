@@ -1,0 +1,48 @@
+{% extends "base_public.html" %}
+{% load ui_tags %}
+
+{% block title %}{{ post.display_meta_title|default:post.title }} — {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+
+{% block breadcrumbs %}
+{% ui_breadcrumbs items=breadcrumb_items %}
+{% endblock %}
+
+{% block content %}
+<article class="section">
+    <div class="container container-prose">
+        <header class="article-header">
+            {% if post.category %}{% ui_badge label=post.category.name variant="primary" %}{% endif %}
+            <h1 class="section__title">{{ post.title }}</h1>
+            <p class="article-meta text-secondary">
+                {% if post.author_name %}{{ post.author_name }} · {% endif %}
+                {% if post.published_at %}{{ post.published_at|date:"F j, Y" }}{% endif %}
+                · {{ post.read_time_display }}
+            </p>
+        </header>
+        {% if post.featured_image %}
+        <figure style="margin: var(--space-8) 0;">
+            <img src="{{ post.featured_image.url }}" alt="" style="width:100%; border-radius: var(--radius-lg);">
+        </figure>
+        {% endif %}
+        <div class="product-prose">{{ post.body|linebreaks }}</div>
+    </div>
+</article>
+
+{% if related_posts %}
+<section class="section section--alt">
+    <div class="container">
+        <h2 class="section__title">Related articles</h2>
+        <div class="grid grid--3" style="margin-top: var(--space-8);">
+            {% for related in related_posts %}
+            <article class="news-card">
+                <h3 class="news-card__title"><a href="{{ related.get_absolute_url }}">{{ related.title }}</a></h3>
+                <p class="news-card__excerpt">{{ related.excerpt }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+

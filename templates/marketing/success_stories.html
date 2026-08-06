@@ -1,0 +1,39 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}Success Stories — {{ SITE_NAME }}{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section section--compact"><div class="container"><h1 class="section__title">Success Stories</h1><p class="section__subtitle">How organizations achieve results with our platform.</p></div></section>
+
+<section class="section"><div class="container"><div class="grid grid--2">
+
+{% for story in stories %}
+
+<article class="marketing-card marketing-card--story">
+
+    {% if story.quote %}<blockquote class="marketing-quote">"{{ story.quote }}"</blockquote>{% endif %}
+
+    <h3><a href="{{ story.get_absolute_url }}">{{ story.title }}</a></h3>
+
+    <p class="text-secondary">{{ story.company }}{% if story.industry %} · {{ story.industry }}{% endif %}</p>
+
+    {% if story.result_metric %}<p><strong>{{ story.result_metric }}</strong></p>{% endif %}
+
+</article>
+
+{% empty %}<p class="text-secondary">No success stories yet.</p>{% endfor %}
+
+</div></div></section>
+
+{% endblock %}
+
+

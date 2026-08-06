@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static ui_tags %}
+
+{% block body_class %}layout-portal{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/portal.css' %}">
+{% block portal_css %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+    <div class="portal-layout" data-portal="{{ PORTAL_TYPE|default:'customer' }}">
+        {% include "includes/portal_sidebar.html" %}
+        <div class="portal-shell">
+            {% include "includes/portal_header.html" %}
+            {% include "components/flash_messages.html" %}
+            <main id="main-content" class="portal-main" tabindex="-1">
+                {% block breadcrumbs %}{% endblock %}
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <div class="sidebar-backdrop" data-sidebar-backdrop hidden></div>
+{% endblock %}

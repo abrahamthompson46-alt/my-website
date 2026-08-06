@@ -1,0 +1,19 @@
+{% extends "base_ops.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+{% block content %}
+{% include "operations/partials/page_header.html" with title="Marketing" subtitle="Content, campaigns, and subscriber growth." action_label="Marketing hub" action_url_name="marketing:hub" %}
+<div class="ops-quick-nav">
+    <div class="ops-quick-card"><span>Blog posts</span><strong>{{ counts.blog }}</strong></div>
+    <div class="ops-quick-card"><span>Events</span><strong>{{ counts.events }}</strong></div>
+    <div class="ops-quick-card"><span>Case studies</span><strong>{{ counts.case_studies }}</strong></div>
+    <div class="ops-quick-card"><span>Success stories</span><strong>{{ counts.success_stories }}</strong></div>
+    <div class="ops-quick-card"><span>White papers</span><strong>{{ counts.whitepapers }}</strong></div>
+    <div class="ops-quick-card"><span>Subscribers</span><strong>{{ counts.subscribers }}</strong></div>
+</div>
+<div class="ops-grid ops-grid--2">
+    <section class="ops-panel"><div class="ops-panel__header"><h2 class="ops-panel__title">Recent blog posts</h2></div><div class="ops-panel__body">{% for post in recent_posts %}<div class="ops-activity-item"><div class="ops-activity-item__content"><p class="ops-activity-item__title">{{ post.title }}</p></div><time class="ops-activity-item__time">{{ post.published_at|date:"M j" }}</time></div>{% empty %}<p class="text-secondary">No posts.</p>{% endfor %}</div></section>
+    <section class="ops-panel"><div class="ops-panel__header"><h2 class="ops-panel__title">Upcoming events</h2></div><div class="ops-panel__body">{% for event in upcoming_events %}<div class="ops-activity-item"><div class="ops-activity-item__content"><p class="ops-activity-item__title">{{ event.title }}</p><p class="ops-activity-item__meta">{{ event.starts_at|date:"M j, Y g:i A" }}</p></div></div>{% empty %}<p class="text-secondary">No events.</p>{% endfor %}</div></section>
+</div>
+{% endblock %}

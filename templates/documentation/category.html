@@ -1,0 +1,58 @@
+{% extends "documentation/base_docs.html" %}
+{% load ui_tags %}
+
+{% block title %}{{ category.name }} — Documentation{% endblock %}
+
+{% block docs_content %}
+<div class="docs-page">
+    <header class="docs-page__header">
+        <h1 class="docs-page__title">{{ category.name }}</h1>
+        {% if category.description %}<p class="docs-page__subtitle">{{ category.description }}</p>{% endif %}
+    </header>
+
+    {% if articles %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">Articles</h2>
+        <ul class="docs-result-list">
+            {% for article in articles %}
+            <li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if videos %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">Videos</h2>
+        <ul class="docs-result-list">
+            {% for video in videos %}
+            <li><a href="{% url 'documentation:videos' %}">{{ video.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if api_endpoints %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">API</h2>
+        <ul class="docs-result-list">
+            {% for endpoint in api_endpoints %}
+            <li><a href="{% url 'documentation:api' %}#endpoint-{{ endpoint.pk }}"><code>{{ endpoint.method }}</code> {{ endpoint.path }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if downloads %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">Downloads</h2>
+        <ul class="docs-result-list">
+            {% for download in downloads %}
+            <li>{{ download.title }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
+

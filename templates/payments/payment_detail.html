@@ -1,0 +1,27 @@
+{% extends "base_portal.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "customer_portal/partials/page_header.html" with title=payment.reference subtitle=payment.description %}
+
+<section class="portal-panel">
+    <div class="portal-panel__body stack">
+        <p><strong>Gateway:</strong> {{ payment.gateway.name }}</p>
+        <p><strong>Amount:</strong> {{ payment.currency }} {{ payment.amount }}</p>
+        <p><strong>Status:</strong> {% ui_badge label=payment.get_status_display variant="secondary" %}</p>
+        {% if payment.manual_method %}<p><strong>Method:</strong> {{ payment.get_manual_method_display }}</p>{% endif %}
+        {% if payment.paid_at %}<p><strong>Paid:</strong> {{ payment.paid_at }}</p>{% endif %}
+        {% if payment.invoice %}<p><strong>Invoice:</strong> <a href="{% url 'customer_portal:invoice_detail' payment.invoice.pk %}">{{ payment.invoice.invoice_number }}</a></p>{% endif %}
+
+        {% if payment.status == "pending_confirmation" %}
+        {% ui_alert message="This manual payment is awaiting admin confirmation." variant="info" %}
+        {% endif %}
+
+        {% if payment.authorization_url and payment.status == "processing" %}
+        {% ui_button label="Continue payment" url=payment.authorization_url variant="primary" size="md" %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

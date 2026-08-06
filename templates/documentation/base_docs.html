@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static ui_tags %}
+
+{% block body_class %}layout-docs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/documentation.css' %}">
+{% block docs_css %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<div class="docs-layout">
+    {% include "documentation/partials/sidebar.html" %}
+    <div class="docs-shell">
+        <header class="docs-header">
+            <div class="docs-header__start">
+                <button type="button" class="btn btn--ghost btn--sm btn--icon-only docs-header__menu" aria-label="Open docs navigation" data-docs-sidebar-open>
+                    <svg class="icon icon--md" aria-hidden="true" data-icon="menu"></svg>
+                </button>
+                {% block docs_breadcrumbs %}
+                {% if breadcrumb_items %}{% ui_breadcrumbs items=breadcrumb_items extra_class="docs-breadcrumbs" %}{% endif %}
+                {% endblock %}
+            </div>
+            <form method="get" action="{% url 'documentation:search' %}" class="docs-search-form" role="search">
+                {% if doc_product %}<input type="hidden" name="product" value="{{ doc_product.slug }}">{% endif %}
+                <label class="visually-hidden" for="docs-search-input">Search documentation</label>
+                <input id="docs-search-input" type="search" name="q" value="{{ doc_search_query }}" class="form-control docs-search-form__input" placeholder="Search docs…">
+                <button type="submit" class="btn btn--secondary btn--sm">Search</button>
+            </form>
+        </header>
+        <main id="main-content" class="docs-main" tabindex="-1">
+            {% block docs_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+<div class="docs-sidebar-backdrop" data-docs-sidebar-backdrop hidden></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/documentation.js' %}" defer></script>
+{% block docs_js %}{% endblock %}
+{% endblock %}
+

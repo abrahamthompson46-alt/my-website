@@ -1,0 +1,51 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}Pages — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section">
+
+    <div class="container">
+
+        <h1 class="section__title">Pages</h1>
+
+        {% if pages %}
+
+        <ul class="link-list">
+
+            {% for page in pages %}
+
+            <li><a href="{{ page.get_absolute_url }}">{{ page.title }}</a></li>
+
+            {% endfor %}
+
+        </ul>
+
+        {% else %}
+
+        <p class="text-secondary">No custom pages published yet.</p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

@@ -1,0 +1,26 @@
+{% load ui_tags %}
+
+<header class="portal-page-header">
+
+    <div class="portal-page-header__content">
+
+        {% if eyebrow %}<p class="portal-page-header__eyebrow">{{ eyebrow }}</p>{% endif %}
+
+        <h1 class="portal-page-header__title">{{ title }}</h1>
+
+        {% if subtitle %}<p class="portal-page-header__subtitle">{{ subtitle }}</p>{% endif %}
+
+    </div>
+
+    {% if action_label %}
+
+    <div class="portal-page-header__actions">
+
+        {% ui_button label=action_label url_name=action_url_name url=action_url variant="primary" size="md" %}
+
+    </div>
+
+    {% endif %}
+
+</header>
+

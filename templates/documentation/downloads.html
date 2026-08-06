@@ -1,0 +1,34 @@
+{% extends "documentation/base_docs.html" %}
+{% load ui_tags %}
+
+{% block title %}Downloads — Documentation{% endblock %}
+
+{% block docs_content %}
+<div class="docs-page">
+    <header class="docs-page__header">
+        <h1 class="docs-page__title">Downloads</h1>
+        <p class="docs-page__subtitle">SDKs, PDFs, sample code, and other downloadable resources.</p>
+    </header>
+
+    <ul class="docs-download-list">
+        {% for download in downloads %}
+        <li class="docs-download-item">
+            <div>
+                <p class="docs-download-item__title">{{ download.title }}</p>
+                {% if download.description %}<p class="docs-download-item__desc">{{ download.description }}</p>{% endif %}
+                <p class="docs-download-item__meta">
+                    {{ download.get_file_type_display }}{% if download.version %} · v{{ download.version }}{% endif %}
+                    {% if download.product %} · {{ download.product.name }}{% endif %}
+                </p>
+            </div>
+            {% if download.file %}
+            <a href="{{ download.file.url }}" class="btn btn--secondary btn--sm" download>Download</a>
+            {% endif %}
+        </li>
+        {% empty %}
+        <p class="text-secondary">No downloads available.</p>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+

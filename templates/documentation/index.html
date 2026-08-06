@@ -1,0 +1,143 @@
+{% extends "documentation/base_docs.html" %}
+
+{% load static ui_tags graphics_tags %}
+
+
+
+{% block title %}Documentation — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block docs_content %}
+
+<div class="docs-page">
+
+    <header class="docs-page__header docs-page-banner">
+
+        <h1 class="docs-page__title">Documentation</h1>
+
+        <p class="docs-page__subtitle">Guides, API references, and resources to help you deploy and integrate our platform.</p>
+
+    </header>
+
+
+
+    <div class="docs-quick-links">
+
+        {% for section in doc_sections %}
+
+        <a href="{% url section.url_name %}{% if doc_product %}?product={{ doc_product.slug }}{% endif %}" class="docs-quick-link">
+
+            {% ui_icon_badge icon=section.icon size="md" extra_class="docs-quick-link__icon-badge" %}
+
+            <span class="docs-quick-link__label">{{ section.label }}</span>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+
+
+    {% if getting_started %}
+
+    <section class="docs-section">
+
+        <div class="split">
+
+            <h2 class="docs-section__title">Getting Started</h2>
+
+            {% ui_button label="View all" url_name="documentation:getting_started" variant="ghost" size="sm" %}
+
+        </div>
+
+        <div class="docs-card-grid">
+
+            {% for article in getting_started %}
+
+            <a href="{{ article.get_absolute_url }}" class="docs-card">
+
+                <h3 class="docs-card__title">{{ article.title }}</h3>
+
+                <p class="docs-card__excerpt">{{ article.display_excerpt }}</p>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+
+    {% if featured_articles %}
+
+    <section class="docs-section">
+
+        <h2 class="docs-section__title">Featured guides</h2>
+
+        <div class="docs-card-grid">
+
+            {% for article in featured_articles %}
+
+            <a href="{{ article.get_absolute_url }}" class="docs-card">
+
+                {% if article.category %}{% ui_badge label=article.category.name variant="primary" %}{% endif %}
+
+                <h3 class="docs-card__title">{{ article.title }}</h3>
+
+                <p class="docs-card__excerpt">{{ article.display_excerpt }}</p>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+
+    {% if doc_categories %}
+
+    <section class="docs-section">
+
+        <div class="split">
+
+            <h2 class="docs-section__title">Browse by category</h2>
+
+            {% ui_button label="All categories" url_name="documentation:categories" variant="ghost" size="sm" %}
+
+        </div>
+
+        <div class="docs-card-grid">
+
+            {% for category in doc_categories|slice:":6" %}
+
+            <a href="{{ category.get_absolute_url }}" class="docs-card">
+
+                <h3 class="docs-card__title">{{ category.name }}</h3>
+
+                {% if category.description %}<p class="docs-card__excerpt">{{ category.description }}</p>{% endif %}
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+

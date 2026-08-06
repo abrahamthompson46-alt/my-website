@@ -1,0 +1,26 @@
+{# Reusable card — use via {% ui_card %} or include with block override pattern #}
+{% if href %}
+<a href="{{ href }}" class="card card--{{ variant }} card--pad-{{ padding }} card--interactive {{ extra_class }}">
+{% else %}
+<div class="card card--{{ variant }} card--pad-{{ padding }} {{ extra_class }}">
+{% endif %}
+    {% if eyebrow %}
+    <p class="card__eyebrow">{{ eyebrow }}</p>
+    {% endif %}
+    {% if title %}
+    <h3 class="card__title">{{ title }}</h3>
+    {% endif %}
+    {% if subtitle %}
+    <p class="card__subtitle">{{ subtitle }}</p>
+    {% endif %}
+    <div class="card__body">
+        {{ body }}
+    </div>
+    <div class="card__footer">
+        {{ footer }}
+    </div>
+{% if href %}
+</a>
+{% else %}
+</div>
+{% endif %}

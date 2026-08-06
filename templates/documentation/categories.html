@@ -1,0 +1,25 @@
+{% extends "documentation/base_docs.html" %}
+{% load ui_tags %}
+
+{% block title %}Categories — Documentation{% endblock %}
+
+{% block docs_content %}
+<div class="docs-page">
+    <header class="docs-page__header">
+        <h1 class="docs-page__title">Categories</h1>
+        <p class="docs-page__subtitle">Browse documentation organized by topic and product area.</p>
+    </header>
+    <div class="docs-card-grid">
+        {% for category in categories %}
+        <a href="{{ category.get_absolute_url }}" class="docs-card">
+            <h3 class="docs-card__title">{{ category.name }}</h3>
+            {% if category.description %}<p class="docs-card__excerpt">{{ category.description }}</p>{% endif %}
+            {% if category.product %}<p class="docs-card__meta">{{ category.product.name }}</p>{% endif %}
+        </a>
+        {% empty %}
+        <p class="text-secondary">No categories published yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

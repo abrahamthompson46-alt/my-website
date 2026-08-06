@@ -1,0 +1,59 @@
+<section class="section section--alt home-partners" aria-labelledby="partners-heading">
+
+
+
+    <div class="container">
+
+
+
+        {% include "cms/partials/section_header.html" with section=partner_logos_section eyebrow="Partners" title="Trusted by industry leaders" subtitle="We partner with technology and implementation leaders worldwide." %}
+
+
+
+        <div class="home-partners__logos">
+
+
+
+            {% for partner in partner_logos %}
+
+
+
+            <div class="partner-logo" title="{% if partner.title %}{{ partner.title }}{% else %}{{ partner.name }}{% endif %}">
+
+
+
+                <span class="partner-logo__text">{% if partner.title %}{{ partner.title }}{% else %}{{ partner.name }}{% endif %}</span>
+
+
+
+            </div>
+
+
+
+            {% endfor %}
+
+
+
+        </div>
+
+
+
+        <div class="home-partners__badges" aria-label="Trust indicators">
+
+            <span class="trust-badge"><svg class="icon icon--sm" aria-hidden="true" data-icon="shield-check"></svg> Enterprise security</span>
+
+            <span class="trust-badge"><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg> 99.9% uptime SLA</span>
+
+            <span class="trust-badge"><svg class="icon icon--sm" aria-hidden="true" data-icon="users"></svg> 24/7 support</span>
+
+        </div>
+
+
+
+    </div>
+
+
+
+</section>
+
+

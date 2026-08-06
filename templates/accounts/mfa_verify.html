@@ -1,0 +1,45 @@
+{% extends "base_auth.html" %}
+{% load static ui_tags %}
+
+{% block title %}Verify Identity — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="auth-panel auth-panel--compact">
+    <header class="auth-panel__header">
+        <div class="auth-panel__badge auth-panel__badge--security" aria-hidden="true">
+            <svg class="icon icon--md" data-icon="shield-check"></svg>
+        </div>
+        <p class="auth-panel__eyebrow">Two-factor authentication</p>
+        <h1 class="auth-panel__title">Verify it's you</h1>
+        <p class="auth-panel__subtitle">Enter the 6-digit code from your authenticator app or use a backup code.</p>
+    </header>
+
+    <form method="post" class="auth-form" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="auth-alert auth-alert--error" role="alert">
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="alert-circle"></svg>
+            <span>{{ form.non_field_errors }}</span>
+        </div>
+        {% endif %}
+
+        <div class="auth-field">
+            <label class="auth-field__label" for="{{ form.code.id_for_label }}">Authentication code</label>
+            <div class="auth-field__control auth-field__control--code">
+                {{ form.code }}
+            </div>
+            {% if form.code.errors %}
+            <p class="auth-field__error">{{ form.code.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div class="auth-form__actions">
+            {% ui_button label="Verify and continue" variant="primary" size="lg" type="submit" full_width=True icon="shield-check" %}
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block auth_js %}
+<script src="{% static 'js/auth.js' %}" defer></script>
+{% endblock %}

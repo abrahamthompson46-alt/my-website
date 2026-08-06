@@ -1,0 +1,100 @@
+/* Search components */
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar__icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.search-bar__input {
+  width: 100%;
+  min-height: var(--input-height-md);
+  padding: var(--space-2) var(--space-3) var(--space-2) calc(var(--space-3) + var(--icon-sm) + var(--space-2));
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  color: var(--input-text);
+  font-size: var(--text-body-sm);
+}
+
+.search-bar__input:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.search-bar--compact { max-width: 240px; }
+
+.search-bar--compact .search-bar__input {
+  min-height: var(--input-height-sm);
+  font-size: var(--text-caption);
+}
+
+.search-bar--overlay .search-bar__input,
+.search-bar--full .search-bar__input {
+  min-height: var(--input-height-lg);
+  font-size: var(--text-body-md);
+  border-radius: var(--radius-md);
+}
+
+.search-bar__clear {
+  position: absolute;
+  right: var(--space-1);
+}
+
+.search-overlay[hidden] { display: none; }
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+.search-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--surface-overlay);
+}
+
+.search-overlay__panel {
+  position: relative;
+  width: min(100%, 640px);
+  margin-inline: var(--space-4);
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.search-overlay__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.search-overlay__header .search-bar { flex: 1; }
+
+.search-overlay__results {
+  padding: var(--space-6);
+  min-height: 200px;
+}
+
+.search-overlay__hint {
+  color: var(--text-tertiary);
+  font-size: var(--text-body-sm);
+  text-align: center;
+  margin: 0;
+}

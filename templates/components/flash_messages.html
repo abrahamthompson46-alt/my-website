@@ -1,0 +1,17 @@
+{% if messages %}
+<div class="flash-messages" role="region" aria-label="Notifications">
+    {% for message in messages %}
+    <div class="alert alert--{% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% else %}info{% endif %} alert--flash"
+         role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}"
+         data-alert-dismissible>
+        <svg class="icon icon--md alert__icon" aria-hidden="true" data-icon="{% if message.tags == 'success' %}check-circle{% elif message.tags == 'warning' %}alert-triangle{% elif message.tags == 'error' %}x-circle{% else %}info{% endif %}"></svg>
+        <div class="alert__content">
+            <p class="alert__message">{{ message }}</p>
+        </div>
+        <button type="button" class="alert__dismiss btn btn--ghost btn--xs btn--icon-only" aria-label="Dismiss">
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="x"></svg>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,26 @@
+{% extends "base_public.html" %}
+{% load static ui_tags %}
+
+{% block title %}Page Not Found — {{ SITE_NAME }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/errors.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+{% ui_breadcrumbs items=breadcrumb_items %}
+{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="error-page__inner">
+        <p class="error-page__code" aria-hidden="true">404</p>
+        <h1 class="error-page__title">Page not found</h1>
+        <p class="error-page__message">The page you're looking for doesn't exist, may have moved, or the link is outdated.</p>
+        <div class="error-page__actions">
+            {% ui_button label="Go to homepage" url_name="website:home" variant="primary" icon="home" %}
+            {% ui_button label="Contact support" url_name="contact:form" variant="secondary" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

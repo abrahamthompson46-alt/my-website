@@ -1,0 +1,20 @@
+{% load graphics_tags %}
+{% if cms_hero and cms_hero.background_image %}
+<div class="product-hero__media">
+    <img src="{{ cms_hero.background_image.url }}" alt="{{ product.name }}" width="1200" height="675" decoding="async" class="product-hero__image">
+</div>
+{% elif product.hero_image %}
+<div class="product-hero__media">
+    <img src="{{ product.hero_image.url }}" alt="{{ product.name }} product screenshot" width="1200" height="675" decoding="async" class="product-hero__image">
+</div>
+{% elif product.screenshots.exists %}
+<div class="product-hero__media">
+    {% with shot=product.screenshots.first %}
+    <img src="{{ shot.image.url }}" alt="{{ shot.alt_text }}" width="1200" height="675" decoding="async" class="product-hero__image">
+    {% endwith %}
+</div>
+{% else %}
+<div class="product-hero__media">
+    {% ui_product_visual product=product %}
+</div>
+{% endif %}

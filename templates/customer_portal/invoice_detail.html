@@ -1,0 +1,61 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags humanize %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title=invoice.invoice_number subtitle=invoice.description %}
+
+
+
+<div class="grid grid--2">
+
+    <section class="portal-panel">
+
+        <div class="portal-panel__header"><h2 class="portal-panel__title">Invoice details</h2></div>
+
+        <div class="portal-panel__body stack">
+
+            <p><strong>Status:</strong> {% ui_badge label=invoice.get_status_display variant="default" %}</p>
+
+            <p><strong>Amount:</strong> ${{ invoice.amount|floatformat:2|intcomma }} {{ invoice.currency }}</p>
+
+            <p><strong>Issued:</strong> {{ invoice.issued_at|date:"F j, Y" }}</p>
+
+            <p><strong>Due:</strong> {{ invoice.due_at|date:"F j, Y" }}</p>
+
+            {% if invoice.paid_at %}<p><strong>Paid:</strong> {{ invoice.paid_at|date:"F j, Y" }}</p>{% endif %}
+
+        </div>
+
+    </section>
+
+    <section class="portal-panel">
+
+        <div class="portal-panel__header"><h2 class="portal-panel__title">Actions</h2></div>
+
+        <div class="portal-panel__body cluster">
+
+            {% ui_button label="Back to invoices" url_name="customer_portal:invoices" variant="secondary" size="md" %}
+
+            {% if invoice.status == "open" or invoice.status == "overdue" %}
+
+            {% ui_button label="Contact billing" url_name="customer_portal:ticket_create" variant="primary" size="md" %}
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+

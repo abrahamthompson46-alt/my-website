@@ -1,0 +1,31 @@
+{% extends "base_ops.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "operations/partials/page_header.html" with title="Analytics" subtitle="Revenue, signups, and operational metrics." %}
+
+<div class="ops-stats ops-stats--6">
+    <div class="ops-stat ops-stat--primary">
+        <p class="ops-stat__label">Revenue (30d)</p>
+        <p class="ops-stat__value">${{ stats.revenue_30d|floatformat:0 }}</p>
+    </div>
+    <div class="ops-stat"><p class="ops-stat__label">Customers</p><p class="ops-stat__value">{{ stats.customers }}</p></div>
+    <div class="ops-stat"><p class="ops-stat__label">Subscriptions</p><p class="ops-stat__value">{{ stats.active_subscriptions }}</p></div>
+    <div class="ops-stat"><p class="ops-stat__label">Open invoices</p><p class="ops-stat__value">{{ stats.open_invoices }}</p></div>
+    <div class="ops-stat"><p class="ops-stat__label">Demo requests</p><p class="ops-stat__value">{{ stats.demo_requests_new }}</p></div>
+    <div class="ops-stat"><p class="ops-stat__label">Leads</p><p class="ops-stat__value">{{ stats.leads_total }}</p></div>
+</div>
+
+<div class="ops-grid ops-grid--2">
+    <section class="ops-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Revenue (30 days)</h2></div>
+        <div class="ops-panel__body"><div class="ops-chart">{% for row in revenue_chart %}<div class="ops-chart__bar-wrap"><div class="ops-chart__bar" style="height: {% widthratio row.total|default:0 stats.revenue_30d|default:1 100 %}%; min-height:4px;"></div><span class="ops-chart__label">{{ row.day|date:"M d" }}</span></div>{% empty %}<p class="text-secondary">No data.</p>{% endfor %}</div></div>
+    </section>
+    <section class="ops-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">New signups (30 days)</h2></div>
+        <div class="ops-panel__body"><div class="ops-chart">{% for row in signups_chart %}<div class="ops-chart__bar-wrap"><div class="ops-chart__bar" style="height: {% widthratio row.count stats.new_customers_30d|default:1 100 %}%; min-height:4px; background: linear-gradient(to top, #6366f1, #818cf8);"></div><span class="ops-chart__label">{{ row.day|date:"M d" }}</span></div>{% empty %}<p class="text-secondary">No data.</p>{% endfor %}</div></div>
+    </section>
+</div>
+{% endblock %}

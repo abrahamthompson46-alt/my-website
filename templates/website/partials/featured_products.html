@@ -1,0 +1,38 @@
+{% load ui_tags graphics_tags %}
+
+<section class="section home-products" aria-labelledby="products-heading">
+
+    <div class="container">
+
+        {% include "cms/partials/section_header.html" with section=featured_products_section eyebrow="Our Products" title="Featured products" subtitle="Modular SaaS solutions designed for your industry — deploy individually or as a unified platform." %}
+
+        {% if featured_products %}
+
+        <div class="grid grid--3 home-products__grid">
+
+            {% for product in featured_products %}
+
+            {% include "products/partials/product_card.html" with product=product %}
+
+            {% endfor %}
+
+        </div>
+
+        <div class="home-products__footer cluster" style="justify-content: center; margin-top: var(--space-10);">
+
+            {% ui_button label="View all products" url_name="products:list" variant="secondary" size="md" %}
+
+            {% ui_button label="Compare products" url_name="products:compare" variant="ghost" size="md" %}
+
+        </div>
+
+        {% else %}
+
+        {% ui_empty_state illustration="products" title="Coming soon" message="Featured products will appear here when published." compact=True %}
+
+        {% endif %}
+
+    </div>
+
+</section>
+

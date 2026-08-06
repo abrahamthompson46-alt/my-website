@@ -1,0 +1,72 @@
+{% load ui_tags %}
+
+<section class="section home-news" aria-labelledby="news-heading">
+
+    <div class="container">
+
+        <div class="split home-news__header">
+
+            {% include "cms/partials/section_header.html" with section=latest_news_section eyebrow="Latest News" title="From our blog" subtitle="Product updates, guides, and company news." %}
+
+            {% ui_button label="View all articles" url_name="marketing:blog_list" variant="secondary" size="md" %}
+
+        </div>
+
+        <div class="grid grid--3 home-news__grid">
+
+            {% for article in latest_news %}
+
+            <article class="news-card">
+
+                <div class="news-card__meta">
+
+                    {% if article.category.name %}
+
+                    {% ui_badge label=article.category.name variant="primary" %}
+
+                    {% elif article.category %}
+
+                    {% ui_badge label=article.category variant="primary" %}
+
+                    {% endif %}
+
+                    <time class="news-card__date" datetime="{% if article.published_at %}{{ article.published_at|date:'Y-m-d' }}{% endif %}">
+
+                        {% if article.published_at %}{{ article.published_at|date:"F j, Y" }}{% else %}{{ article.date }}{% endif %}
+
+                    </time>
+
+                </div>
+
+                <h3 class="news-card__title">
+
+                    {% if article.get_absolute_url %}
+
+                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+
+                    {% else %}
+
+                    <a href="{% url 'marketing:blog_list' %}">{{ article.title }}</a>
+
+                    {% endif %}
+
+                </h3>
+
+                <p class="news-card__excerpt">{{ article.excerpt }}</p>
+
+                <p class="news-card__read-time">
+
+                    {% if article.read_time_display %}{{ article.read_time_display }}{% else %}{{ article.read_time }}{% endif %}
+
+                </p>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+

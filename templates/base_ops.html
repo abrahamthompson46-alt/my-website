@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static ui_tags %}
+
+{% block body_class %}layout-portal layout-ops{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/portal.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/operations.css' %}">
+{% block ops_css %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<div class="portal-layout" data-portal="operations">
+    {% include "includes/ops_sidebar.html" %}
+    <div class="portal-shell">
+        {% include "includes/ops_header.html" %}
+        {% include "components/flash_messages.html" %}
+        <main id="main-content" class="portal-main ops-main" tabindex="-1">
+            {% block breadcrumbs %}{% endblock %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+<div class="sidebar-backdrop" data-sidebar-backdrop hidden></div>
+{% endblock %}

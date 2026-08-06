@@ -1,0 +1,131 @@
+/* Enterprise admin — white-label Django admin */
+
+:root {
+  --admin-primary: #1e3a5f;
+  --admin-primary-dark: #0a1628;
+  --admin-accent: #c9a227;
+  --admin-surface: #faf9f7;
+}
+
+#header {
+  background: linear-gradient(180deg, var(--admin-primary-dark) 0%, var(--admin-primary) 100%);
+  color: #fff;
+  border-bottom: 3px solid var(--admin-accent);
+}
+
+#branding #site-name,
+#branding #site-name a {
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+#branding #site-name a:link,
+#branding #site-name a:visited {
+  color: #fff;
+}
+
+.admin-dashboard-link {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+}
+
+.admin-dashboard-link a {
+  color: var(--admin-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.admin-dashboard-link a:hover {
+  text-decoration: underline;
+}
+
+div.breadcrumbs {
+  background: var(--admin-surface);
+  border-bottom: 1px solid #e8e4dd;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: var(--admin-primary);
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button {
+  background: var(--admin-primary);
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.submit-row input:hover,
+a.button:hover {
+  background: var(--admin-primary-dark);
+}
+
+.button.default,
+input[type="submit"].default,
+.submit-row input.default {
+  background: var(--admin-accent);
+  color: var(--admin-primary-dark);
+  font-weight: 600;
+}
+
+.button.default:hover,
+input[type="submit"].default:hover,
+.submit-row input.default:hover {
+  background: #b8941f;
+}
+
+#user-tools a:focus,
+#user-tools a:hover {
+  border-bottom-color: var(--admin-accent);
+}
+
+.selector-chosen h2 {
+  background: var(--admin-primary) !important;
+}
+
+#footer,
+.login #footer {
+  display: none !important;
+}
+
+.login #header {
+  border-bottom: 3px solid var(--admin-accent);
+}
+
+.login #container {
+  background: var(--admin-surface);
+}
+
+.login .submit-row input {
+  background: var(--admin-primary);
+}
+
+.login .submit-row input:hover {
+  background: var(--admin-primary-dark);
+}
+
+#content-related .module h2 {
+  background: var(--admin-primary-dark);
+}
+
+a:link,
+a:visited {
+  color: var(--admin-primary);
+}
+
+a:focus,
+a:hover {
+  color: var(--admin-primary-dark);
+}
+
+#site-name img,
+.login #branding img {
+  display: none;
+}

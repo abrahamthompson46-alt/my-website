@@ -1,0 +1,90 @@
+{% load ui_tags %}
+
+<section class="section home-demo" id="request-demo" aria-labelledby="demo-heading">
+
+    <div class="container">
+
+        <div class="home-demo__grid">
+
+            <div class="home-demo__info">
+
+                {% include "cms/partials/section_header.html" with section=request_demo_section eyebrow="Request a Demo" title="See the platform in action" subtitle="Schedule a personalized walkthrough with our product specialists. We'll show you how our solutions fit your organization's needs." %}
+
+                <ul class="home-demo__benefits">
+
+                    {% if demo_benefits %}
+
+                        {% for benefit in demo_benefits %}
+
+                        <li>
+
+                            <svg class="icon icon--sm" aria-hidden="true" data-icon="{% if benefit.icon %}{{ benefit.icon }}{% else %}check-circle{% endif %}"></svg>
+
+                            {{ benefit.title }}
+
+                        </li>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>30-minute tailored demo</li>
+
+                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>Q&amp;A with product experts</li>
+
+                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>Custom pricing proposal</li>
+
+                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>No commitment required</li>
+
+                    {% endif %}
+
+                </ul>
+
+            </div>
+
+            <div class="home-demo__form-panel">
+
+                <form method="post" action="{% url 'website:home' %}#request-demo" class="form form--compact form--demo-grid" novalidate>
+
+                    {% csrf_token %}
+
+                    <input type="hidden" name="demo_submit" value="1">
+
+                    {% if demo_form.non_field_errors %}
+
+                    <div class="form__errors" role="alert">{{ demo_form.non_field_errors }}</div>
+
+                    {% endif %}
+
+                    <div class="form__fields">
+
+                        {% ui_field field=demo_form.full_name %}
+
+                        {% ui_field field=demo_form.work_email %}
+
+                        {% ui_field field=demo_form.company %}
+
+                        {% ui_field field=demo_form.phone show_optional=True %}
+
+                        {% ui_field field=demo_form.product_interest extra_class="form-field--full" %}
+
+                        {% ui_field field=demo_form.message show_optional=True extra_class="form-field--full" %}
+
+                    </div>
+
+                    <div class="form-actions form-actions--end">
+
+                        {% ui_button label="Request Demo" variant="primary" size="md" type="submit" %}
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+

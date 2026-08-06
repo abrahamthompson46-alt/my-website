@@ -1,0 +1,49 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Announcements" subtitle="Site-wide banners for public pages and customer portal." action_label="New announcement" action_url_name="control_room:announcement_create" %}
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Variant</th>
+                    <th>Surfaces</th>
+                    <th>Schedule</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in announcements %}
+                <tr>
+                    <td><strong>{{ item.title }}</strong></td>
+                    <td>{{ item.get_variant_display }}</td>
+                    <td>
+                        {% if item.show_on_public %}Public{% endif %}
+                        {% if item.show_on_portal %}{% if item.show_on_public %} · {% endif %}Portal{% endif %}
+                    </td>
+                    <td class="text-secondary">
+                        {% if item.starts_at %}{{ item.starts_at|date:"M j" }}{% else %}—{% endif %}
+                        →
+                        {% if item.ends_at %}{{ item.ends_at|date:"M j" }}{% else %}—{% endif %}
+                    </td>
+                    <td>{% if item.is_active %}<span class="control-badge control-badge--success">Active</span>{% else %}<span class="control-badge">Off</span>{% endif %}</td>
+                    <td class="ops-table__actions">
+                        <a href="{% url 'control_room:announcement_edit' item.pk %}" class="btn btn--ghost btn--sm">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">No announcements yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+<div class="alert alert--{{ variant }} {{ extra_class }}"
+     role="{% if variant == 'error' %}alert{% else %}status{% endif %}"
+     {% if dismissible %}data-alert-dismissible{% endif %}>
+    <svg class="icon icon--md alert__icon" aria-hidden="true" data-icon="{% if variant == 'success' %}check-circle{% elif variant == 'warning' %}alert-triangle{% elif variant == 'error' %}x-circle{% else %}info{% endif %}"></svg>
+    <div class="alert__content">
+        {% if title %}
+        <p class="alert__title">{{ title }}</p>
+        {% endif %}
+        <p class="alert__message">{{ message }}</p>
+    </div>
+    {% if dismissible %}
+    <button type="button" class="alert__dismiss btn btn--ghost btn--xs btn--icon-only" aria-label="Dismiss">
+        <svg class="icon icon--sm" aria-hidden="true" data-icon="x"></svg>
+    </button>
+    {% endif %}
+</div>

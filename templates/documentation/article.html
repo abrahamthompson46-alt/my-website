@@ -1,0 +1,29 @@
+{% extends "documentation/base_docs.html" %}
+{% load ui_tags %}
+
+{% block title %}{{ article.title }} — Documentation{% endblock %}
+
+{% block docs_content %}
+<article class="docs-page docs-page--article">
+    <header class="docs-article-header">
+        {% if article.category %}{% ui_badge label=article.category.name variant="primary" %}{% endif %}
+        {% if article.article_type %}<span class="docs-article-header__type">{{ article.get_article_type_display }}</span>{% endif %}
+        <h1 class="docs-page__title">{{ article.title }}</h1>
+        {% if article.version %}<p class="docs-article-header__version">Version {{ article.version }}</p>{% endif %}
+        {% if article.published_at %}<p class="docs-article-header__date">{{ article.published_at|date:"F j, Y" }}</p>{% endif %}
+    </header>
+    <div class="docs-prose">{{ article.body|linebreaks }}</div>
+
+    {% if related_articles %}
+    <aside class="docs-related">
+        <h2 class="docs-section__title">Related articles</h2>
+        <ul class="docs-result-list">
+            {% for related in related_articles %}
+            <li><a href="{{ related.get_absolute_url }}">{{ related.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </aside>
+    {% endif %}
+</article>
+{% endblock %}
+

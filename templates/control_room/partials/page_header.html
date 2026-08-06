@@ -1,0 +1,20 @@
+{% if title or subtitle %}
+<header class="ops-page-header control-page-header">
+    {% if eyebrow %}<p class="ops-page-header__eyebrow">{{ eyebrow }}</p>{% endif %}
+    <div class="ops-page-header__row">
+        <div>
+            {% if title %}<h1 class="ops-page-header__title">{{ title }}</h1>{% endif %}
+            {% if subtitle %}<p class="ops-page-header__subtitle">{{ subtitle }}</p>{% endif %}
+        </div>
+        {% if action_url or action_url_name %}
+        <div class="ops-page-header__actions">
+            {% if action_url_name %}
+            {% load ui_tags %}{% ui_button label=action_label|default:"Add new" url_name=action_url_name variant="primary" size="sm" %}
+            {% elif action_url %}
+            <a href="{{ action_url }}" class="btn btn--primary btn--sm">{{ action_label|default:"Add new" }}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</header>
+{% endif %}

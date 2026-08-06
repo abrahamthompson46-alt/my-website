@@ -1,0 +1,38 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Change Log" subtitle="Audit trail of control room updates." %}
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>Area</th>
+                    <th>Action</th>
+                    <th>Summary</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for change in changes %}
+                <tr>
+                    <td class="text-secondary">{{ change.created_at|date:"M j, Y H:i" }}</td>
+                    <td><code>{{ change.area }}</code></td>
+                    <td>{{ change.action }}</td>
+                    <td>{{ change.summary }}</td>
+                    <td>{% if change.user %}{{ change.user.email }}{% else %}—{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No changes recorded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
+{% endblock %}

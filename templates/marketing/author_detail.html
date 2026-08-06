@@ -1,0 +1,59 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}{{ author.full_name }} — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section">
+
+    <div class="container">
+
+        <header class="marketing-author-header">
+
+            {% if author.photo %}<img src="{{ author.photo.url }}" alt="{{ author.full_name }}" loading="lazy" decoding="async" class="marketing-author-photo">{% endif %}
+
+            <div>
+
+                <h1 class="section__title">{{ author.full_name }}</h1>
+
+                {% if author.role %}<p class="text-secondary">{{ author.role }}</p>{% endif %}
+
+                {% if author.bio %}<p>{{ author.bio }}</p>{% endif %}
+
+            </div>
+
+        </header>
+
+        <h2 class="marketing-section__title">Articles</h2>
+
+        <ul class="marketing-list">
+
+            {% for post in posts %}
+
+            <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a> · {{ post.published_at|date:"M j, Y" }}</li>
+
+            {% empty %}
+
+            <li class="text-secondary">No published articles.</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

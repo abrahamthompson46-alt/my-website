@@ -1,0 +1,4 @@
+{% load seo_tags %}
+{% if seo_meta.schema_data %}
+{% schema_json_ld seo_meta.schema_data %}
+{% endif %}

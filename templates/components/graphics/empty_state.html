@@ -1,0 +1,8 @@
+<div class="empty-state{% if compact %} empty-state--compact{% endif %} {{ extra_class }}">
+    <img src="{{ src }}" alt="" class="empty-state__art" width="240" height="180" loading="lazy" decoding="async">
+    {% if title %}<h3 class="empty-state__title">{{ title }}</h3>{% endif %}
+    <p class="empty-state__message">{{ message }}</p>
+    {% if action_label and action_url %}
+    <a href="{{ action_url }}" class="btn btn--primary btn--sm">{{ action_label }}</a>
+    {% endif %}
+</div>

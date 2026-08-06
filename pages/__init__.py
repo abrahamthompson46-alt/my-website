@@ -1,0 +1,1 @@
+"""CMS-driven static pages."""

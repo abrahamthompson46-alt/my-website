@@ -1,0 +1,14 @@
+<section class="section {% if variant %}section--{{ variant }}{% endif %} {{ extra_class|default:'' }}">
+    <div class="{% if wide %}container-wide{% else %}container{% endif %}">
+        {% if title or subtitle %}
+        <header class="section__header">
+            {% if eyebrow %}<p class="section__eyebrow">{{ eyebrow }}</p>{% endif %}
+            {% if title %}<h2 class="section__title">{{ title }}</h2>{% endif %}
+            {% if subtitle %}<p class="section__subtitle">{{ subtitle }}</p>{% endif %}
+        </header>
+        {% endif %}
+        <div class="section__body">
+            {% block section_body %}{% endblock %}
+        </div>
+    </div>
+</section>

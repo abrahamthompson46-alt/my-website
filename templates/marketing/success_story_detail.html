@@ -1,0 +1,33 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}{{ story.title }} — Success Stories{% endblock %}
+
+{% block meta_description %}{{ story.meta_description|default:story.excerpt }}{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<article class="section"><div class="container container-prose">
+
+    <h1 class="section__title">{{ story.title }}</h1>
+
+    <p class="text-secondary">{{ story.company }}{% if story.industry %} · {{ story.industry }}{% endif %}</p>
+
+    {% if story.quote %}<blockquote class="marketing-quote">"{{ story.quote }}"</blockquote>{% endif %}
+
+    {% if story.result_metric %}<p><strong>Result:</strong> {{ story.result_metric }}</p>{% endif %}
+
+    {% if story.body %}<div class="product-prose">{{ story.body|linebreaks }}</div>{% endif %}
+
+</div></article>
+
+{% endblock %}
+
+

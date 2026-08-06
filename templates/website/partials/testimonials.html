@@ -1,0 +1,40 @@
+<section class="section section--alt home-testimonials" aria-labelledby="testimonials-heading">
+
+    <div class="container">
+
+        {% include "cms/partials/section_header.html" with section=testimonials_section eyebrow="Testimonials" title="What our customers say" subtitle="Organizations worldwide rely on our platform to run their operations." %}
+
+        <div class="grid grid--3 home-testimonials__grid">
+
+            {% for item in testimonials %}
+
+            <blockquote class="testimonial-card">
+
+                <svg class="icon icon--lg testimonial-card__quote" aria-hidden="true" data-icon="quote"></svg>
+
+                <p class="testimonial-card__text">"{% if item.quote %}{{ item.quote }}{% else %}{{ item.quote }}{% endif %}"</p>
+
+                <footer class="testimonial-card__author">
+
+                    <span class="testimonial-card__avatar" aria-hidden="true">{% if item.initials %}{{ item.initials }}{% else %}{{ item.initials }}{% endif %}</span>
+
+                    <cite class="testimonial-card__cite">
+
+                        <span class="testimonial-card__name">{% if item.author_name %}{{ item.author_name }}{% else %}{{ item.name }}{% endif %}</span>
+
+                        <span class="testimonial-card__role">{% if item.author_role %}{{ item.author_role }}{% else %}{{ item.role }}{% endif %}{% if item.company %}, {{ item.company }}{% endif %}</span>
+
+                    </cite>
+
+                </footer>
+
+            </blockquote>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+

@@ -1,0 +1,22 @@
+{% extends "base_portal.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "customer_portal/partials/page_header.html" with title="Save your backup codes" subtitle="Store these codes in a secure place. Each code can be used once if you lose access to your authenticator." %}
+
+<section class="portal-panel">
+    <div class="portal-panel__body stack">
+        {% ui_alert message="These codes will not be shown again." variant="warning" %}
+        <ul class="security-backup-codes">
+            {% for code in backup_codes %}
+            <li><code>{{ code }}</code></li>
+            {% endfor %}
+        </ul>
+        <div class="form-actions">
+            <a href="{% url 'customer_portal:security' %}" class="btn btn--primary btn--md">Done</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

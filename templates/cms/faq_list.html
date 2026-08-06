@@ -1,0 +1,75 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}FAQs — {{ SITE_NAME }}{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        <h1 class="section__title">Frequently Asked Questions</h1>
+
+        <p class="section__subtitle">Answers to common questions about our platform and products.</p>
+
+    </div>
+
+</section>
+
+
+
+<section class="section">
+
+    <div class="container container-prose">
+
+        {% for category, items in faq_groups.items %}
+
+        <div class="faq-group" style="margin-bottom: var(--space-10);">
+
+            <h2 class="section__title" style="font-size: var(--text-xl);">{{ category }}</h2>
+
+            <dl class="faq-list">
+
+                {% for faq in items %}
+
+                <div class="faq-item" style="margin-top: var(--space-6);">
+
+                    <dt class="faq-item__question" style="font-weight: 600;">{{ faq.question }}</dt>
+
+                    <dd class="faq-item__answer text-secondary" style="margin-top: var(--space-2);">{{ faq.answer|linebreaks }}</dd>
+
+                </div>
+
+                {% endfor %}
+
+            </dl>
+
+        </div>
+
+        {% empty %}
+
+        <p class="text-secondary">No FAQs published yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

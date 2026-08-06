@@ -1,0 +1,37 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}White Papers — {{ SITE_NAME }}{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section section--compact"><div class="container"><h1 class="section__title">White Papers</h1><p class="section__subtitle">In-depth research and strategic guides.</p></div></section>
+
+<section class="section"><div class="container"><div class="grid grid--2">
+
+{% for wp in whitepapers %}
+
+<article class="marketing-card">
+
+    <h3><a href="{{ wp.get_absolute_url }}">{{ wp.title }}</a></h3>
+
+    <p>{{ wp.excerpt }}</p>
+
+    {% if wp.is_gated %}<span class="text-secondary">Email required</span>{% endif %}
+
+</article>
+
+{% empty %}<p class="text-secondary">No white papers yet.</p>{% endfor %}
+
+</div></div></section>
+
+{% endblock %}
+
+

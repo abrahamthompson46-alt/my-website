@@ -1,0 +1,57 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}{{ whitepaper.title }} — White Paper{% endblock %}
+
+{% block meta_description %}{{ whitepaper.meta_description|default:whitepaper.excerpt }}{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<article class="section"><div class="container container-prose">
+
+    <h1 class="section__title">{{ whitepaper.title }}</h1>
+
+    <p>{{ whitepaper.excerpt }}</p>
+
+    {% if whitepaper.body %}<div class="product-prose">{{ whitepaper.body|linebreaks }}</div>{% endif %}
+
+
+
+    {% if whitepaper.is_gated and not has_access %}
+
+    <section class="marketing-gate">
+
+        <h2>Get the white paper</h2>
+
+        <form method="post" class="form stack" style="max-width: 24rem;">
+
+            {% csrf_token %}
+
+            {% ui_field field=access_form.email %}
+
+            {% ui_field field=access_form.full_name show_optional=True %}
+
+            {% ui_button label="Get access" variant="primary" size="md" type="submit" %}
+
+        </form>
+
+    </section>
+
+    {% elif whitepaper.file %}
+
+    <a href="{{ whitepaper.file.url }}" class="btn btn--primary btn--md" download>Download white paper</a>
+
+    {% endif %}
+
+</div></article>
+
+{% endblock %}
+
+

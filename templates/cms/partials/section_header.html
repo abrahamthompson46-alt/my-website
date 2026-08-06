@@ -1,0 +1,13 @@
+{% if section %}
+<header class="section__header section__header--center">
+    {% if section.eyebrow %}<p class="section__eyebrow">{{ section.eyebrow }}</p>{% endif %}
+    {% if section.title %}<h2 class="section__title">{{ section.title }}</h2>{% endif %}
+    {% if section.subtitle %}<p class="section__subtitle">{{ section.subtitle }}</p>{% endif %}
+</header>
+{% elif eyebrow or title or subtitle %}
+<header class="section__header section__header--center">
+    {% if eyebrow %}<p class="section__eyebrow">{{ eyebrow }}</p>{% endif %}
+    {% if title %}<h2 class="section__title">{{ title }}</h2>{% endif %}
+    {% if subtitle %}<p class="section__subtitle">{{ subtitle }}</p>{% endif %}
+</header>
+{% endif %}

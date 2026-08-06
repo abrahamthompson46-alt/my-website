@@ -1,0 +1,8 @@
+{% extends "base_ops.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+{% block content %}
+{% include "operations/partials/page_header.html" with title="Leads" subtitle="Newsletter subscribers and marketing leads." %}
+<div class="ops-panel"><div class="ops-panel__body ops-table-wrap"><table class="ops-table"><thead><tr><th>Email</th><th>Name</th><th>Source</th><th>Status</th><th>Subscribed</th></tr></thead><tbody>{% for lead in leads %}<tr><td>{{ lead.email }}</td><td>{{ lead.full_name|default:"—" }}</td><td>{{ lead.source|default:"—" }}</td><td>{% if lead.is_active %}Active{% else %}Unsubscribed{% endif %}</td><td>{{ lead.created_at|date:"M j, Y" }}</td></tr>{% empty %}<tr><td colspan="5">No leads yet.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

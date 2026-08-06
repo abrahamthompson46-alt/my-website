@@ -1,0 +1,91 @@
+/* Marketing / resources pages */
+
+.marketing-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+
+.marketing-hub-card:hover {
+  border-color: var(--color-primary-300);
+  box-shadow: var(--shadow-sm);
+}
+
+.marketing-hub-card h2 {
+  font-size: var(--text-heading-sm);
+  margin: 0;
+}
+
+.marketing-hub-card p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: var(--text-body-sm);
+}
+
+.marketing-section { margin-top: var(--space-12); }
+.marketing-section__title { font-size: var(--text-heading-md); font-weight: var(--font-semibold); margin-bottom: var(--space-4); }
+
+.marketing-card {
+  padding: var(--space-5);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+
+.marketing-card:hover {
+  border-color: var(--color-primary-300);
+  box-shadow: var(--shadow-sm);
+}
+
+.marketing-card__title { font-size: var(--text-heading-sm); margin: var(--space-2) 0; }
+.marketing-card__excerpt, .marketing-card__byline, .marketing-card__meta { font-size: var(--text-body-sm); color: var(--text-secondary); }
+.marketing-card__image { width: 100%; border-radius: var(--radius-md); margin-bottom: var(--space-3); aspect-ratio: 16 / 9; object-fit: cover; }
+
+.marketing-filters, .marketing-tags { margin-bottom: var(--space-6); flex-wrap: wrap; }
+
+.marketing-quote {
+  font-size: var(--text-heading-sm);
+  font-style: italic;
+  border-left: 3px solid var(--color-primary-500);
+  padding-left: var(--space-4);
+  margin: var(--space-4) 0;
+}
+
+.marketing-author-header {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+  margin-bottom: var(--space-8);
+}
+
+.marketing-author-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.marketing-list { list-style: none; padding: 0; }
+.marketing-list li { padding: var(--space-3) 0; border-bottom: 1px solid var(--border-default); }
+
+.marketing-download-list { list-style: none; padding: 0; margin-top: var(--space-6); }
+.marketing-download-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-3);
+  background: var(--surface-card);
+}

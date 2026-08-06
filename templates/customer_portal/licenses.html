@@ -1,0 +1,54 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags graphics_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Licenses" subtitle="View and manage product license keys assigned to your organization." %}
+
+
+
+<div class="portal-panel">
+
+    <div class="portal-panel__body portal-panel__body--flush">
+
+        {% for license in licenses %}
+
+        <div class="portal-list__item">
+
+            <div>
+
+                <p class="portal-list__title">{{ license.product.name }}</p>
+
+                <p class="portal-list__meta"><code>{{ license.license_key }}</code> · {{ license.seats }} seat{{ license.seats|pluralize }}</p>
+
+            </div>
+
+            <div class="cluster">
+
+                {% if license.expires_at %}<span class="text-secondary">Expires {{ license.expires_at|date:"M j, Y" }}</span>{% endif %}
+
+                {% ui_badge label=license.get_status_display variant="primary" %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+        {% ui_empty_state illustration="licenses" message="No licenses assigned." compact=True %}
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

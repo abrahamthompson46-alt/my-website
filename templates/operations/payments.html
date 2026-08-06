@@ -1,0 +1,17 @@
+{% extends "base_ops.html" %}
+{% load ui_tags humanize %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+{% block content %}
+{% include "operations/partials/page_header.html" with title="Payments" subtitle="Gateway transactions and manual payment queue." %}
+<div class="ops-cards">
+    <div class="ops-mini-card"><p class="ops-mini-card__label">Total revenue</p><p class="ops-mini-card__value">${{ revenue_total|default:0|floatformat:0|intcomma }}</p></div>
+    <div class="ops-mini-card"><p class="ops-mini-card__label">Pending</p><p class="ops-mini-card__value">{{ pending_count }}</p></div>
+    <div class="ops-mini-card"><p class="ops-mini-card__label">Refunds</p><p class="ops-mini-card__value">{{ refund_count }}</p></div>
+</div>
+<div class="ops-filters">
+    <a href="{% url 'operations:payments' %}" class="ops-filter-chip{% if not active_status %} is-active{% endif %}">All</a>
+    {% for value, label in statuses %}<a href="?status={{ value }}" class="ops-filter-chip{% if active_status == value %} is-active{% endif %}">{{ label }}</a>{% endfor %}
+</div>
+<div class="ops-panel"><div class="ops-panel__body ops-table-wrap"><table class="ops-table"><thead><tr><th>Reference</th><th>Customer</th><th>Gateway</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>{% for p in payments %}<tr><td>{{ p.reference }}</td><td>{{ p.user.email }}</td><td>{{ p.gateway.name }}</td><td>{{ p.currency }} {{ p.amount }}</td><td>{{ p.get_status_display }}</td><td>{{ p.created_at|date:"M j, Y" }}</td><td>{% if p.status == "pending_confirmation" %}<form method="post" action="{% url 'operations:payment_confirm' p.pk %}" class="ops-inline-form">{% csrf_token %}<button type="submit" class="ops-btn ops-btn--sm ops-btn--primary">Confirm</button></form>{% else %}—{% endif %}</td></tr>{% empty %}<tr><td colspan="7">No payments.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

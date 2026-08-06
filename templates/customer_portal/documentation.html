@@ -1,0 +1,46 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags graphics_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Documentation" subtitle="Product guides and API references for your subscriptions." %}
+
+
+
+<div class="grid grid--2 stack stack--lg">
+
+    {% for item in products %}
+
+    <article class="doc-product-card">
+
+        <div>
+
+            <p class="doc-product-card__name">{{ item.product.name }}</p>
+
+            {% if item.plan %}<p class="doc-product-card__plan">{{ item.plan }} plan</p>{% endif %}
+
+            {% if item.product.short_description %}<p class="portal-list__meta">{{ item.product.short_description }}</p>{% endif %}
+
+        </div>
+
+        <a href="{{ item.documentation_url }}" class="btn btn--secondary btn--sm" target="_blank" rel="noopener">View docs</a>
+
+    </article>
+
+    {% empty %}
+    {% ui_empty_state illustration="documentation" message="No documentation available." compact=True %}
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
+
+

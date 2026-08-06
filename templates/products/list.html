@@ -1,0 +1,56 @@
+{% extends "base_public.html" %}
+{% load static ui_tags graphics_tags %}
+
+{% block title %}Products — {{ SITE_NAME }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/products.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+{% ui_breadcrumbs items=breadcrumb_items %}
+{% endblock %}
+
+{% block content %}
+<section class="section products-page">
+    <div class="container">
+        {% include "components/layout/page_header.html" with title="Our Products" subtitle="Modular SaaS solutions for every industry — deploy individually or as a unified platform." %}
+
+        <div class="products-toolbar split">
+            <nav class="category-filter" aria-label="Product categories">
+                <a href="{% url 'products:list' %}"
+                   class="category-filter__link{% if not active_category %} is-active{% endif %}">All</a>
+                {% for category in categories %}
+                <a href="{% url 'products:category' category_slug=category.slug %}"
+                   class="category-filter__link{% if active_category.slug == category.slug %} is-active{% endif %}">
+                    {{ category.name }}
+                </a>
+                {% endfor %}
+            </nav>
+            {% ui_button label="Compare products" url_name="products:compare" variant="secondary" size="sm" %}
+        </div>
+
+        {% if products %}
+        <div class="grid grid--3 products-grid">
+            {% for product in products %}
+            {% include "products/partials/product_card.html" with product=product %}
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination" aria-label="Products pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn--ghost btn--sm">Previous</a>
+            {% endif %}
+            <span class="pagination__info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn btn--ghost btn--sm">Next</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+        {% else %}
+        {% ui_empty_state illustration="products" title="No products yet" message="Published products will appear here. Check back soon." %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base_public.html" %}
+{% load static ui_tags %}
+
+{% block title %}Something Went Wrong — {{ SITE_NAME }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/errors.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="error-page__inner">
+        <p class="error-page__code" aria-hidden="true">500</p>
+        <h1 class="error-page__title">Something went wrong</h1>
+        <p class="error-page__message">We're working on it. Please try again in a few minutes, or contact our support team if the problem continues.</p>
+        <div class="error-page__actions">
+            {% ui_button label="Go to homepage" url_name="website:home" variant="primary" icon="home" %}
+            {% ui_button label="Contact support" url_name="contact:form" variant="secondary" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base_public.html" %}
+
+{% load ui_tags %}
+
+
+
+{% block title %}{{ event.title }} — Events{% endblock %}
+
+{% block meta_description %}{{ event.meta_description|default:event.excerpt }}{% endblock %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<article class="section">
+
+    <div class="container container-prose">
+
+        {% ui_badge label=event.get_event_type_display variant="primary" %}
+
+        <h1 class="section__title">{{ event.title }}</h1>
+
+        <p class="text-secondary">{{ event.starts_at|date:"F j, Y g:i A" }}{% if event.ends_at %} – {{ event.ends_at|date:"g:i A" }}{% endif %}</p>
+
+        {% if event.location %}<p><strong>Location:</strong> {{ event.location }}</p>{% endif %}
+
+        {% if event.excerpt %}<p>{{ event.excerpt }}</p>{% endif %}
+
+        {% if event.body %}<div class="product-prose">{{ event.body|linebreaks }}</div>{% endif %}
+
+        <div class="cluster" style="margin-top: var(--space-6);">
+
+            {% if event.registration_url %}<a href="{{ event.registration_url }}" class="btn btn--primary btn--md" target="_blank" rel="noopener">Register</a>{% endif %}
+
+            {% if event.virtual_url %}<a href="{{ event.virtual_url }}" class="btn btn--secondary btn--md" target="_blank" rel="noopener">Join online</a>{% endif %}
+
+        </div>
+
+    </div>
+
+</article>
+
+{% endblock %}
+
+

@@ -1,0 +1,147 @@
+{% extends "base_public.html" %}
+
+{% load static ui_tags %}
+
+
+
+{% block title %}Blog — {{ SITE_NAME }}{% endblock %}
+
+{% block meta_description %}Product updates, guides, and insights from the {{ SITE_NAME }} team.{% endblock %}
+
+
+
+{% block breadcrumbs %}
+
+{% ui_breadcrumbs items=breadcrumb_items %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+{% if hero %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        {% if hero.eyebrow %}<p class="section__eyebrow">{{ hero.eyebrow }}</p>{% endif %}
+
+        <h1 class="section__title">{{ hero.headline }}</h1>
+
+        {% if hero.subheadline %}<p class="section__subtitle">{{ hero.subheadline }}</p>{% endif %}
+
+    </div>
+
+</section>
+
+{% else %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        <h1 class="section__title">Blog</h1>
+
+        <p class="section__subtitle">Product updates, guides, and company insights.</p>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+
+<section class="section">
+
+    <div class="container">
+
+        {% if categories %}
+
+        <nav class="cluster" aria-label="Blog categories" style="margin-bottom: var(--space-8);">
+
+            <a href="{% url 'blog:list' %}" class="btn btn--{% if not active_category %}primary{% else %}ghost{% endif %} btn--sm">All</a>
+
+            {% for category in categories %}
+
+            <a href="{% url 'blog:category' category_slug=category.slug %}" class="btn btn--{% if active_category == category.slug %}primary{% else %}ghost{% endif %} btn--sm">{{ category.name }}</a>
+
+            {% endfor %}
+
+        </nav>
+
+        {% endif %}
+
+
+
+        {% if posts %}
+
+        <div class="grid grid--3">
+
+            {% for post in posts %}
+
+            <article class="news-card">
+
+                {% if post.featured_image %}
+
+                <img src="{{ post.featured_image.url }}" alt="" class="news-card__image" loading="lazy">
+
+                {% endif %}
+
+                <div class="news-card__meta">
+
+                    {% if post.category %}{% ui_badge label=post.category.name variant="primary" %}{% endif %}
+
+                    {% if post.published_at %}<time datetime="{{ post.published_at|date:'Y-m-d' }}">{{ post.published_at|date:"F j, Y" }}</time>{% endif %}
+
+                </div>
+
+                <h2 class="news-card__title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+
+                <p class="news-card__excerpt">{{ post.excerpt }}</p>
+
+                <p class="news-card__read-time">{{ post.read_time_display }}</p>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% if page_obj.has_other_pages %}
+
+        <nav class="pagination cluster" aria-label="Blog pagination" style="margin-top: var(--space-10); justify-content: center;">
+
+            {% if page_obj.has_previous %}
+
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn--secondary btn--sm">Previous</a>
+
+            {% endif %}
+
+            <span class="text-secondary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+
+            <a href="?page={{ page_obj.next_page_number }}" class="btn btn--secondary btn--sm">Next</a>
+
+            {% endif %}
+
+        </nav>
+
+        {% endif %}
+
+        {% else %}
+
+        <p class="text-secondary">No blog posts published yet.</p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

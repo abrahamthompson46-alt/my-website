@@ -1,0 +1,30 @@
+{% extends "base_portal.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "customer_portal/partials/page_header.html" with title="Enable authenticator app" subtitle="Scan the QR code with Google Authenticator, Authy, or another TOTP app." %}
+
+<section class="portal-panel">
+    <div class="portal-panel__body stack">
+        <div class="security-mfa-setup">
+            {% if qr_data_uri %}
+            <img src="{{ qr_data_uri }}" alt="Authenticator QR code" width="200" height="200" class="security-mfa-setup__qr">
+            {% endif %}
+            <div>
+                <p class="text-secondary">Or enter this secret manually:</p>
+                <code class="security-mfa-setup__secret">{{ secret }}</code>
+            </div>
+        </div>
+        <form method="post" class="form stack" novalidate>
+            {% csrf_token %}
+            {% ui_field field=form.code %}
+            <div class="form-actions">
+                {% ui_button label="Confirm and enable MFA" variant="primary" size="md" type="submit" %}
+                <a href="{% url 'customer_portal:security' %}" class="btn btn--ghost btn--md">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

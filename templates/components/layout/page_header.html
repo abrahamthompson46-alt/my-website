@@ -1,0 +1,22 @@
+{# Layout primitives — use CSS classes directly or wrap content in these structures #}
+
+{# Page header block used inside any layout #}
+{% comment %}
+Usage:
+{% include "components/layout/page_header.html" with title="Page Title" subtitle="Optional subtitle" %}
+{% endcomment %}
+<div class="page-header {{ extra_class|default:'' }}">
+    <div class="page-header__content">
+        {% if title %}
+        <h1 class="page-header__title">{{ title }}</h1>
+        {% endif %}
+        {% if subtitle %}
+        <p class="page-header__subtitle">{{ subtitle }}</p>
+        {% endif %}
+    </div>
+    {% if actions %}
+    <div class="page-header__actions">
+        {{ actions }}
+    </div>
+    {% endif %}
+</div>

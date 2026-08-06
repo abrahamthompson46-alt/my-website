@@ -1,0 +1,22 @@
+{% extends "base_portal.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "customer_portal/partials/page_header.html" with title="Verify Your Email" subtitle="Confirm your email address to unlock full portal access." %}
+
+<section class="portal-panel">
+    <div class="portal-panel__body stack">
+        {% if email_verified %}
+        {% ui_alert message="Your email is verified." variant="success" %}
+        {% else %}
+        {% ui_alert message="Please verify your email to secure your account." variant="warning" %}
+        <form method="post">
+            {% csrf_token %}
+            {% ui_button label="Send verification email" variant="primary" size="md" type="submit" %}
+        </form>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

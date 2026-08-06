@@ -1,0 +1,61 @@
+{% extends "documentation/base_docs.html" %}
+{% load ui_tags %}
+
+{% block title %}API Documentation — {{ SITE_NAME }}{% endblock %}
+
+{% block docs_content %}
+<div class="docs-page">
+    <header class="docs-page__header">
+        <h1 class="docs-page__title">API Documentation</h1>
+        <p class="docs-page__subtitle">REST API reference for integrating with the platform programmatically.</p>
+    </header>
+
+    {% if api_articles %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">Overview</h2>
+        <div class="docs-card-grid">
+            {% for article in api_articles %}
+            <a href="{{ article.get_absolute_url }}" class="docs-card">
+                <h3 class="docs-card__title">{{ article.title }}</h3>
+                <p class="docs-card__excerpt">{{ article.display_excerpt }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% for group, group_endpoints in endpoint_groups.items %}
+    <section class="docs-section">
+        <h2 class="docs-section__title">{{ group }}</h2>
+        <div class="docs-api-list">
+            {% for endpoint in group_endpoints %}
+            <article class="docs-api-endpoint" id="endpoint-{{ endpoint.pk }}">
+                <div class="docs-api-endpoint__header">
+                    <span class="docs-api-method docs-api-method--{{ endpoint.method|lower }}">{{ endpoint.method }}</span>
+                    <code class="docs-api-endpoint__path">{{ endpoint.path }}</code>
+                </div>
+                <h3 class="docs-api-endpoint__name">{{ endpoint.name }}</h3>
+                <p class="docs-api-endpoint__summary">{{ endpoint.summary }}</p>
+                {% if endpoint.description %}<div class="docs-prose">{{ endpoint.description|linebreaks }}</div>{% endif %}
+                {% if endpoint.request_example %}
+                <div class="docs-code-block">
+                    <p class="docs-code-block__label">Request example</p>
+                    <pre><code>{{ endpoint.request_example }}</code></pre>
+                </div>
+                {% endif %}
+                {% if endpoint.response_example %}
+                <div class="docs-code-block">
+                    <p class="docs-code-block__label">Response example</p>
+                    <pre><code>{{ endpoint.response_example }}</code></pre>
+                </div>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% empty %}
+    <p class="text-secondary">No API endpoints documented yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
+

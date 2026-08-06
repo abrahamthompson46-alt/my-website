@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:SITE_NAME }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'css/admin-enterprise.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div id="branding">
+    <h1 id="site-name">
+        <a href="{% url 'control_room:dashboard' %}">{{ site_header|default:SITE_NAME }}</a>
+    </h1>
+    <p class="admin-dashboard-link"><a href="{% url 'control_room:dashboard' %}">Open Super Dashboard →</a></p>
+</div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block footer %}
+<div id="footer"></div>
+{% endblock %}

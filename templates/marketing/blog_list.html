@@ -1,0 +1,129 @@
+{% extends "base_public.html" %}
+
+{% load static ui_tags graphics_tags %}
+
+
+
+{% block title %}Blog — {{ SITE_NAME }}{% endblock %}
+
+{% block meta_description %}Product updates, guides, and insights from the {{ SITE_NAME }} team.{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages/marketing.css' %}">{% endblock %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+<section class="section section--compact">
+
+    <div class="container">
+
+        {% if hero and hero.headline %}<h1 class="section__title">{{ hero.headline }}</h1>{% else %}<h1 class="section__title">Blog</h1>{% endif %}
+
+        <p class="section__subtitle">Product updates, guides, and company insights.</p>
+
+    </div>
+
+</section>
+
+
+
+<section class="section">
+
+    <div class="container">
+
+        {% if categories %}
+
+        <nav class="cluster marketing-filters" aria-label="Blog categories">
+
+            <a href="{% url 'marketing:blog_list' %}" class="btn btn--{% if not active_category and not active_tag %}primary{% else %}ghost{% endif %} btn--sm">All</a>
+
+            {% for category in categories %}
+
+            <a href="{% url 'marketing:blog_category' category_slug=category.slug %}" class="btn btn--{% if active_category == category.slug %}primary{% else %}ghost{% endif %} btn--sm">{{ category.name }}</a>
+
+            {% endfor %}
+
+        </nav>
+
+        {% endif %}
+
+
+
+        {% if tags %}
+
+        <nav class="cluster marketing-tags" aria-label="Blog tags">
+
+            {% for tag in tags %}
+
+            <a href="{% url 'marketing:blog_tag' tag_slug=tag.slug %}" class="btn btn--{% if active_tag == tag.slug %}primary{% else %}ghost{% endif %} btn--xs">{{ tag.name }}</a>
+
+            {% endfor %}
+
+        </nav>
+
+        {% endif %}
+
+
+
+        {% if posts %}
+
+        <div class="grid grid--3">
+
+            {% for post in posts %}
+
+            <article class="marketing-card">
+
+                {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy" decoding="async" class="marketing-card__image">{% else %}{% ui_blog_cover post=post %}{% endif %}
+
+                <div class="marketing-card__meta">
+
+                    {% if post.category %}{% ui_badge label=post.category.name variant="primary" %}{% endif %}
+
+                    {% if post.published_at %}<time datetime="{{ post.published_at|date:'Y-m-d' }}">{{ post.published_at|date:"F j, Y" }}</time>{% endif %}
+
+                </div>
+
+                <h2 class="marketing-card__title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+
+                <p class="marketing-card__excerpt">{{ post.excerpt }}</p>
+
+                <p class="marketing-card__byline">{{ post.display_author }} · {{ post.read_time_display }}</p>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% if page_obj.has_other_pages %}
+
+        <nav class="pagination cluster" style="margin-top: var(--space-10); justify-content: center;">
+
+            {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}" class="btn btn--secondary btn--sm">Previous</a>{% endif %}
+
+            <span class="text-secondary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}" class="btn btn--secondary btn--sm">Next</a>{% endif %}
+
+        </nav>
+
+        {% endif %}
+
+        {% else %}
+
+        {% ui_empty_state illustration="blog" title="No posts yet" message="Product updates and guides will appear here when published." %}
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+

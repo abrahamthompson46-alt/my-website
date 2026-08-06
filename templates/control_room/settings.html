@@ -1,0 +1,86 @@
+{% extends "base_control_room.html" %}
+{% load static ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Site Settings" subtitle="Branding, SEO defaults, contact information, maintenance mode, and global feature toggles." %}
+
+<form method="post" class="control-form">
+    {% csrf_token %}
+    <div class="ops-grid ops-grid--2">
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Branding</h2></div>
+            <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.site_name %}
+                {% ui_field field=form.site_tagline %}
+                {% ui_field field=form.site_description extra_class="form-field--full" %}
+                {% ui_field field=form.footer_copyright extra_class="form-field--full" %}
+            </div>
+        </section>
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Brand colors</h2></div>
+            <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.brand_theme_preset extra_class="form-field--full" %}
+                <div class="brand-color-preview form-field--full" aria-hidden="true">
+                    <span class="brand-color-preview__swatch" style="background: {{ form.brand_primary_color.value|default:BRAND_PRIMARY_COLOR }};"></span>
+                    <span class="brand-color-preview__swatch brand-color-preview__swatch--accent" style="background: {{ form.brand_accent_color.value|default:BRAND_ACCENT_COLOR }};"></span>
+                    <span class="brand-color-preview__label">Live preview of primary and accent colors</span>
+                </div>
+                {% ui_field field=form.brand_primary_color %}
+                {% ui_field field=form.brand_accent_color %}
+                <p class="control-form__hint form-field--full">Choose a preset or select <strong>Custom colors</strong> and pick your own hex values. Changes apply site-wide instantly after saving.</p>
+            </div>
+        </section>
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">SEO defaults</h2></div>
+            <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.default_seo_title %}
+                {% ui_field field=form.seo_twitter_handle %}
+                {% ui_field field=form.seo_default_og_image extra_class="form-field--full" %}
+            </div>
+        </section>
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Contact</h2></div>
+            <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.contact_email %}
+                {% ui_field field=form.support_email %}
+                {% ui_field field=form.contact_phone %}
+            </div>
+        </section>
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Header CTAs</h2></div>
+            <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.header_cta_primary_label %}
+                {% ui_field field=form.header_cta_primary_url_name %}
+                {% ui_field field=form.header_cta_secondary_label %}
+                {% ui_field field=form.header_cta_secondary_url_name %}
+            </div>
+        </section>
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Maintenance</h2></div>
+            <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.maintenance_mode %}
+                {% ui_field field=form.maintenance_message extra_class="form-field--full" %}
+            </div>
+        </section>
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Platform toggles</h2></div>
+            <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.demo_form_enabled %}
+                {% ui_field field=form.newsletter_enabled %}
+                {% ui_field field=form.partner_program_enabled %}
+                {% ui_field field=form.public_registration_enabled %}
+            </div>
+        </section>
+    </div>
+    <div class="control-form__actions">
+        {% ui_button label="Save settings" type="submit" variant="primary" %}
+    </div>
+</form>
+{% endblock %}
+
+{% block control_js %}
+{{ theme_presets_json|json_script:"brand-theme-presets-data" }}
+<script src="{% static 'js/brand-settings.js' %}"></script>
+{% endblock %}

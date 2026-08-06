@@ -1,0 +1,54 @@
+{% extends "base_portal.html" %}
+
+{% load ui_tags humanize graphics_tags %}
+
+
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+
+
+{% block content %}
+
+{% include "customer_portal/partials/page_header.html" with title="Subscriptions" subtitle="Manage your active product subscriptions and renewal dates." %}
+
+
+
+<div class="portal-panel">
+
+    <div class="portal-panel__body portal-panel__body--flush">
+
+        {% for sub in subscriptions %}
+
+        <div class="portal-list__item">
+
+            <div>
+
+                <p class="portal-list__title">{{ sub.product.name }}</p>
+
+                <p class="portal-list__meta">{{ sub.plan_name }} · {{ sub.get_billing_interval_display }} · Started {{ sub.started_at|date:"M j, Y" }}</p>
+
+            </div>
+
+            <div class="cluster">
+
+                <span>${{ sub.amount|floatformat:2|intcomma }}/{{ sub.billing_interval }}</span>
+
+                {% ui_badge label=sub.get_status_display variant="primary" %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+        {% ui_empty_state illustration="subscriptions" message="No subscriptions found." compact=True %}
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

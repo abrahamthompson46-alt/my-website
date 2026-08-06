@@ -1,0 +1,20 @@
+{% load ui_tags %}
+
+<div class="ops-page-header">
+    {% if eyebrow %}<p class="ops-page-header__eyebrow">{{ eyebrow }}</p>{% endif %}
+    <div class="ops-page-header__row">
+        <div>
+            <h1 class="ops-page-header__title">{{ title }}</h1>
+            {% if subtitle %}<p class="ops-page-header__subtitle">{{ subtitle }}</p>{% endif %}
+        </div>
+        {% if action_url or action_url_name %}
+        <div class="ops-page-header__actions">
+            {% if action_url_name %}
+            {% ui_button label=action_label|default:"View" url_name=action_url_name variant="secondary" size="md" %}
+            {% else %}
+            {% ui_button label=action_label|default:"View" url=action_url variant="secondary" size="md" %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>

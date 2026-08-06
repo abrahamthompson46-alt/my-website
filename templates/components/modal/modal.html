@@ -1,0 +1,33 @@
+{% load ui_tags %}
+<div class="modal"
+     id="{{ modal_id }}"
+     data-modal
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="{{ modal_id }}-title"
+     hidden>
+    <div class="modal__backdrop" data-modal-close tabindex="-1"></div>
+    <div class="modal__dialog modal__dialog--{{ size }} {{ extra_class }}">
+        <div class="modal__header">
+            <h2 class="modal__title" id="{{ modal_id }}-title">{{ title }}</h2>
+            {% if dismissible %}
+            <button type="button"
+                    class="btn btn--ghost btn--sm btn--icon-only modal__close"
+                    aria-label="Close dialog"
+                    data-modal-close>
+                <svg class="icon icon--md" aria-hidden="true" data-icon="x"></svg>
+            </button>
+            {% endif %}
+        </div>
+        <div class="modal__body" data-modal-body>
+            {{ body }}
+        </div>
+        {% if footer_actions %}
+        <div class="modal__footer">
+            {% for action in footer_actions %}
+            {% ui_button label=action.label url=action.url url_name=action.url_name variant=action.variant|default:"secondary" size="sm" type=action.type|default:"button" data_attrs=action.data_attrs %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>

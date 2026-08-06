@@ -1,0 +1,55 @@
+<div class="mobile-drawer" data-mobile-drawer hidden aria-hidden="true">
+    <div class="mobile-drawer__backdrop" data-mobile-drawer-close></div>
+    <div class="mobile-drawer__panel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+        <div class="mobile-drawer__header">
+            <a href="{% url 'website:home' %}" class="brand-link">
+                <span class="brand-mark" aria-hidden="true"></span>
+                <span class="brand-text">{{ SITE_NAME }}</span>
+            </a>
+            <button type="button"
+                    class="btn btn--ghost btn--sm btn--icon-only"
+                    aria-label="Close menu"
+                    data-mobile-drawer-close>
+                <svg class="icon icon--md" aria-hidden="true" data-icon="x"></svg>
+            </button>
+        </div>
+        <nav class="mobile-drawer__nav" aria-label="Mobile navigation">
+            <ul class="mobile-nav">
+                {% for item in PUBLIC_HEADER_NAV %}
+                <li class="mobile-nav__item">
+                    {% if item.type == "mega" %}
+                    <button type="button"
+                            class="mobile-nav__trigger"
+                            aria-expanded="false"
+                            data-mobile-accordion="{{ item.key }}">
+                        {{ item.label }}
+                        <svg class="icon icon--sm" aria-hidden="true" data-icon="chevron-down"></svg>
+                    </button>
+                    <ul class="mobile-nav__sub" data-mobile-accordion-panel="{{ item.key }}" hidden>
+                        {% for column in item.columns %}
+                        {% for link in column.links %}
+                        <li>
+                            <a href="{% if link.url_name %}{% url link.url_name %}{% else %}#{% endif %}"
+                               class="mobile-nav__link">
+                                {{ link.label }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <a href="{% if item.url_name %}{% url item.url_name %}{% else %}#{% endif %}"
+                       class="mobile-nav__link">
+                        {{ item.label }}
+                    </a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+        <div class="mobile-drawer__footer">
+            <a href="{% url 'accounts:login' %}" class="btn btn--secondary btn--md btn--full">Log in</a>
+            <a href="{% url 'contact:form' %}" class="btn btn--primary btn--md btn--full">Start Free Trial</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+{% extends "base_ops.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+{% block content %}
+{% include "operations/partials/page_header.html" with title="Demo Requests" subtitle="Sales pipeline from product and homepage forms." %}
+<div class="ops-filters">
+    <a href="{% url 'operations:demo_requests' %}" class="ops-filter-chip{% if not active_status %} is-active{% endif %}">All</a>
+    {% for value, label in statuses %}<a href="?status={{ value }}" class="ops-filter-chip{% if active_status == value %} is-active{% endif %}">{{ label }}</a>{% endfor %}
+</div>
+<div class="ops-panel"><div class="ops-panel__body ops-table-wrap"><table class="ops-table"><thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Product</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>{% for d in demo_requests %}<tr><td>{{ d.full_name }}</td><td>{{ d.company }}</td><td>{{ d.work_email }}</td><td>{% if d.product %}{{ d.product.name }}{% else %}General{% endif %}</td><td>{{ d.get_status_display }}</td><td>{{ d.created_at|date:"M j, Y" }}</td><td><form method="post" action="{% url 'operations:demo_request_update' d.pk %}" class="ops-inline-form">{% csrf_token %}<select name="status" class="ops-select">{% for value, label in statuses %}<option value="{{ value }}"{% if d.status == value %} selected{% endif %}>{{ label }}</option>{% endfor %}</select><button type="submit" class="ops-btn ops-btn--sm">Update</button></form></td></tr>{% empty %}<tr><td colspan="7">No demo requests.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

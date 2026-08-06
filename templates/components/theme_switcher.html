@@ -1,0 +1,26 @@
+<div class="theme-switcher theme-switcher--{{ variant }} {{ extra_class }}" data-theme-switcher>
+    {% if variant == "segmented" %}
+    <div class="theme-switcher__segmented" role="group" aria-label="Theme preference">
+        <button type="button" class="theme-switcher__option" data-theme-value="light" aria-pressed="false">
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="sun"></svg>
+            <span>Light</span>
+        </button>
+        <button type="button" class="theme-switcher__option" data-theme-value="system" aria-pressed="false">
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="monitor"></svg>
+            <span>System</span>
+        </button>
+        <button type="button" class="theme-switcher__option" data-theme-value="dark" aria-pressed="false">
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="moon"></svg>
+            <span>Dark</span>
+        </button>
+    </div>
+    {% else %}
+    <button type="button"
+            class="btn btn--ghost btn--sm btn--icon-only theme-switcher__toggle"
+            aria-label="Toggle theme"
+            data-theme-toggle>
+        <svg class="icon icon--md theme-switcher__icon-light" aria-hidden="true" data-icon="sun"></svg>
+        <svg class="icon icon--md theme-switcher__icon-dark" aria-hidden="true" data-icon="moon"></svg>
+    </button>
+    {% endif %}
+</div>

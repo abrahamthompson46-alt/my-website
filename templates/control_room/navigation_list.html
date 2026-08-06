@@ -1,0 +1,39 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Navigation" subtitle="Edit header, footer, and portal menus stored as JSON. Changes apply immediately across the site." %}
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>Menu</th>
+                    <th>Code</th>
+                    <th>Items</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for menu in menus %}
+                <tr>
+                    <td><strong>{{ menu.name }}</strong></td>
+                    <td><code>{{ menu.code }}</code></td>
+                    <td>{{ menu.structure|length }}</td>
+                    <td>{% if menu.is_active %}<span class="control-badge control-badge--success">Active</span>{% else %}<span class="control-badge">Inactive</span>{% endif %}</td>
+                    <td class="ops-table__actions">
+                        <a href="{% url 'control_room:navigation_edit' menu.pk %}" class="btn btn--ghost btn--sm">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No navigation menus yet. Run <code>python manage.py seed_control_room</code>.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

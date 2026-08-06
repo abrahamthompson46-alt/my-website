@@ -1,0 +1,35 @@
+{% extends "base_auth.html" %}
+{% load ui_tags %}
+
+{% block title %}Signed Out — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="auth-panel auth-panel--logout">
+    <div class="auth-logout__icon" aria-hidden="true">
+        <span class="auth-logout__icon-ring"></span>
+        <svg class="icon icon--lg" data-icon="check-circle"></svg>
+    </div>
+
+    <header class="auth-panel__header auth-panel__header--center">
+        <p class="auth-panel__eyebrow auth-panel__eyebrow--success">Session ended</p>
+        <h1 class="auth-panel__title">You're signed out</h1>
+        <p class="auth-panel__subtitle">Your session has been closed securely. Sign in again anytime to return to your dashboard.</p>
+    </header>
+
+    <ul class="auth-logout__checks">
+        <li><svg class="icon icon--xs" aria-hidden="true" data-icon="check"></svg> Authentication cleared</li>
+        <li><svg class="icon icon--xs" aria-hidden="true" data-icon="check"></svg> Session tokens revoked</li>
+        <li><svg class="icon icon--xs" aria-hidden="true" data-icon="check"></svg> Safe to close this browser tab</li>
+    </ul>
+
+    <div class="auth-form__actions auth-form__actions--stack">
+        {% ui_button label="Sign in again" url_name="accounts:login" variant="primary" size="lg" full_width=True icon="log-in" %}
+        {% ui_button label="Return to homepage" url_name="website:home" variant="secondary" size="md" full_width=True %}
+    </div>
+
+    <p class="auth-panel__staff-note">
+        <svg class="icon icon--xs" aria-hidden="true" data-icon="info"></svg>
+        If this wasn't you, contact <a href="{% url 'contact:form' %}">support</a> immediately.
+    </p>
+</section>
+{% endblock %}

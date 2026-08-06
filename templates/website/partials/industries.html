@@ -1,0 +1,119 @@
+{% load ui_tags graphics_tags %}
+
+
+
+<section class="section section--alt home-industries" aria-labelledby="industries-heading">
+
+
+
+    <div class="container">
+
+
+
+        {% include "cms/partials/section_header.html" with section=industries_section eyebrow="Industries" title="Solutions for every sector" subtitle="Purpose-built products addressing the unique challenges of your industry." %}
+
+
+
+        <div class="grid grid--2 home-industries__grid">
+
+
+
+            {% for industry in industries %}
+
+
+
+            <article class="industry-card">
+
+
+
+                <div class="industry-card__header">
+
+
+
+                    {% if industry.icon %}
+
+
+
+                    {% ui_icon_badge icon=industry.icon size="lg" extra_class="industry-card__icon" %}
+
+
+
+                    {% endif %}
+
+
+
+                    <h3 class="industry-card__title">{{ industry.title }}</h3>
+
+
+
+                </div>
+
+
+
+                <p class="industry-card__description">{{ industry.description }}</p>
+
+
+
+                <div class="industry-card__products">
+
+
+
+                    {% if industry.extra_data.products %}
+
+
+
+                        {% for product in industry.extra_data.products %}
+
+
+
+                        {% ui_badge label=product variant="primary" %}
+
+
+
+                        {% endfor %}
+
+
+
+                    {% elif industry.products %}
+
+
+
+                        {% for product in industry.products %}
+
+
+
+                        {% ui_badge label=product variant="primary" %}
+
+
+
+                        {% endfor %}
+
+
+
+                    {% endif %}
+
+
+
+                </div>
+
+
+
+            </article>
+
+
+
+            {% endfor %}
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</section>
+
+
