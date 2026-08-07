@@ -19,9 +19,9 @@ class PlatformSettings(BaseModel):
     contact_phone = models.CharField(max_length=40, blank=True)
     footer_copyright = models.CharField(max_length=255, blank=True, default="© Enterprise Platform. All rights reserved.")
     header_cta_primary_label = models.CharField(max_length=60, blank=True, default="Start Free Trial")
-    header_cta_primary_url_name = models.CharField(max_length=120, blank=True, default="contact:form")
+    header_cta_primary_url_name = models.CharField(max_length=120, blank=True, default="contact:trial")
     header_cta_secondary_label = models.CharField(max_length=60, blank=True, default="Request a Demo")
-    header_cta_secondary_url_name = models.CharField(max_length=120, blank=True, default="contact:form")
+    header_cta_secondary_url_name = models.CharField(max_length=120, blank=True, default="contact:demo")
     maintenance_mode = models.BooleanField(default=False)
     maintenance_message = models.TextField(
         blank=True,
@@ -33,7 +33,7 @@ class PlatformSettings(BaseModel):
     public_registration_enabled = models.BooleanField(default=False)
     brand_theme_preset = models.CharField(
         max_length=32,
-        default="navy_gold",
+        default="zreta_indigo",
         help_text="Site color theme preset.",
     )
     brand_primary_color = models.CharField(

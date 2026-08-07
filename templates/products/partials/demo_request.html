@@ -9,6 +9,7 @@
             <div class="home-demo__form-panel">
                 <form method="post" action="{{ product.get_absolute_url }}#demo" class="form form--compact form--demo-grid" novalidate>
                     {% csrf_token %}
+                    <div class="hp-field" aria-hidden="true">{{ form.company_website }}</div>
                     <div class="form__fields">
                         {% ui_field field=form.full_name %}
                         {% ui_field field=form.work_email %}

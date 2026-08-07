@@ -1,4 +1,4 @@
-from common.forms import BaseForm
+from common.forms import BaseForm, HoneypotMixin
 from django import forms
 
 from products.models import Product
@@ -12,7 +12,7 @@ def get_product_choices():
     return choices
 
 
-class DemoRequestForm(BaseForm):
+class DemoRequestForm(HoneypotMixin, BaseForm):
     full_name = forms.CharField(max_length=120, label="Full name")
     work_email = forms.EmailField(label="Work email")
     company = forms.CharField(max_length=200, label="Company")
@@ -27,6 +27,19 @@ class DemoRequestForm(BaseForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["product_interest"].choices = get_product_choices()
+
+    def clean(self):
+        cleaned = super().clean()
+        from common.services.demo_requests import is_duplicate_demo
+
+        email = cleaned.get("work_email", "")
+        product_interest = cleaned.get("product_interest", "")
+        product_id = product_interest if product_interest not in ("", "multiple") else None
+        if email and is_duplicate_demo(work_email=email, product_id=product_id):
+            raise forms.ValidationError(
+                "We already received your demo request recently. Our team will contact you soon."
+            )
+        return cleaned
 
 
 class NewsletterForm(BaseForm):

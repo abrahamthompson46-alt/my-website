@@ -176,13 +176,16 @@ PARTNER_LOGOS = [
 ]
 
 HERO = {
-    "eyebrow": "Enterprise SaaS Platform",
-    "headline": "Software that powers organizations across every industry",
+    "eyebrow": "Zreta Enterprise Platform",
+    "headline": "Software built for every organization",
+    "headline_line1": "Software built for",
+    "headline_line2": "every organization",
     "subheadline": (
-        "From churches to hospitals, schools to microfinance — one trusted platform "
-        "delivering modular products built for scale, security, and regional compliance."
+        "ChurchHub, Microfinance Core, and ERP Suite — modular products on one trusted "
+        "platform, built for scale, security, and compliance across Africa and beyond."
     ),
-    "trust_text": "Trusted by 2,500+ organizations worldwide",
+    "trust_text": "Trusted by 2,500+ organizations in 18 countries",
+    "product_pills": ["ChurchHub", "Microfinance Core", "ERP Suite"],
 }
 
 

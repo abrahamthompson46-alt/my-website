@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from accounts.mixins import EmailVerifiedRequiredMixin
 
-class PortalMixin(LoginRequiredMixin):
+
+class PortalMixin(EmailVerifiedRequiredMixin, LoginRequiredMixin):
     """Base mixin for all customer portal views."""
 
     login_url = "accounts:login"

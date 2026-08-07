@@ -1,44 +1,44 @@
 /**
- * Enterprise Design System — Classic Navy & Gold v2.0
- * Timeless corporate palette: deep navy primary, warm stone neutrals, refined gold accent.
+ * Enterprise Design System — Zreta Sky & Mint v4.0
+ * Light, airy SaaS palette: soft sky blue primary, fresh mint accent.
  */
 
 :root {
-  /* ── Color: Primary (Classic Navy) ── */
-  --color-primary-50: #eef2f7;
-  --color-primary-100: #d4dce8;
-  --color-primary-200: #a9b9d1;
-  --color-primary-300: #7e96ba;
-  --color-primary-400: #5373a3;
-  --color-primary-500: #2d508c;
-  --color-primary-600: #1e3a5f;
-  --color-primary-700: #162d4a;
-  --color-primary-800: #0f2035;
-  --color-primary-900: #0a1628;
+  /* ── Color: Primary (Sky Blue) ── */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
 
-  /* ── Color: Accent (Classic Gold) ── */
-  --color-accent-50: #fbf7ed;
-  --color-accent-100: #f5ecd3;
-  --color-accent-200: #e8d5a3;
-  --color-accent-300: #d4b86a;
-  --color-accent-400: #c9a227;
-  --color-accent-500: #b8941f;
-  --color-accent-600: #96771a;
-  --color-accent-700: #755c14;
+  /* ── Color: Accent (Mint Teal) ── */
+  --color-accent-50: #f0fdfa;
+  --color-accent-100: #ccfbf1;
+  --color-accent-200: #99f6e4;
+  --color-accent-300: #5eead4;
+  --color-accent-400: #2dd4bf;
+  --color-accent-500: #14b8a6;
+  --color-accent-600: #0d9488;
+  --color-accent-700: #0f766e;
 
-  /* ── Color: Neutral (Warm Stone) ── */
+  /* ── Color: Neutral (Cool Slate) ── */
   --color-neutral-0: #ffffff;
-  --color-neutral-50: #faf9f7;
-  --color-neutral-100: #f3f1ed;
-  --color-neutral-200: #e8e4dd;
-  --color-neutral-300: #d4cfc5;
-  --color-neutral-400: #a8a299;
-  --color-neutral-500: #7a756d;
-  --color-neutral-600: #5c5750;
-  --color-neutral-700: #433f3a;
-  --color-neutral-800: #2a2724;
-  --color-neutral-900: #1a1814;
-  --color-neutral-950: #0d0c0a;
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  --color-neutral-950: #020617;
 
   /* ── Color: Semantic ── */
   --color-success-bg: #edf7f2;
@@ -56,27 +56,27 @@
   --color-error-border: #e8a8a5;
   --color-error-icon: #c0392b;
 
-  --color-info-bg: #eef4fa;
-  --color-info-fg: #1e3a5f;
-  --color-info-border: #a9b9d1;
-  --color-info-icon: #2d508c;
+  --color-info-bg: #eff6ff;
+  --color-info-fg: #1d4ed8;
+  --color-info-border: #bfdbfe;
+  --color-info-icon: #3b82f6;
 
   /* ── Color: Product Accents ── */
-  --product-churchhub: #4a5568;
-  --product-microfinance: #0d6b5c;
-  --product-erp: #1e3a5f;
-  --product-school: #5b4b8a;
-  --product-hospital: #1565a8;
-  --product-hr: #a0522d;
+  --product-churchhub: #3b82f6;
+  --product-microfinance: #14b8a6;
+  --product-erp: #2563eb;
+  --product-school: #8b5cf6;
+  --product-hospital: #0ea5e9;
+  --product-hr: #f97316;
 
   /* ── Semantic Surfaces (Light Mode) ── */
-  --surface-page: var(--color-neutral-50);
-  --surface-section: var(--color-neutral-0);
-  --surface-card: var(--color-neutral-0);
-  --surface-raised: var(--color-neutral-0);
-  --surface-overlay: rgba(10, 22, 40, 0.55);
-  --surface-sidebar: var(--color-primary-900);
-  --surface-header: rgba(250, 249, 247, 0.92);
+  --surface-page: #ffffff;
+  --surface-section: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-overlay: rgba(15, 23, 42, 0.4);
+  --surface-sidebar: #1e293b;
+  --surface-header: rgba(255, 255, 255, 0.92);
   --surface-input: var(--color-neutral-0);
   --surface-input-disabled: var(--color-neutral-100);
 
@@ -171,13 +171,13 @@
   --radius-full: 9999px;
 
   /* ── Shadows (Light Mode) ── */
-  --shadow-xs: 0 1px 2px rgba(10, 22, 40, 0.04);
-  --shadow-sm: 0 1px 3px rgba(10, 22, 40, 0.07), 0 1px 2px rgba(10, 22, 40, 0.04);
-  --shadow-md: 0 4px 12px rgba(10, 22, 40, 0.08), 0 2px 4px rgba(10, 22, 40, 0.04);
-  --shadow-lg: 0 12px 24px rgba(10, 22, 40, 0.1), 0 4px 8px rgba(10, 22, 40, 0.04);
-  --shadow-xl: 0 20px 40px rgba(10, 22, 40, 0.12), 0 8px 16px rgba(10, 22, 40, 0.06);
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.07), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 24px rgba(15, 23, 42, 0.1), 0 4px 8px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 40px rgba(15, 23, 42, 0.12), 0 8px 16px rgba(15, 23, 42, 0.06);
   --shadow-focus: 0 0 0 2px var(--color-neutral-0), 0 0 0 4px var(--color-primary-500);
-  --shadow-brand: 0 4px 14px rgba(30, 58, 95, 0.22);
+  --shadow-brand: 0 8px 24px rgba(37, 99, 235, 0.18);
 
   /* ── Icons ── */
   --icon-xs: 14px;
@@ -228,7 +228,7 @@
 
   --btn-accent-bg: var(--color-accent-500);
   --btn-accent-bg-hover: var(--color-accent-600);
-  --btn-accent-text: var(--color-primary-900);
+  --btn-accent-text: var(--color-neutral-0);
 
   --btn-ghost-text: var(--color-neutral-700);
   --btn-ghost-bg-hover: var(--color-neutral-100);
@@ -264,7 +264,7 @@
 
   /* ── Sidebar ── */
   --sidebar-item-height: 40px;
-  --sidebar-item-active-bg: rgba(201, 162, 39, 0.14);
+  --sidebar-item-active-bg: rgba(20, 184, 166, 0.14);
   --sidebar-item-active-text: var(--color-accent-300);
   --sidebar-item-active-icon: var(--color-accent-400);
   --sidebar-text: rgba(255, 255, 255, 0.78);
@@ -278,72 +278,79 @@
   --table-row-height-compact: 40px;
   --table-header-height: 44px;
 
-  /* ── Footer ── */
-  --footer-bg: var(--color-primary-900);
-  --footer-text: rgba(255, 255, 255, 0.68);
-  --footer-heading: var(--color-neutral-0);
-  --footer-link-hover: var(--color-accent-300);
-  --footer-accent: var(--color-accent-400);
+  /* ── Footer (light, clean) ── */
+  --footer-bg: #f1f5f9;
+  --footer-text: var(--color-neutral-600);
+  --footer-heading: var(--color-neutral-900);
+  --footer-link-hover: var(--color-primary-600);
+  --footer-accent: var(--color-accent-600);
+
+  /* ── Homepage gradients ── */
+  --hero-gradient-accent: rgba(20, 184, 166, 0.12);
+  --hero-gradient-primary: rgba(59, 130, 246, 0.1);
+  --stats-gradient-start: var(--color-primary-50);
+  --stats-gradient-end: var(--color-accent-50);
+  --stats-accent: var(--color-accent-500);
 }
 
 [data-theme="dark"] {
-  --color-primary-500: #5373a3;
-  --color-primary-600: #7e96ba;
+  --color-primary-500: #818cf8;
+  --color-primary-600: #a5b4fc;
 
-  --surface-page: #0a1628;
-  --surface-section: #0f2035;
-  --surface-card: #162d4a;
-  --surface-raised: #1e3a5f;
+  --surface-page: #1e1b4b;
+  --surface-section: #312e81;
+  --surface-card: #3730a3;
+  --surface-raised: #4338ca;
   --surface-overlay: rgba(0, 0, 0, 0.65);
-  --surface-sidebar: #070f1c;
-  --surface-header: rgba(10, 22, 40, 0.94);
-  --surface-input: #162d4a;
-  --surface-input-disabled: #0f2035;
+  --surface-sidebar: #0f0d2e;
+  --surface-header: rgba(30, 27, 75, 0.94);
+  --surface-input: #3730a3;
+  --surface-input-disabled: #312e81;
 
-  --text-primary: #f3f1ed;
-  --text-secondary: #d4cfc5;
-  --text-tertiary: #a8a299;
-  --text-placeholder: #7a756d;
-  --text-inverse: #0a1628;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-placeholder: #64748b;
+  --text-inverse: #1e1b4b;
   --text-accent: var(--color-accent-300);
-  --text-link: #a9b9d1;
-  --text-link-hover: #d4dce8;
+  --text-link: #a5b4fc;
+  --text-link-hover: #c7d2fe;
 
-  --border-default: #2a3f5c;
-  --border-strong: #3d5472;
+  --border-default: #4338ca;
+  --border-strong: #6366f1;
 
   --color-success-bg: #0d3328;
-  --color-success-fg: #8fd4b4;
+  --color-success-fg: #5eead4;
   --color-warning-bg: #3d3010;
-  --color-warning-fg: #e8c96a;
+  --color-warning-fg: #fcd34d;
   --color-error-bg: #3d1515;
-  --color-error-fg: #e8a8a5;
-  --color-info-bg: #162d4a;
-  --color-info-fg: #a9b9d1;
+  --color-error-fg: #fca5a5;
+  --color-info-bg: #312e81;
+  --color-info-fg: #a5b4fc;
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.25);
   --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.45), 0 4px 8px rgba(0, 0, 0, 0.3);
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.5), 0 8px 16px rgba(0, 0, 0, 0.35);
-  --shadow-focus: 0 0 0 2px #0a1628, 0 0 0 4px var(--color-primary-500);
+  --shadow-focus: 0 0 0 2px #1e1b4b, 0 0 0 4px var(--color-primary-500);
 
   --btn-primary-bg: var(--color-primary-700);
   --btn-primary-bg-hover: var(--color-primary-600);
   --btn-primary-bg-active: var(--color-primary-500);
 
-  --btn-secondary-bg-hover: rgba(126, 150, 186, 0.12);
+  --btn-secondary-bg-hover: rgba(165, 180, 252, 0.12);
   --btn-ghost-text: var(--color-neutral-300);
-  --btn-ghost-bg-hover: #1e3a5f;
+  --btn-ghost-bg-hover: #4338ca;
 
-  --table-header-bg: #162d4a;
-  --table-row-hover: #1e3a5f;
-  --table-row-selected: rgba(126, 150, 186, 0.12);
+  --table-header-bg: #3730a3;
+  --table-row-hover: #4338ca;
+  --table-row-selected: rgba(165, 180, 252, 0.12);
 
-  --sidebar-item-active-bg: rgba(201, 162, 39, 0.18);
+  --sidebar-item-active-bg: rgba(20, 184, 166, 0.18);
   --sidebar-item-active-text: var(--color-accent-300);
 
-  --footer-bg: #070f1c;
+  --footer-bg: #0f0d2e;
 }
 
 @media (prefers-reduced-motion: reduce) {

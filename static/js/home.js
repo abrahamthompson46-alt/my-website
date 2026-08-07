@@ -38,4 +38,13 @@
   } else {
     init();
   }
+
+  if (window.location.hash) {
+    var target = document.querySelector(window.location.hash);
+    if (target) {
+      window.requestAnimationFrame(function () {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
 })();

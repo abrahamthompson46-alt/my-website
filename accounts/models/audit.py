@@ -21,6 +21,10 @@ class AuditEventType(models.TextChoices):
     PERMISSION_DENIED = "permission_denied", "Permission Denied"
     ROLE_ASSIGNED = "role_assigned", "Role Assigned"
     ROLE_REMOVED = "role_removed", "Role Removed"
+    DEMO_REQUEST_SUBMITTED = "demo_request_submitted", "Demo Request Submitted"
+    DEMO_REQUEST_UPDATED = "demo_request_updated", "Demo Request Updated"
+    PRODUCT_CREATED = "product_created", "Product Created"
+    PRODUCT_UPDATED = "product_updated", "Product Updated"
 
 
 class AuditLog(BaseModel):

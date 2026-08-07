@@ -196,7 +196,7 @@ button, input, select, textarea {
 }
 
 .section { padding-block: var(--space-16); }
-.section--alt { background: var(--surface-section); }
+.section--alt { background: #f8fafc; }
 
 .section__header {
   max-width: var(--layout-prose-width);

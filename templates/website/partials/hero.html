@@ -1,123 +1,59 @@
 {% load ui_tags graphics_tags %}
 
-
-
 <section class="home-hero" aria-labelledby="hero-heading">
-
-
-
     <div class="home-hero__bg" aria-hidden="true"></div>
 
-
-
     <div class="container home-hero__inner">
-
-
-
         <div class="home-hero__content">
-
-
-
-            {% if hero.eyebrow %}<p class="home-hero__eyebrow">{{ hero.eyebrow }}</p>{% endif %}
-
-
-
-            <h1 id="hero-heading" class="home-hero__headline">{{ hero.headline }}</h1>
-
-
-
-            {% if hero.subheadline %}<p class="home-hero__subheadline">{{ hero.subheadline }}</p>{% endif %}
-
-
-
-            <div class="home-hero__actions cluster">
-
-
-
-                {% if hero.cta_primary_url %}
-
-
-
-                <a href="{{ hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ hero.cta_primary_label|default:"Start Free Trial" }}</a>
-
-
-
-                {% else %}
-
-
-
-                {% ui_button label=hero.cta_primary_label|default:"Start Free Trial" url_name="contact:form" variant="primary" size="lg" %}
-
-
-
-                {% endif %}
-
-
-
-                {% if hero.cta_secondary_url %}
-
-
-
-                <a href="{{ hero.cta_secondary_url }}" class="btn btn--secondary btn--lg">{{ hero.cta_secondary_label|default:"Request a Demo" }}</a>
-
-
-
-                {% else %}
-
-
-
-                {% ui_button label=hero.cta_secondary_label|default:"Request a Demo" url="#request-demo" variant="secondary" size="lg" type="link" %}
-
-
-
-                {% endif %}
-
-
-
-            </div>
-
-
-
-            {% if hero.trust_text %}
-
-
-
-            <p class="home-hero__trust">
-
-
-
-                <svg class="icon icon--sm" aria-hidden="true" data-icon="shield-check"></svg>
-
-
-
-                {{ hero.trust_text }}
-
-
-
-            </p>
-
-
-
+            {% if hero.eyebrow %}
+            <p class="home-hero__eyebrow">{{ hero.eyebrow }}</p>
             {% endif %}
 
+            <h1 id="hero-heading" class="home-hero__headline">
+                {% if hero.headline_line1 and hero.headline_line2 %}
+                <span class="home-hero__headline-line">{{ hero.headline_line1 }}</span>
+                <span class="home-hero__headline-accent">{{ hero.headline_line2 }}</span>
+                {% else %}
+                {{ hero.headline }}
+                {% endif %}
+            </h1>
 
+            {% if hero.subheadline %}
+            <p class="home-hero__subheadline">{{ hero.subheadline }}</p>
+            {% endif %}
 
+            {% if hero.product_pills %}
+            <ul class="home-hero__pills" aria-label="Featured products">
+                {% for pill in hero.product_pills %}
+                <li class="home-hero__pill">{{ pill }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <div class="home-hero__actions cluster">
+                {% if hero.cta_primary_url %}
+                <a href="{{ hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ hero.cta_primary_label|default:"Start Free Trial" }}</a>
+                {% else %}
+                {% ui_button label=hero.cta_primary_label|default:"Start Free Trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
+                {% endif %}
+
+                {% if hero.cta_secondary_url %}
+                <a href="{{ hero.cta_secondary_url }}" class="btn btn--secondary btn--lg">{{ hero.cta_secondary_label|default:"Request a Demo" }}</a>
+                {% else %}
+                {% ui_button label=hero.cta_secondary_label|default:"Request a Demo" url_name="contact:demo" variant="secondary" size="lg" type="link" %}
+                {% endif %}
+            </div>
+
+            {% if hero.trust_text %}
+            <p class="home-hero__trust">
+                <svg class="icon icon--sm" aria-hidden="true" data-icon="shield-check"></svg>
+                {{ hero.trust_text }}
+            </p>
+            {% endif %}
         </div>
-
-
 
         <div class="home-hero__visual" aria-hidden="true">
-
             {% ui_hero_dashboard %}
-
         </div>
-
-
-
     </div>
-
-
-
 </section>
-
-

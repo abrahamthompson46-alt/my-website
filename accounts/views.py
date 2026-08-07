@@ -10,6 +10,7 @@ from django.contrib.auth.views import (
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils import timezone
 from django.views.generic import TemplateView, View
 
@@ -83,7 +84,11 @@ class PortalLoginView(LoginView):
 
     def get_success_url(self):
         explicit = self.request.POST.get("next") or self.request.GET.get("next")
-        if explicit:
+        if explicit and url_has_allowed_host_and_scheme(
+            url=explicit,
+            allowed_hosts={self.request.get_host()},
+            require_https=self.request.is_secure(),
+        ):
             return explicit
         user = getattr(self.request, "user", None)
         if user and user.is_authenticated and user.is_staff:
@@ -259,6 +264,12 @@ class MFAVerifyView(View):
                 next_url = request.session.pop("mfa_next", None) or _post_login_url(user)
                 request.session.pop("mfa_pending_user_id", None)
                 request.session.pop("mfa_auth_backend", None)
+                if next_url and not url_has_allowed_host_and_scheme(
+                    url=next_url,
+                    allowed_hosts={request.get_host()},
+                    require_https=request.is_secure(),
+                ):
+                    next_url = _post_login_url(user)
                 return redirect(next_url)
             record_failed_login(request, user.email)
             form.add_error("code", "Invalid authentication code.")

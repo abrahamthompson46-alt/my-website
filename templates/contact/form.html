@@ -1,4 +1,108 @@
 {% extends "base_public.html" %}
+{% load static ui_tags %}
+
+{% block title %}Contact — {{ SITE_NAME }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/components/demo-form.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/contact.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 
 {% block content %}
+<section class="section contact-page" aria-labelledby="contact-heading">
+    <div class="container">
+        <div class="contact-page__header">
+            <p class="contact-page__eyebrow">Get started</p>
+            <h1 id="contact-heading" class="contact-page__title">
+                {% if intent == "trial" %}
+                Start your free trial
+                {% elif intent == "demo" %}
+                Request a personalized demo
+                {% else %}
+                Talk to our team
+                {% endif %}
+            </h1>
+            <p class="contact-page__subtitle">
+                Tell us about your organization. We respond within one business day — no spam, no pressure.
+            </p>
+        </div>
+
+        {% if request.GET.submitted %}
+        <div class="contact-page__success ops-panel" role="status">
+            <div class="ops-panel__body">
+                <h2 class="contact-page__success-title">You're all set!</h2>
+                <p class="contact-page__success-text">
+                    We've received your request and will reach out shortly at the email you provided.
+                </p>
+                <div class="cluster" style="margin-top: var(--space-6);">
+                    {% ui_button label="Back to home" url_name="website:home" variant="primary" %}
+                    {% ui_button label="Browse products" url_name="products:list" variant="secondary" %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+
+        <div class="contact-page__grid">
+            <div class="contact-page__benefits">
+                <h2 class="contact-page__benefits-title">What you get</h2>
+                <ul class="contact-page__benefits-list">
+                    {% for item in benefits %}
+                    <li class="contact-page__benefit">
+                        <span class="contact-page__benefit-icon" aria-hidden="true">
+                            <svg class="icon icon--md" data-icon="{{ item.icon }}"></svg>
+                        </span>
+                        <div>
+                            <strong>{{ item.title }}</strong>
+                            <p>{{ item.text }}</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% if CONTACT_EMAIL %}
+                <p class="contact-page__email">
+                    Prefer email? <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="home-demo__form-panel contact-page__form-panel">
+                <form method="post" class="form form--compact form--demo-grid" novalidate>
+                    {% csrf_token %}
+
+                    <div class="hp-field" aria-hidden="true">{{ form.company_website }}</div>
+
+                    {% if form.non_field_errors %}
+                    <div class="form__errors" role="alert">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <fieldset class="contact-page__intent">
+                        <legend class="form-label">I'm interested in</legend>
+                        <div class="contact-page__intent-options">
+                            {% for radio in form.intent %}
+                            <label class="contact-page__intent-option">{{ radio.tag }} <span>{{ radio.choice_label }}</span></label>
+                            {% endfor %}
+                        </div>
+                        {% if form.intent.errors %}<p class="form-error">{{ form.intent.errors.0 }}</p>{% endif %}
+                    </fieldset>
+
+                    <div class="form__fields">
+                        {% ui_field field=form.full_name %}
+                        {% ui_field field=form.work_email %}
+                        {% ui_field field=form.company %}
+                        {% ui_field field=form.phone show_optional=True %}
+                        {% ui_field field=form.product_interest extra_class="form-field--full" %}
+                        {% ui_field field=form.message show_optional=True extra_class="form-field--full" %}
+                    </div>
+
+                    <div class="form-actions form-actions--end">
+                        {% ui_button label="Submit request" variant="primary" size="lg" type="submit" %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

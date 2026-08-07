@@ -1,5 +1,11 @@
 from django.urls import path
 
+from control_room.product_views import (
+    ProductCreateView,
+    ProductDetailView,
+    ProductListView,
+    ProductUpdateView,
+)
 from control_room.views import (
     AnnouncementCreateView,
     AnnouncementDeleteView,
@@ -44,6 +50,10 @@ urlpatterns = [
     path("flags/<uuid:pk>/edit/", FeatureFlagUpdateView.as_view(), name="flag_edit"),
     path("flags/<uuid:pk>/toggle/", FeatureFlagToggleView.as_view(), name="flag_toggle"),
     path("content/", ContentHubView.as_view(), name="content"),
+    path("products/", ProductListView.as_view(), name="products"),
+    path("products/new/", ProductCreateView.as_view(), name="product_create"),
+    path("products/<uuid:pk>/", ProductDetailView.as_view(), name="product_detail"),
+    path("products/<uuid:pk>/edit/", ProductUpdateView.as_view(), name="product_edit"),
     path("setup/", SetupView.as_view(), name="setup"),
     path("setup/run/<slug:key>/", SeedRunView.as_view(), name="seed_run"),
     path("setup/run-all/", SeedRunAllView.as_view(), name="seed_run_all"),

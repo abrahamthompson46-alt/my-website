@@ -1,7 +1,9 @@
 from django import forms
 
+from common.forms import BaseModelForm
 from control_room.models import FeatureFlag, NavigationMenu, PlatformSettings, RedirectRule, SiteAnnouncement
 from control_room.services.theme import HEX_PATTERN, THEME_PRESETS, get_preset_choices, normalize_hex
+from products.models import Product, ProductCategory
 
 
 class PlatformSettingsForm(forms.ModelForm):
@@ -50,13 +52,13 @@ class PlatformSettingsForm(forms.ModelForm):
 
     def clean(self):
         cleaned = super().clean()
-        preset = cleaned.get("brand_theme_preset") or "navy_gold"
+        preset = cleaned.get("brand_theme_preset") or "zreta_indigo"
         if preset != "custom" and preset in THEME_PRESETS:
             cleaned["brand_primary_color"] = THEME_PRESETS[preset]["primary"]
             cleaned["brand_accent_color"] = THEME_PRESETS[preset]["accent"]
         else:
-            primary = normalize_hex(cleaned.get("brand_primary_color", ""), THEME_PRESETS["navy_gold"]["primary"])
-            accent = normalize_hex(cleaned.get("brand_accent_color", ""), THEME_PRESETS["navy_gold"]["accent"])
+            primary = normalize_hex(cleaned.get("brand_primary_color", ""), THEME_PRESETS["zreta_indigo"]["primary"])
+            accent = normalize_hex(cleaned.get("brand_accent_color", ""), THEME_PRESETS["zreta_indigo"]["accent"])
             cleaned["brand_primary_color"] = primary
             cleaned["brand_accent_color"] = accent
         return cleaned
@@ -143,3 +145,39 @@ class FeatureFlagForm(forms.ModelForm):
         model = FeatureFlag
         fields = ["key", "label", "description", "is_enabled"]
         widgets = {"description": forms.Textarea(attrs={"rows": 2})}
+
+
+class ProductForm(BaseModelForm):
+    class Meta:
+        model = Product
+        fields = [
+            "name",
+            "slug",
+            "category",
+            "tagline",
+            "short_description",
+            "long_description",
+            "status",
+            "accent",
+            "is_featured",
+            "is_published",
+            "sort_order",
+            "launch_date",
+            "external_app_url",
+            "documentation_url",
+            "hero_image",
+            "meta_title",
+            "meta_description",
+        ]
+        widgets = {
+            "short_description": forms.Textarea(attrs={"rows": 2}),
+            "long_description": forms.Textarea(attrs={"rows": 4}),
+            "meta_description": forms.Textarea(attrs={"rows": 2}),
+            "launch_date": forms.DateInput(attrs={"type": "date"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["category"].queryset = ProductCategory.objects.filter(is_active=True).order_by("sort_order")
+        self.fields["slug"].help_text = "URL-friendly identifier (auto-generated from name if left blank)."
+

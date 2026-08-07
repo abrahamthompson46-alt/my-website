@@ -27,7 +27,7 @@
                 {% if cms_hero.cta_primary_url %}
                 <a href="{{ cms_hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ cms_hero.cta_primary_label|default:"Start Free Trial" }}</a>
                 {% else %}
-                {% ui_button label="Start Free Trial" url_name="contact:form" variant="primary" size="lg" %}
+                {% ui_button label="Start Free Trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
                 {% endif %}
                 <a href="#demo" class="btn btn--secondary btn--lg">Request Demo</a>
                 {% if product.plans.exists %}
@@ -49,7 +49,7 @@
             {% if product.tagline %}<p class="product-hero__tagline">{{ product.tagline }}</p>{% endif %}
             {% if product.short_description %}<p class="product-hero__desc">{{ product.short_description }}</p>{% endif %}
             <div class="cluster product-hero__actions">
-                {% ui_button label="Start Free Trial" url_name="contact:form" variant="primary" size="lg" %}
+                {% ui_button label="Start Free Trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
                 <a href="#demo" class="btn btn--secondary btn--lg">Request Demo</a>
                 {% if product.plans.exists %}
                 <a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg">View Pricing</a>

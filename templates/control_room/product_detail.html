@@ -1,0 +1,92 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title=product.name subtitle=product.tagline %}
+
+<div class="control-form__actions" style="margin-bottom:1.5rem;">
+    {% ui_button label="Edit product" url_name="control_room:product_edit" url_kwargs=product.pk variant="primary" %}
+    {% ui_button label="View public page" url=product.get_absolute_url variant="secondary" %}
+    {% ui_button label="All products" url_name="control_room:products" variant="ghost" %}
+</div>
+
+<div class="grid grid--3" style="gap:var(--space-4);margin-bottom:var(--space-8);">
+    <div class="ops-stat-card">
+        <p class="ops-stat-card__value">{{ demo_stats.new }}</p>
+        <p class="ops-stat-card__label">New demo requests</p>
+    </div>
+    <div class="ops-stat-card">
+        <p class="ops-stat-card__value">{{ demo_stats.total }}</p>
+        <p class="ops-stat-card__label">Total demo requests</p>
+    </div>
+    <div class="ops-stat-card">
+        <p class="ops-stat-card__value">{{ product.subscription_count }}</p>
+        <p class="ops-stat-card__label">Active subscriptions</p>
+    </div>
+</div>
+
+<div class="ops-panel" style="margin-bottom:var(--space-6);">
+    <div class="ops-panel__header"><h2 class="ops-panel__title">Recent demo requests</h2></div>
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Contact</th><th>Company</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody>
+                {% for demo in recent_demos %}
+                <tr>
+                    <td>{{ demo.full_name }}<br><span class="text-muted">{{ demo.work_email }}</span></td>
+                    <td>{{ demo.company }}</td>
+                    <td>{{ demo.get_status_display }}</td>
+                    <td>{{ demo.created_at|date:"M j, Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No demo requests for this product yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="ops-panel" style="margin-bottom:var(--space-6);">
+    <div class="ops-panel__header"><h2 class="ops-panel__title">Recent subscriptions</h2></div>
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Customer</th><th>Plan</th><th>Status</th><th>Since</th></tr></thead>
+            <tbody>
+                {% for sub in recent_subscriptions %}
+                <tr>
+                    <td>{{ sub.user.email }}</td>
+                    <td>{{ sub.plan_name|default:"—" }}</td>
+                    <td>{{ sub.get_status_display }}</td>
+                    <td>{{ sub.created_at|date:"M j, Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No subscriptions linked to this product yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="ops-panel">
+    <div class="ops-panel__header"><h2 class="ops-panel__title">Change history</h2></div>
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Action</th><th>Summary</th><th>By</th><th>When</th></tr></thead>
+            <tbody>
+                {% for change in product_changes %}
+                <tr>
+                    <td>{{ change.action }}</td>
+                    <td>{{ change.summary }}</td>
+                    <td>{% if change.user %}{{ change.user.email }}{% else %}—{% endif %}</td>
+                    <td>{{ change.created_at|date:"M j, Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No recorded changes yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

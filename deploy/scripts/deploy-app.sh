@@ -45,8 +45,11 @@ sudo -u "$APP_USER" bash -c "
     set -a
     source '$APP_DIR/.env'
     set +a
+    export DJANGO_SETTINGS_MODULE=config.settings.production
     source '$VENV/bin/activate'
+    rm -rf '$APP_DIR/staticfiles'
     python manage.py collectstatic --noinput
+    test -d '$APP_DIR/staticfiles/images' || (echo 'collectstatic failed' && exit 1)
 "
 
 echo "==> Installing systemd service..."

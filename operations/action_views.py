@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 
+from accounts.models import AuditEventType
+from accounts.services.audit import log_audit_event
 from customer_portal.models.ticket import SupportTicket, TicketStatus
 from operations.mixins import StaffRequiredMixin
 from payments.models import Payment, PaymentStatus
@@ -20,8 +22,21 @@ class DemoRequestUpdateView(StaffRequiredMixin, View):
             messages.error(request, "Invalid demo request status.")
             return redirect("operations:demo_requests")
 
+        previous = demo.status
         demo.status = status
         demo.save(update_fields=["status", "updated_at"])
+        log_audit_event(
+            AuditEventType.DEMO_REQUEST_UPDATED,
+            request=request,
+            user=request.user,
+            message=f"Demo request {demo.pk} status {previous} → {status}",
+            metadata={
+                "demo_id": str(demo.pk),
+                "product_id": str(demo.product_id) if demo.product_id else None,
+                "previous_status": previous,
+                "new_status": status,
+            },
+        )
         messages.success(request, f"Demo request updated to {demo.get_status_display()}.")
         return redirect("operations:demo_requests")
 

@@ -8,6 +8,11 @@ import re
 HEX_PATTERN = re.compile(r"^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$")
 
 THEME_PRESETS: dict[str, dict[str, str]] = {
+    "zreta_indigo": {
+        "label": "Zreta Sky & Mint",
+        "primary": "#2563eb",
+        "accent": "#14b8a6",
+    },
     "navy_gold": {
         "label": "Classic Navy & Gold",
         "primary": "#1e3a5f",
@@ -50,8 +55,8 @@ THEME_PRESETS: dict[str, dict[str, str]] = {
     },
 }
 
-DEFAULT_PRIMARY = THEME_PRESETS["navy_gold"]["primary"]
-DEFAULT_ACCENT = THEME_PRESETS["navy_gold"]["accent"]
+DEFAULT_PRIMARY = THEME_PRESETS["zreta_indigo"]["primary"]
+DEFAULT_ACCENT = THEME_PRESETS["zreta_indigo"]["accent"]
 
 
 def normalize_hex(value: str, fallback: str) -> str:
@@ -140,9 +145,11 @@ def build_brand_css(primary: str, accent: str) -> str:
         f"  --border-focus: {primary_palette['500']};",
         f"  --border-accent: {accent_palette['400']};",
         f"  --surface-sidebar: {primary_palette['900']};",
-        f"  --footer-bg: {primary_palette['900']};",
-        f"  --footer-link-hover: {accent_palette['300']};",
-        f"  --footer-accent: {accent_palette['400']};",
+        f"  --footer-bg: {primary_palette['50']};",
+        f"  --footer-text: {primary_palette['700']};",
+        f"  --footer-heading: {primary_palette['900']};",
+        f"  --footer-link-hover: {primary_palette['600']};",
+        f"  --footer-accent: {accent_palette['600']};",
         f"  --nav-link-hover: {primary_palette['600']};",
         f"  --nav-link-active: {primary_palette['700']};",
         f"  --nav-link-active-border: {accent_palette['400']};",
@@ -155,6 +162,11 @@ def build_brand_css(primary: str, accent: str) -> str:
         f"  --table-row-selected: {primary_palette['50']};",
         f"  --color-info-fg: {primary_palette['600']};",
         f"  --color-info-icon: {primary_palette['500']};",
+        f"  --hero-gradient-accent: {_rgba(accent, 0.12)};",
+        f"  --hero-gradient-primary: {_rgba(primary, 0.1)};",
+        f"  --stats-gradient-start: {primary_palette['50']};",
+        f"  --stats-gradient-end: {accent_palette['50']};",
+        f"  --stats-accent: {accent_palette['500']};",
         "}",
         '[data-theme="dark"] {',
         f"  --surface-page: {primary_palette['900']};",
@@ -173,8 +185,8 @@ def build_brand_css(primary: str, accent: str) -> str:
 
 
 def get_brand_colors(settings_obj) -> dict[str, str]:
-    preset = getattr(settings_obj, "brand_theme_preset", "navy_gold") or "navy_gold"
-    preset_data = THEME_PRESETS.get(preset, THEME_PRESETS["navy_gold"])
+    preset = getattr(settings_obj, "brand_theme_preset", "zreta_indigo") or "zreta_indigo"
+    preset_data = THEME_PRESETS.get(preset, THEME_PRESETS["zreta_indigo"])
     primary = normalize_hex(
         getattr(settings_obj, "brand_primary_color", "") or preset_data["primary"],
         preset_data["primary"],

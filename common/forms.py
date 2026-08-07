@@ -49,6 +49,33 @@ class StyledFormMixin:
             widget.attrs.setdefault("id", f"id_{name}")
 
 
+class HoneypotMixin:
+    """Reject submissions when the hidden honeypot field is filled (bots)."""
+
+    honeypot_field_name = "company_website"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields[self.honeypot_field_name] = forms.CharField(
+            required=False,
+            widget=forms.TextInput(
+                attrs={
+                    "autocomplete": "off",
+                    "tabindex": "-1",
+                    "aria-hidden": "true",
+                    "class": "hp-field",
+                }
+            ),
+        )
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get(self.honeypot_field_name):
+            raise forms.ValidationError("Unable to submit your request. Please try again.")
+        cleaned.pop(self.honeypot_field_name, None)
+        return cleaned
+
+
 class BaseForm(StyledFormMixin, forms.Form):
     """Reusable styled Form base class."""
 

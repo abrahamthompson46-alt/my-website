@@ -119,10 +119,22 @@ class ProductDetailView(SEOContextMixin, PublishedProductMixin, DetailView):
         ]
 
     def post(self, request, *args, **kwargs):
+        from common.services.demo_requests import (
+            is_demo_rate_limited,
+            log_demo_rate_limit,
+            log_demo_submission,
+        )
+
+        if is_demo_rate_limited(request):
+            log_demo_rate_limit(request)
+            messages.error(request, "Too many demo requests. Please try again later.")
+            return redirect(reverse("products:detail", kwargs={"slug": self.kwargs["slug"]}) + "#demo")
+
         self.object = self.get_object()
         form = ProductDemoRequestForm(request.POST, product=self.object)
         if form.is_valid():
-            form.save()
+            demo = form.save()
+            log_demo_submission(request, demo)
             messages.success(
                 request,
                 f"Thank you! We'll contact you shortly about {self.object.name}.",

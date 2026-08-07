@@ -60,6 +60,7 @@ class DashboardView(ControlRoomMixin, TemplateView):
             {"title": "Redirects", "description": "URL rules without deploys", "url_name": "control_room:redirects", "icon": "external-link", "accent": "teal"},
             {"title": "Announcements", "description": "Public & portal banners", "url_name": "control_room:announcements", "icon": "bell", "accent": "amber"},
             {"title": "Feature Flags", "description": "Toggle platform capabilities", "url_name": "control_room:flags", "icon": "zap", "accent": "violet"},
+            {"title": "Products", "description": "Create catalog entries, upload media, track demos", "url_name": "control_room:products", "icon": "package", "accent": "teal"},
             {"title": "Content Hub", "description": "All content domains", "url_name": "control_room:content", "icon": "layers", "accent": "navy"},
             {"title": "Platform Setup", "description": "One-click seed & bootstrap", "url_name": "control_room:setup", "icon": "database", "accent": "green"},
             {"title": "Ops Dashboard", "description": "Revenue, customers, tickets", "url_name": "operations:dashboard", "icon": "bar-chart-2", "accent": "blue"},

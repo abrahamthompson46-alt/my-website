@@ -1,4 +1,5 @@
-from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.utils.deprecation import MiddlewareMixin
 
 
@@ -39,6 +40,7 @@ MFA_EXEMPT_PREFIXES = (
     "/accounts/logged-out",
     "/accounts/mfa/",
     "/accounts/password-reset",
+    "/accounts/verify-email",
     "/static/",
     "/media/",
     "/health/",
@@ -46,29 +48,26 @@ MFA_EXEMPT_PREFIXES = (
 
 
 class StaffMFARequiredMiddleware(MiddlewareMixin):
-    """Require MFA for staff accessing admin, control room, or ops surfaces."""
+    """Require MFA for all authenticated staff before using the platform."""
 
     def process_request(self, request):
         if not (request.user.is_authenticated and request.user.is_staff):
             return None
 
         path = request.path
-        if not any(path.startswith(prefix) for prefix in STAFF_PROTECTED_PREFIXES):
-            return None
         if any(path.startswith(prefix) for prefix in MFA_EXEMPT_PREFIXES):
             return None
 
-        from django.contrib import messages
-        from django.shortcuts import redirect
         from django.urls import reverse
 
         from accounts.services.email import get_or_create_security_profile
 
         profile = get_or_create_security_profile(request.user)
-        if not profile.mfa_enabled:
-            messages.warning(
-                request,
-                "Staff accounts must enable two-factor authentication before accessing admin tools.",
-            )
-            return redirect(reverse("accounts:mfa_enroll"))
-        return None
+        if profile.mfa_enabled:
+            return None
+
+        messages.warning(
+            request,
+            "Staff accounts must enable two-factor authentication before using the platform.",
+        )
+        return redirect(reverse("accounts:mfa_enroll"))

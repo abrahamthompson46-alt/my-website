@@ -31,14 +31,25 @@ class HomeView(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        from common.services.demo_requests import (
+            is_demo_rate_limited,
+            log_demo_rate_limit,
+            log_demo_submission,
+        )
+
         if "demo_submit" in request.POST:
+            if is_demo_rate_limited(request):
+                log_demo_rate_limit(request)
+                messages.error(request, "Too many demo requests. Please try again later.")
+                return redirect(reverse("website:home") + "#request-demo")
+
             form = DemoRequestForm(request.POST)
             if form.is_valid():
                 product_interest = form.cleaned_data.get("product_interest")
                 product = None
                 if product_interest and product_interest not in ("", "multiple"):
                     product = Product.objects.filter(pk=product_interest).first()
-                ProductDemoRequest.objects.create(
+                demo = ProductDemoRequest.objects.create(
                     product=product,
                     full_name=form.cleaned_data["full_name"],
                     work_email=form.cleaned_data["work_email"],
@@ -47,6 +58,7 @@ class HomeView(TemplateView):
                     message=form.cleaned_data.get("message", ""),
                     source="homepage",
                 )
+                log_demo_submission(request, demo)
                 messages.success(
                     request,
                     "Thank you! Our team will contact you within one business day to schedule your demo.",

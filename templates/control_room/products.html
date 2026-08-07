@@ -1,0 +1,48 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Products" subtitle="Create, publish, and track catalog products without Django admin." %}
+<p class="ops-page-header__subtitle" style="margin-top:-1.5rem;margin-bottom:1.5rem;">{{ published_count }} published · {{ total_count }} total</p>
+
+<div class="control-form__actions" style="margin-bottom:1.5rem;">
+    {% ui_button label="Add product" url_name="control_room:product_create" variant="primary" %}
+    {% ui_button label="Demo requests" url_name="operations:demo_requests" variant="secondary" %}
+</div>
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Status</th>
+                    <th>Published</th>
+                    <th>Demos</th>
+                    <th>Subscriptions</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><strong>{{ product.name }}</strong><br><span class="text-muted">{{ product.slug }}</span></td>
+                    <td>{{ product.get_status_display }}</td>
+                    <td>{% if product.is_published %}Yes{% else %}Draft{% endif %}</td>
+                    <td>{{ product.demo_count }}</td>
+                    <td>{{ product.subscription_count }}</td>
+                    <td class="cluster">
+                        <a href="{% url 'control_room:product_detail' product.pk %}" class="btn btn--ghost btn--sm">Manage</a>
+                        <a href="{% url 'control_room:product_edit' product.pk %}" class="btn btn--ghost btn--sm">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">No products yet. <a href="{% url 'control_room:product_create' %}">Add your first product</a>.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

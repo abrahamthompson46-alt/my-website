@@ -143,6 +143,9 @@ def build_home_context():
             "cta_primary_url": hero_banner.cta_primary_url or "",
             "cta_secondary_label": hero_banner.cta_secondary_label or "Request a Demo",
             "cta_secondary_url": hero_banner.cta_secondary_url or "#request-demo",
+            "headline_line1": fallback["hero"].get("headline_line1"),
+            "headline_line2": fallback["hero"].get("headline_line2"),
+            "product_pills": fallback["hero"].get("product_pills"),
         }
     else:
         hero = fallback["hero"]

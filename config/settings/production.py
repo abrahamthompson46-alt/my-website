@@ -53,6 +53,12 @@ SESSION_CACHE_ALIAS = _redis_settings["SESSION_CACHE_ALIAS"]
 # Remove django-extensions from production if present
 INSTALLED_APPS = [app for app in INSTALLED_APPS if app != "django_extensions"]  # noqa: F405
 
+# Use non-manifest static storage in production — avoids 500s when collectstatic
+# was run under a different settings module (manifest missing entries).
+STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F811
+    "whitenoise.storage.CompressedStaticFilesStorage"
+)
+
 WHITENOISE_MAX_AGE = 60 * 60 * 24 * 365
 WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ("jpg", "jpeg", "png", "gif", "webp", "svg", "ico", "woff", "woff2")
 

@@ -1,10 +1,12 @@
-from common.forms import BaseForm, BaseModelForm
+from common.forms import BaseForm, BaseModelForm, HoneypotMixin
 from django import forms
+from django.core.exceptions import ValidationError
 
+from common.services.demo_requests import is_duplicate_demo
 from products.models import Product, ProductDemoRequest
 
 
-class ProductDemoRequestForm(BaseModelForm):
+class ProductDemoRequestForm(HoneypotMixin, BaseModelForm):
     class Meta:
         model = ProductDemoRequest
         fields = ["full_name", "work_email", "company", "phone", "message"]
@@ -15,6 +17,16 @@ class ProductDemoRequestForm(BaseModelForm):
     def __init__(self, *args, product=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.product = product
+
+    def clean(self):
+        cleaned = super().clean()
+        email = cleaned.get("work_email", "")
+        product_id = self.product.pk if self.product else None
+        if email and is_duplicate_demo(work_email=email, product_id=product_id):
+            raise ValidationError(
+                "We already received your demo request recently. Our team will contact you soon."
+            )
+        return cleaned
 
     def save(self, commit=True):
         instance = super().save(commit=False)

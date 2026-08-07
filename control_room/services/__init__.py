@@ -195,7 +195,7 @@ def get_content_registry() -> list[dict]:
             key="products",
             title="Products",
             description="Catalog, pricing, features, and media",
-            admin_model="products.product",
+            url_name="control_room:products",
             count=Product.objects.count(),
             icon="package",
         ),

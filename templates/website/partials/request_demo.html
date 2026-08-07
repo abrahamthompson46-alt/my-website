@@ -49,6 +49,7 @@
                     {% csrf_token %}
 
                     <input type="hidden" name="demo_submit" value="1">
+                    <div class="hp-field" aria-hidden="true">{{ demo_form.company_website }}</div>
 
                     {% if demo_form.non_field_errors %}
 

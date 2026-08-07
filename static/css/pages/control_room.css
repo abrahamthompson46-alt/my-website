@@ -278,13 +278,13 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-6);
-  padding: var(--space-8);
-  margin-bottom: var(--space-8);
+  padding: var(--space-6) var(--space-8);
+  margin-bottom: var(--space-6);
   border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, #0a1628 0%, #132743 55%, #1a3358 100%);
-  color: #fff;
-  border: 1px solid rgba(201, 162, 39, 0.22);
-  box-shadow: 0 20px 50px rgba(10, 22, 40, 0.18);
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, #ffffff 55%, var(--color-accent-50) 100%);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
 }
 
 .superdash-hero__eyebrow {
@@ -293,19 +293,20 @@
   font-weight: var(--font-semibold);
   letter-spacing: var(--tracking-overline);
   text-transform: uppercase;
-  color: var(--color-accent-300);
+  color: var(--color-accent-600);
 }
 
 .superdash-hero__title {
   margin: 0;
-  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
   font-weight: var(--font-semibold);
 }
 
 .superdash-hero__subtitle {
-  margin: var(--space-3) 0 0;
+  margin: var(--space-2) 0 0;
   max-width: 40rem;
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--text-secondary);
+  font-size: var(--text-body-sm);
 }
 
 .superdash-hero__actions {
@@ -326,10 +327,11 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 0.45rem 0.85rem;
+  padding: 0.35rem 0.75rem;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.08);
-  font-size: var(--text-body-sm);
+  background: var(--color-neutral-0);
+  border: 1px solid var(--border-default);
+  font-size: var(--text-caption);
 }
 
 .superdash-status-pill__dot {
@@ -808,6 +810,108 @@
 .brand-color-preview__label {
   font-size: var(--text-body-sm);
   color: var(--text-secondary);
+}
+
+/* ── Compact, consistent owner/admin forms ── */
+.layout-control-room .control-form__grid {
+  gap: var(--space-3);
+}
+
+.layout-control-room .form-field {
+  gap: 0.2rem;
+}
+
+.layout-control-room .form-label {
+  font-size: var(--text-caption);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.layout-control-room .form-control,
+.layout-control-room .form-control--select {
+  min-height: 2.125rem;
+  padding: 0.35rem 0.6rem;
+  font-size: var(--text-body-sm);
+  border-radius: var(--radius-sm);
+}
+
+.layout-control-room textarea.form-control,
+.layout-control-room .form-control--textarea {
+  min-height: 4.5rem;
+  padding: 0.45rem 0.6rem;
+  line-height: 1.45;
+}
+
+.layout-control-room .control-code-input {
+  min-height: 10rem;
+  font-size: var(--text-caption);
+}
+
+.layout-control-room .control-color-input {
+  min-height: 2.125rem;
+  padding: 0.15rem;
+}
+
+.layout-control-room .control-form__actions {
+  margin-top: var(--space-4);
+}
+
+.layout-control-room .control-form__actions .btn {
+  min-height: 2.125rem;
+  padding-inline: var(--space-4);
+  font-size: var(--text-body-sm);
+}
+
+.layout-control-room .ops-panel__header {
+  padding: var(--space-4) var(--space-5) 0;
+}
+
+.layout-control-room .ops-panel__title {
+  font-size: var(--text-body-md);
+  font-weight: var(--font-semibold);
+}
+
+.layout-control-room .ops-panel__body {
+  padding: var(--space-4) var(--space-5);
+}
+
+.layout-control-room .control-form__hint {
+  font-size: var(--text-caption);
+  line-height: 1.45;
+}
+
+.layout-control-room input[type="file"].form-control {
+  padding: 0.25rem 0.5rem;
+  font-size: var(--text-caption);
+}
+
+.layout-control-room .ops-grid {
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.layout-control-room .form-field:has(input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.125rem;
+}
+
+.layout-control-room .form-field:has(input[type="checkbox"]) .form-field__control {
+  flex-shrink: 0;
+}
+
+.layout-control-room .form-field:has(input[type="checkbox"]) .form-label {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  color: var(--text-primary);
+}
+
+.layout-control-room .form-field:has(input[type="checkbox"]) input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary-600);
 }
 
 .control-form__hint {

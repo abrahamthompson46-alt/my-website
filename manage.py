@@ -5,22 +5,25 @@ import os
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 BASE_DIR = Path(__file__).resolve().parent
-load_dotenv(BASE_DIR / ".env")
+env_file = BASE_DIR / ".env"
+if env_file.exists():
+    try:
+        from dotenv import load_dotenv
+
+        load_dotenv(env_file)
+    except ImportError:
+        try:
+            import environ
+
+            environ.Env.read_env(str(env_file))
+        except ImportError:
+            pass
 
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault(
-        "DJANGO_SETTINGS_MODULE",
-        os.getenv(
-            "DJANGO_SETTINGS_MODULE",
-            "config.settings.production",
-        ),
-    )
-
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.development")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

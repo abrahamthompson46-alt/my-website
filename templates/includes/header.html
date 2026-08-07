@@ -43,9 +43,17 @@
             {% ui_theme_switcher variant="icon" %}
             <a href="{% url 'accounts:login' %}" class="btn btn--ghost btn--sm site-header__login">Log in</a>
             {% if HEADER_CTA_SECONDARY_LABEL %}
-            <a href="{% url HEADER_CTA_SECONDARY_URL_NAME|default:'contact:form' %}" class="btn btn--ghost btn--sm">{{ HEADER_CTA_SECONDARY_LABEL }}</a>
+            {% if HEADER_CTA_SECONDARY_URL_NAME == "contact:form" %}
+            <a href="{% url 'contact:demo' %}" class="btn btn--ghost btn--sm">{{ HEADER_CTA_SECONDARY_LABEL }}</a>
+            {% else %}
+            <a href="{% url HEADER_CTA_SECONDARY_URL_NAME|default:'contact:demo' %}" class="btn btn--ghost btn--sm">{{ HEADER_CTA_SECONDARY_LABEL }}</a>
             {% endif %}
-            <a href="{% url HEADER_CTA_PRIMARY_URL_NAME|default:'contact:form' %}" class="btn btn--primary btn--sm">{{ HEADER_CTA_PRIMARY_LABEL|default:"Start Free Trial" }}</a>
+            {% endif %}
+            {% if HEADER_CTA_PRIMARY_URL_NAME == "contact:form" %}
+            <a href="{% url 'contact:trial' %}" class="btn btn--primary btn--sm">{{ HEADER_CTA_PRIMARY_LABEL|default:"Start Free Trial" }}</a>
+            {% else %}
+            <a href="{% url HEADER_CTA_PRIMARY_URL_NAME|default:'contact:trial' %}" class="btn btn--primary btn--sm">{{ HEADER_CTA_PRIMARY_LABEL|default:"Start Free Trial" }}</a>
+            {% endif %}
             <button type="button"
                     class="btn btn--ghost btn--sm btn--icon-only site-header__menu-toggle"
                     aria-label="Open menu"
