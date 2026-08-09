@@ -1,3 +1,4 @@
+{% load ui_tags %}
 <div class="mobile-drawer" data-mobile-drawer hidden aria-hidden="true">
     <div class="mobile-drawer__backdrop" data-mobile-drawer-close></div>
     <div class="mobile-drawer__panel" role="dialog" aria-modal="true" aria-label="Navigation menu">
@@ -29,7 +30,7 @@
                         {% for column in item.columns %}
                         {% for link in column.links %}
                         <li>
-                            <a href="{% if link.url_name %}{% url link.url_name %}{% else %}#{% endif %}"
+                            <a href="{% if link.url_name %}{% nav_link_url link %}{% else %}#{% endif %}"
                                class="mobile-nav__link">
                                 {{ link.label }}
                             </a>
@@ -38,7 +39,7 @@
                         {% endfor %}
                     </ul>
                     {% else %}
-                    <a href="{% if item.url_name %}{% url item.url_name %}{% else %}#{% endif %}"
+                    <a href="{% if item.url_name %}{% nav_link_url item %}{% else %}#{% endif %}"
                        class="mobile-nav__link">
                         {{ item.label }}
                     </a>

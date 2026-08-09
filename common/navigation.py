@@ -12,12 +12,12 @@ PUBLIC_HEADER_NAV = [
             {
                 "title": "By Product",
                 "links": [
-                    {"label": "ChurchHub", "url_name": "products:list", "accent": "churchhub"},
-                    {"label": "Microfinance Core", "url_name": "products:list", "accent": "microfinance"},
-                    {"label": "ERP Suite", "url_name": "products:list", "accent": "erp"},
-                    {"label": "School Management", "url_name": "products:list", "accent": "school"},
-                    {"label": "Hospital Management", "url_name": "products:list", "accent": "hospital"},
-                    {"label": "HR & Payroll", "url_name": "products:list", "accent": "hr"},
+                    {"label": "ChurchHub", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}, "accent": "churchhub"},
+                    {"label": "Microfinance Core", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}, "accent": "microfinance"},
+                    {"label": "ERP Suite", "url_name": "products:detail", "url_kwargs": {"slug": "erp-suite"}, "accent": "erp"},
+                    {"label": "School Management", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}, "accent": "school"},
+                    {"label": "Hospital Management", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}, "accent": "hospital"},
+                    {"label": "HR & Payroll", "url_name": "products:detail", "url_kwargs": {"slug": "hr-payroll"}, "accent": "hr"},
                 ],
             },
             {
@@ -48,7 +48,7 @@ PUBLIC_HEADER_NAV = [
                 "links": [
                     {"label": "Education", "url_name": "pages:list"},
                     {"label": "Healthcare", "url_name": "pages:list"},
-                    {"label": "Faith Organizations", "url_name": "pages:list"},
+                    {"label": "Faith Organizations", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
                     {"label": "Financial Services", "url_name": "pages:list"},
                 ],
             },
@@ -80,12 +80,12 @@ PUBLIC_FOOTER_COLUMNS = [
     {
         "title": "Products",
         "links": [
-            {"label": "ChurchHub", "url_name": "products:list"},
-            {"label": "Microfinance Core", "url_name": "products:list"},
-            {"label": "ERP Suite", "url_name": "products:list"},
-            {"label": "School Management", "url_name": "products:list"},
-            {"label": "Hospital Management", "url_name": "products:list"},
-            {"label": "HR & Payroll", "url_name": "products:list"},
+            {"label": "ChurchHub", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
+            {"label": "Microfinance Core", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
+            {"label": "ERP Suite", "url_name": "products:detail", "url_kwargs": {"slug": "erp-suite"}},
+            {"label": "School Management", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}},
+            {"label": "Hospital Management", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}},
+            {"label": "HR & Payroll", "url_name": "products:detail", "url_kwargs": {"slug": "hr-payroll"}},
         ],
     },
     {

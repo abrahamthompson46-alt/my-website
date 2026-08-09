@@ -7,9 +7,10 @@
 {% include "control_room/partials/page_header.html" with title=product.name subtitle=product.tagline %}
 
 <div class="control-form__actions" style="margin-bottom:1.5rem;">
-    {% ui_button label="Edit product" url_name="control_room:product_edit" url_kwargs=product.pk variant="primary" %}
-    {% ui_button label="View public page" url=product.get_absolute_url variant="secondary" %}
-    {% ui_button label="All products" url_name="control_room:products" variant="ghost" %}
+    {% url 'control_room:product_edit' product.pk as edit_url %}
+    {% ui_button label="Edit product" url=edit_url variant="primary" type="link" %}
+    {% ui_button label="View public page" url=product.get_absolute_url variant="secondary" type="link" %}
+    {% ui_button label="All products" url_name="control_room:products" variant="ghost" type="link" %}
 </div>
 
 <div class="grid grid--3" style="gap:var(--space-4);margin-bottom:var(--space-8);">

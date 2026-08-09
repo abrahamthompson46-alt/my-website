@@ -27,7 +27,7 @@
                 <ul class="site-footer__list">
                     {% for link in column.links %}
                     <li>
-                        <a href="{% if link.url_name %}{% url link.url_name %}{% else %}{{ link.url|default:'#' }}{% endif %}"
+                        <a href="{% if link.url_name %}{% nav_link_url link %}{% else %}{{ link.url|default:'#' }}{% endif %}"
                            class="site-footer__link">
                             {{ link.label }}
                         </a>

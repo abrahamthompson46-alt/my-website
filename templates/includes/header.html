@@ -22,7 +22,7 @@
                         <svg class="icon icon--sm site-nav__chevron" aria-hidden="true" data-icon="chevron-down"></svg>
                     </button>
                     {% else %}
-                    <a href="{% if item.url_name %}{% url item.url_name %}{% else %}{{ item.url|default:'#' }}{% endif %}"
+                    <a href="{% if item.url_name %}{% nav_link_url item %}{% else %}{{ item.url|default:'#' }}{% endif %}"
                        class="site-nav__link"
                        role="menuitem">
                         {{ item.label }}
@@ -76,7 +76,7 @@
                 <ul class="mega-menu__list">
                     {% for link in column.links %}
                     <li>
-                        <a href="{% if link.url_name %}{% url link.url_name %}{% else %}{{ link.url|default:'#' }}{% endif %}"
+                        <a href="{% if link.url_name %}{% nav_link_url link %}{% else %}{{ link.url|default:'#' }}{% endif %}"
                            class="mega-menu__link{% if link.accent %} mega-menu__link--{{ link.accent }}{% endif %}">
                             {{ link.label }}
                         </a>

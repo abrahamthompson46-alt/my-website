@@ -9,15 +9,30 @@ ALERT_VARIANTS = {"info", "success", "warning", "error"}
 CARD_VARIANTS = {"default", "flat", "elevated", "interactive", "stat"}
 
 
-def _resolve_url(url=None, url_name=None):
+def _resolve_url(url=None, url_name=None, url_kwargs=None):
     if url:
         return url
     if url_name:
         try:
+            if url_kwargs:
+                return reverse(url_name, kwargs=url_kwargs)
             return reverse(url_name)
         except NoReverseMatch:
             return "#"
     return "#"
+
+
+@register.simple_tag
+def nav_link_url(link):
+    """Resolve a navigation dict entry to an href."""
+    if not isinstance(link, dict):
+        return "#"
+    if link.get("url"):
+        return link["url"]
+    url_name = link.get("url_name")
+    if not url_name:
+        return "#"
+    return _resolve_url(url_name=url_name, url_kwargs=link.get("url_kwargs"))
 
 
 @register.inclusion_tag("components/button.html")
@@ -25,6 +40,7 @@ def ui_button(
     label,
     url=None,
     url_name=None,
+    url_kwargs=None,
     variant="primary",
     size="md",
     icon=None,
@@ -43,7 +59,7 @@ def ui_button(
 ):
     return {
         "label": label,
-        "href": _resolve_url(url, url_name) if type == "link" else None,
+        "href": _resolve_url(url, url_name, url_kwargs) if type == "link" else None,
         "variant": variant if variant in BUTTON_VARIANTS else "primary",
         "size": size if size in BUTTON_SIZES else "md",
         "icon": icon,
