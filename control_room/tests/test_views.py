@@ -1,0 +1,60 @@
+from django.test import TestCase
+from django.urls import reverse
+
+from accounts.models import User
+from accounts.services.email import get_or_create_security_profile
+from common.navigation import CONTROL_ROOM_NAV
+from products.models import Product, ProductCategory
+
+
+class ControlRoomViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="control-staff",
+            email="control-staff@example.com",
+            password="testpass123",
+            is_staff=True,
+        )
+        profile = get_or_create_security_profile(self.user)
+        profile.email_verified = True
+        profile.mfa_enabled = True
+        profile.save(update_fields=["email_verified", "mfa_enabled"])
+        self.client.force_login(self.user)
+
+        category = ProductCategory.objects.create(name="Platform", slug="platform")
+        self.product = Product.objects.create(
+            name="ChurchHub",
+            slug="churchhub",
+            category=category,
+            is_published=True,
+        )
+
+    def _assert_staff_page_ok(self, url_name, url_kwargs=None):
+        url = reverse(url_name, kwargs=url_kwargs or {})
+        response = self.client.get(url)
+        self.assertEqual(
+            response.status_code,
+            200,
+            msg=f"{url_name} ({url}) returned HTTP {response.status_code}",
+        )
+
+    def test_control_room_nav_pages_load(self):
+        skip = {"control_room:team"}  # requires platform owner/admin role
+        for item in CONTROL_ROOM_NAV:
+            if item.get("section") or item.get("external"):
+                continue
+            if item["url_name"] in skip:
+                continue
+            self._assert_staff_page_ok(item["url_name"])
+
+    def test_product_detail_loads(self):
+        self._assert_staff_page_ok("control_room:product_detail", {"pk": self.product.pk})
+
+    def test_product_pricing_loads(self):
+        self._assert_staff_page_ok("control_room:product_pricing", {"pk": self.product.pk})
+
+    def test_product_create_form_loads(self):
+        self._assert_staff_page_ok("control_room:product_create")
+
+    def test_product_edit_form_loads(self):
+        self._assert_staff_page_ok("control_room:product_edit", {"pk": self.product.pk})
