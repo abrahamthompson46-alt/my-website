@@ -22,6 +22,10 @@
                 {% endif %}
                 {% ui_field field=form.brand_favicon extra_class="form-field--full" %}
                 <p class="control-form__hint form-field--full">Upload PNG, JPG, WEBP, SVG, or ICO files (max 2MB). SVG favicons are supported — use <code>static/images/brand/favicon.svg</code> or upload your own.</p>
+                <p class="control-form__hint form-field--full">
+                    Need PNG files for ChurchHub or other products?
+                    <a href="{% url 'control_room:brand_kit' %}">Download the Zreta brand kit</a> (icon, lockup, and favicon sizes).
+                </p>
             </div>
         </section>
         <section class="ops-panel">

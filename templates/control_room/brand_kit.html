@@ -1,0 +1,87 @@
+{% extends "base_control_room.html" %}
+{% load static ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Zreta brand kit" subtitle="Download PNG, SVG, and icon files to reuse across ChurchHub and your other products." action_label="Download all (ZIP)" action_url_name="control_room:brand_kit_zip" secondary_action_label="Site settings" secondary_action_url_name="control_room:settings" %}
+
+<div class="ops-grid ops-grid--2">
+    <section class="ops-panel control-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Logo mark (icon only)</h2></div>
+        <div class="ops-panel__body stack">
+            <p class="text-secondary">Square icon for app icons, favicons, splash screens, and product dashboards.</p>
+            <div class="brand-kit-preview">
+                <img src="{% static 'images/brand/png/logo-mark-256.png' %}" alt="Zreta logo mark preview" width="96" height="96">
+            </div>
+            <ul class="brand-kit-list">
+                {% for asset in brand_groups.mark %}
+                <li class="brand-kit-list__item">
+                    <div>
+                        <strong>{{ asset.label }}</strong>
+                        <p class="text-secondary">{{ asset.description }}</p>
+                    </div>
+                    <a href="{% url 'control_room:brand_kit_download' asset.key %}" class="btn btn--secondary btn--sm">Download</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <section class="ops-panel control-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Full lockup (icon + wordmark)</h2></div>
+        <div class="ops-panel__body stack">
+            <p class="text-secondary">Horizontal logo for websites, pitch decks, invoices, and marketing materials.</p>
+            <div class="brand-kit-preview brand-kit-preview--wide">
+                <img src="{% static 'images/brand/png/logo-full-840.png' %}" alt="Zreta full logo preview" width="280">
+            </div>
+            <ul class="brand-kit-list">
+                {% for asset in brand_groups.lockup %}
+                <li class="brand-kit-list__item">
+                    <div>
+                        <strong>{{ asset.label }}</strong>
+                        <p class="text-secondary">{{ asset.description }}</p>
+                    </div>
+                    <a href="{% url 'control_room:brand_kit_download' asset.key %}" class="btn btn--secondary btn--sm">Download</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <section class="ops-panel control-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Icons &amp; favicons</h2></div>
+        <div class="ops-panel__body stack">
+            <ul class="brand-kit-list">
+                {% for asset in brand_groups.icons %}
+                <li class="brand-kit-list__item">
+                    <div>
+                        <strong>{{ asset.label }}</strong>
+                        <p class="text-secondary">{{ asset.description }}</p>
+                    </div>
+                    <a href="{% url 'control_room:brand_kit_download' asset.key %}" class="btn btn--secondary btn--sm">Download</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <section class="ops-panel control-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Vector sources (SVG)</h2></div>
+        <div class="ops-panel__body stack">
+            <p class="text-secondary">Best for developers and print vendors — infinitely scalable without quality loss.</p>
+            <ul class="brand-kit-list">
+                {% for asset in brand_groups.vector %}
+                <li class="brand-kit-list__item">
+                    <div>
+                        <strong>{{ asset.label }}</strong>
+                        <p class="text-secondary">{{ asset.description }}</p>
+                    </div>
+                    <a href="{% url 'control_room:brand_kit_download' asset.key %}" class="btn btn--secondary btn--sm">Download</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+</div>
+{% endblock %}

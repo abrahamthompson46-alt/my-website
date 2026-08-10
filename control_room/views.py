@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, DeleteView, ListView, TemplateView, UpdateView
 
 from control_room.forms import (
@@ -476,3 +477,72 @@ class SeedRunAllView(ControlRoomMixin, TemplateView):
         else:
             messages.warning(request, f"Completed {ok_count}/{len(results)} seeds. Review the output log below.")
         return redirect(request.POST.get("next") or "control_room:setup")
+
+
+class BrandKitView(ControlRoomMixin, TemplateView):
+    help_key = "settings"
+    template_name = "control_room/brand_kit.html"
+
+    def get_context_data(self, **kwargs):
+        from control_room.brand_assets import BRAND_KIT_ASSETS, grouped_brand_assets
+
+        context = super().get_context_data(**kwargs)
+        context["breadcrumb_items"] = [
+            {"label": "Command Center", "url_name": "control_room:dashboard"},
+            {"label": "Site Settings", "url_name": "control_room:settings"},
+            {"label": "Brand kit"},
+        ]
+        context["brand_groups"] = grouped_brand_assets()
+        context["brand_asset_count"] = len(BRAND_KIT_ASSETS)
+        return context
+
+
+class BrandKitDownloadView(ControlRoomMixin, View):
+    def get(self, request, asset_key):
+        import mimetypes
+        from pathlib import Path
+
+        from django.contrib.staticfiles import finders
+        from django.http import FileResponse, Http404
+
+        from control_room.brand_assets import brand_asset_lookup
+
+        asset = brand_asset_lookup().get(asset_key)
+        if not asset:
+            raise Http404("Brand asset not found.")
+
+        path = finders.find(asset.static_path)
+        if not path:
+            raise Http404("Brand asset file is missing.")
+
+        content_type = mimetypes.guess_type(asset.filename)[0] or "application/octet-stream"
+        return FileResponse(
+            open(path, "rb"),
+            as_attachment=True,
+            filename=asset.filename,
+            content_type=content_type,
+        )
+
+
+class BrandKitZipView(ControlRoomMixin, View):
+    def get(self, request):
+        import io
+        import zipfile
+        from pathlib import Path
+
+        from django.contrib.staticfiles import finders
+        from django.http import HttpResponse
+
+        from control_room.brand_assets import BRAND_KIT_ASSETS
+
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+            for asset in BRAND_KIT_ASSETS:
+                path = finders.find(asset.static_path)
+                if path:
+                    archive.write(path, arcname=asset.filename)
+
+        buffer.seek(0)
+        response = HttpResponse(buffer.getvalue(), content_type="application/zip")
+        response["Content-Disposition"] = 'attachment; filename="zreta-brand-kit.zip"'
+        return response

@@ -39,6 +39,9 @@ from control_room.views import (
     SeedRunView,
     SettingsView,
     SetupView,
+    BrandKitView,
+    BrandKitDownloadView,
+    BrandKitZipView,
 )
 
 app_name = "control_room"
@@ -46,6 +49,9 @@ app_name = "control_room"
 urlpatterns = [
     path("", DashboardView.as_view(), name="dashboard"),
     path("settings/", SettingsView.as_view(), name="settings"),
+    path("brand-kit/", BrandKitView.as_view(), name="brand_kit"),
+    path("brand-kit/download/<slug:asset_key>/", BrandKitDownloadView.as_view(), name="brand_kit_download"),
+    path("brand-kit/download-all.zip", BrandKitZipView.as_view(), name="brand_kit_zip"),
     path("team/", TeamListView.as_view(), name="team"),
     path("team/<uuid:pk>/", TeamUserDetailView.as_view(), name="team_user"),
     path("team/<uuid:pk>/assign-role/", TeamAssignRoleView.as_view(), name="team_assign_role"),

@@ -58,3 +58,6 @@ class ControlRoomViewTests(TestCase):
 
     def test_product_edit_form_loads(self):
         self._assert_staff_page_ok("control_room:product_edit", {"pk": self.product.pk})
+
+    def test_brand_kit_loads(self):
+        self._assert_staff_page_ok("control_room:brand_kit")
