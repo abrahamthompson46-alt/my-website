@@ -4,6 +4,7 @@ from common.forms import BaseModelForm
 from control_room.models import FeatureFlag, NavigationMenu, PlatformSettings, RedirectRule, SiteAnnouncement
 from control_room.services.theme import HEX_PATTERN, THEME_PRESETS, get_preset_choices, normalize_hex
 from products.models import Product, ProductCategory
+from products.models.pricing import PlanFeature, PricingPlan, PricingTier
 
 
 class PlatformSettingsForm(forms.ModelForm):
@@ -182,4 +183,34 @@ class ProductForm(BaseModelForm):
         super().__init__(*args, **kwargs)
         self.fields["category"].queryset = ProductCategory.objects.filter(is_active=True).order_by("sort_order")
         self.fields["slug"].help_text = "URL-friendly identifier (auto-generated from name if left blank)."
+
+
+class PricingPlanForm(BaseModelForm):
+    class Meta:
+        model = PricingPlan
+        fields = [
+            "name",
+            "slug",
+            "description",
+            "billing_interval",
+            "is_popular",
+            "is_contact_sales",
+            "is_published",
+            "sort_order",
+        ]
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 2}),
+        }
+
+
+class PricingTierForm(BaseModelForm):
+    class Meta:
+        model = PricingTier
+        fields = ["region", "currency", "amount", "price_label"]
+
+
+class PlanFeatureForm(BaseModelForm):
+    class Meta:
+        model = PlanFeature
+        fields = ["text", "is_included", "sort_order"]
 

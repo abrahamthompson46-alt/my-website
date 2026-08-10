@@ -133,7 +133,13 @@ def ui_breadcrumbs(items, extra_class=""):
         resolved.append(
             {
                 "label": item.get("label", ""),
-                "url": None if is_last else _resolve_url(item.get("url"), item.get("url_name")),
+                "url": None
+                if is_last
+                else _resolve_url(
+                    item.get("url"),
+                    item.get("url_name"),
+                    item.get("url_kwargs"),
+                ),
                 "is_current": is_last,
             }
         )

@@ -1,0 +1,70 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title=product.name|add:" — Pricing" subtitle="Plans appear on the public pricing page when published with at least one price tier." %}
+
+<div class="control-form__actions" style="margin-bottom:1rem;">
+    <a href="{% url 'control_room:product_pricing_create' product.pk %}" class="btn btn--primary btn--sm">Add pricing plan</a>
+</div>
+
+<div class="control-form__actions" style="margin-bottom:1.5rem;">
+    {% url 'control_room:product_detail' product.pk as detail_url %}
+    {% url 'products:pricing' slug=product.slug as public_pricing_url %}
+    {% ui_button label="Back to product" url=detail_url variant="ghost" type="link" %}
+    {% ui_button label="View public pricing" url=public_pricing_url variant="secondary" type="link" %}
+</div>
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>Plan</th>
+                    <th>Interval</th>
+                    <th>Price</th>
+                    <th>Features</th>
+                    <th>Published</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plan in plans %}
+                <tr>
+                    <td>
+                        <strong>{{ plan.name }}</strong>
+                        {% if plan.is_popular %}<span class="control-badge control-badge--success">Popular</span>{% endif %}
+                        {% if plan.is_contact_sales %}<span class="control-badge">Contact sales</span>{% endif %}
+                    </td>
+                    <td>{{ plan.get_billing_interval_display }}</td>
+                    <td>
+                        {% with tier=plan.tiers.first %}
+                        {% if tier %}{{ tier.display_price }}{% else %}<span class="text-muted">No tier</span>{% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>{{ plan.plan_features.count }}</td>
+                    <td>{% if plan.is_published %}Yes{% else %}<span class="text-muted">Draft</span>{% endif %}</td>
+                    <td class="cluster">
+                        <a href="{% url 'control_room:product_pricing_edit' product.pk plan.pk %}" class="btn btn--ghost btn--sm">Edit</a>
+                        <form method="post" action="{% url 'control_room:product_pricing_delete' product.pk plan.pk %}" style="display:inline;" onsubmit="return confirm('Delete this pricing plan?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn--ghost btn--sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">
+                        No pricing plans yet.
+                        <a href="{% url 'control_room:product_pricing_create' product.pk %}">Add your first plan</a>
+                        or run <strong>seed_products</strong> from Platform Setup.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

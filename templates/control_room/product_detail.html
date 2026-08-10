@@ -9,8 +9,43 @@
 <div class="control-form__actions" style="margin-bottom:1.5rem;">
     {% url 'control_room:product_edit' product.pk as edit_url %}
     {% ui_button label="Edit product" url=edit_url variant="primary" type="link" %}
+    {% url 'control_room:product_pricing' product.pk as pricing_url %}
+    {% ui_button label="Manage pricing" url=pricing_url variant="secondary" type="link" %}
     {% ui_button label="View public page" url=product.get_absolute_url variant="secondary" type="link" %}
     {% ui_button label="All products" url_name="control_room:products" variant="ghost" type="link" %}
+</div>
+
+<div class="ops-panel" style="margin-bottom:var(--space-6);">
+    <div class="ops-panel__header"><h2 class="ops-panel__title">Pricing plans</h2></div>
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Plan</th><th>Price</th><th>Published</th></tr></thead>
+            <tbody>
+                {% for plan in pricing_plans %}
+                <tr>
+                    <td>{{ plan.name }}</td>
+                    <td>{% with tier=plan.tiers.first %}{% if tier %}{{ tier.display_price }}{% else %}—{% endif %}{% endwith %}</td>
+                    <td>{% if plan.is_published %}Yes{% else %}Draft{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3">No plans — <a href="{% url 'control_room:product_pricing' product.pk %}">add pricing</a> or run seed_products.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p style="margin-top:var(--space-3);"><a href="{% url 'control_room:product_pricing' product.pk %}">Manage pricing plans →</a></p>
+    </div>
+</div>
+
+<div class="ops-panel" style="margin-bottom:var(--space-6);">
+    <div class="ops-panel__header"><h2 class="ops-panel__title">Media &amp; rich content</h2></div>
+    <div class="ops-panel__body">
+        <p class="control-form__hint">Upload screenshots, website templates, and video clips in Django Admin. Set screenshot <strong>Kind</strong> to Template or Screenshot.</p>
+        <div class="control-form__actions" style="margin-top:var(--space-3);">
+            <a href="{{ admin_screenshots_url }}" class="btn btn--secondary btn--sm" target="_blank" rel="noopener">Manage screenshots &amp; templates</a>
+            <a href="{{ admin_videos_url }}" class="btn btn--secondary btn--sm" target="_blank" rel="noopener">Manage videos</a>
+            <a href="/admin/products/product/{{ product.pk }}/change/" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">Full admin record</a>
+        </div>
+    </div>
 </div>
 
 <div class="grid grid--3" style="gap:var(--space-4);margin-bottom:var(--space-8);">

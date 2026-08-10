@@ -1,0 +1,62 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title=plan.name|default:"New pricing plan" subtitle="Add at least one pricing tier with currency and amount, then mark the plan as published." %}
+
+<form method="post" class="control-form">
+    {% csrf_token %}
+    <div class="ops-grid ops-grid--2">
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Plan details</h2></div>
+            <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.name %}
+                {% ui_field field=form.slug %}
+                {% ui_field field=form.billing_interval %}
+                {% ui_field field=form.sort_order %}
+                {% ui_field field=form.is_popular %}
+                {% ui_field field=form.is_contact_sales %}
+                {% ui_field field=form.is_published %}
+                {% ui_field field=form.description extra_class="form-field--full" %}
+            </div>
+        </section>
+        <section class="ops-panel">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Pricing tiers</h2></div>
+            <div class="ops-panel__body">
+                {{ tier_formset.management_form }}
+                {% for tier_form in tier_formset %}
+                <div class="control-form__grid" style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border-default);">
+                    {% for field in tier_form.visible_fields %}
+                    {% ui_field field=field %}
+                    {% endfor %}
+                    {% for field in tier_form.hidden_fields %}{{ field }}{% endfor %}
+                    {% if tier_formset.can_delete and tier_form.DELETE %}
+                    <div class="form-field">{{ tier_form.DELETE }} <label for="{{ tier_form.DELETE.id_for_label }}">Remove tier</label></div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="ops-panel form-field--full" style="grid-column:1/-1;">
+            <div class="ops-panel__header"><h2 class="ops-panel__title">Plan features</h2></div>
+            <div class="ops-panel__body">
+                {{ feature_formset.management_form }}
+                {% for feature_form in feature_formset %}
+                <div class="control-form__grid" style="margin-bottom:0.75rem;">
+                    {% for field in feature_form.visible_fields %}
+                    {% ui_field field=field %}
+                    {% endfor %}
+                    {% for field in feature_form.hidden_fields %}{{ field }}{% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+    <div class="control-form__actions">
+        <a href="{% url 'control_room:product_pricing' product.pk %}" class="btn btn--ghost btn--sm">Cancel</a>
+        {% ui_button label="Save pricing plan" type="submit" variant="primary" %}
+    </div>
+</form>
+{% endblock %}

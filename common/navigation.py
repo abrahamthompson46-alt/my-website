@@ -184,6 +184,8 @@ CONTROL_ROOM_NAV = [
     {"label": "Redirects", "url_name": "control_room:redirects", "icon": "external-link"},
     {"label": "Announcements", "url_name": "control_room:announcements", "icon": "bell"},
     {"label": "Feature Flags", "url_name": "control_room:flags", "icon": "zap"},
+    {"section": "Catalog"},
+    {"label": "Products", "url_name": "control_room:products", "icon": "package"},
     {"section": "Content"},
     {"label": "Content Hub", "url_name": "control_room:content", "icon": "layers"},
     {"section": "Operations"},

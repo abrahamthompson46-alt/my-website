@@ -1,0 +1,37 @@
+{% if page_help %}
+<details class="control-help" open>
+    <summary class="control-help__summary">
+        <svg class="icon icon--sm control-help__icon" aria-hidden="true" data-icon="help-circle"></svg>
+        <span>{{ page_help.title|default:"How to use this page" }}</span>
+    </summary>
+    <div class="control-help__body">
+        {% if page_help.intro %}
+        <p class="control-help__intro">{{ page_help.intro }}</p>
+        {% endif %}
+        {% if page_help.steps %}
+        <h3 class="control-help__heading">Step by step</h3>
+        <ol class="control-help__list">
+            {% for step in page_help.steps %}
+            <li>{{ step }}</li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+        {% if page_help.tips %}
+        <h3 class="control-help__heading">Tips</h3>
+        <ul class="control-help__list control-help__list--tips">
+            {% for tip in page_help.tips %}
+            <li>{{ tip }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if page_help.mistakes %}
+        <h3 class="control-help__heading">Avoid these mistakes</h3>
+        <ul class="control-help__list control-help__list--warn">
+            {% for item in page_help.mistakes %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</details>
+{% endif %}

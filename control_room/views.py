@@ -31,6 +31,7 @@ from control_room.services.seeds import get_seed_registry, run_all_seeds, run_se
 
 class DashboardView(ControlRoomMixin, TemplateView):
     template_name = "control_room/dashboard.html"
+    help_key = "dashboard"
 
     def get_context_data(self, **kwargs):
         from control_room.services.cache_health import get_cache_diagnostics
@@ -77,6 +78,7 @@ class DashboardView(ControlRoomMixin, TemplateView):
 
 
 class SettingsView(ControlRoomMixin, UpdateView):
+    help_key = "settings"
     model = PlatformSettings
     form_class = PlatformSettingsForm
     template_name = "control_room/settings.html"
@@ -115,6 +117,7 @@ class SettingsView(ControlRoomMixin, UpdateView):
 
 
 class NavigationListView(ControlRoomMixin, ListView):
+    help_key = "navigation"
     model = NavigationMenu
     template_name = "control_room/navigation_list.html"
     context_object_name = "menus"
@@ -129,6 +132,7 @@ class NavigationListView(ControlRoomMixin, ListView):
 
 
 class NavigationEditView(ControlRoomMixin, UpdateView):
+    help_key = "navigation_edit"
     model = NavigationMenu
     form_class = NavigationMenuForm
     template_name = "control_room/navigation_edit.html"
@@ -160,6 +164,7 @@ class NavigationEditView(ControlRoomMixin, UpdateView):
 
 
 class RedirectListView(ControlRoomMixin, ListView):
+    help_key = "redirects"
     model = RedirectRule
     template_name = "control_room/redirects.html"
     context_object_name = "redirects"
@@ -176,6 +181,7 @@ class RedirectListView(ControlRoomMixin, ListView):
 
 
 class RedirectCreateView(ControlRoomMixin, CreateView):
+    help_key = "redirect_form"
     model = RedirectRule
     form_class = RedirectRuleForm
     template_name = "control_room/redirect_form.html"
@@ -196,6 +202,7 @@ class RedirectCreateView(ControlRoomMixin, CreateView):
 
 
 class RedirectUpdateView(ControlRoomMixin, UpdateView):
+    help_key = "redirect_form"
     model = RedirectRule
     form_class = RedirectRuleForm
     template_name = "control_room/redirect_form.html"
@@ -234,6 +241,7 @@ class RedirectDeleteView(ControlRoomMixin, DeleteView):
 
 
 class AnnouncementListView(ControlRoomMixin, ListView):
+    help_key = "announcements"
     model = SiteAnnouncement
     template_name = "control_room/announcements.html"
     context_object_name = "announcements"
@@ -250,6 +258,7 @@ class AnnouncementListView(ControlRoomMixin, ListView):
 
 
 class AnnouncementCreateView(ControlRoomMixin, CreateView):
+    help_key = "announcement_form"
     model = SiteAnnouncement
     form_class = SiteAnnouncementForm
     template_name = "control_room/announcement_form.html"
@@ -270,6 +279,7 @@ class AnnouncementCreateView(ControlRoomMixin, CreateView):
 
 
 class AnnouncementUpdateView(ControlRoomMixin, UpdateView):
+    help_key = "announcement_form"
     model = SiteAnnouncement
     form_class = SiteAnnouncementForm
     template_name = "control_room/announcement_form.html"
@@ -308,6 +318,7 @@ class AnnouncementDeleteView(ControlRoomMixin, DeleteView):
 
 
 class FeatureFlagListView(ControlRoomMixin, ListView):
+    help_key = "flags"
     model = FeatureFlag
     template_name = "control_room/flags.html"
     context_object_name = "flags"
@@ -323,6 +334,7 @@ class FeatureFlagListView(ControlRoomMixin, ListView):
 
 
 class FeatureFlagCreateView(ControlRoomMixin, CreateView):
+    help_key = "flag_form"
     model = FeatureFlag
     form_class = FeatureFlagForm
     template_name = "control_room/flag_form.html"
@@ -343,6 +355,7 @@ class FeatureFlagCreateView(ControlRoomMixin, CreateView):
 
 
 class FeatureFlagUpdateView(ControlRoomMixin, UpdateView):
+    help_key = "flag_form"
     model = FeatureFlag
     form_class = FeatureFlagForm
     template_name = "control_room/flag_form.html"
@@ -378,6 +391,7 @@ class FeatureFlagToggleView(ControlRoomMixin, TemplateView):
 
 
 class ContentHubView(ControlRoomMixin, TemplateView):
+    help_key = "content"
     template_name = "control_room/content.html"
 
     def get_context_data(self, **kwargs):
@@ -391,6 +405,7 @@ class ContentHubView(ControlRoomMixin, TemplateView):
 
 
 class ChangeLogView(ControlRoomMixin, ListView):
+    help_key = "changelog"
     model = ControlChangeLog
     template_name = "control_room/changelog.html"
     context_object_name = "changes"
@@ -406,6 +421,7 @@ class ChangeLogView(ControlRoomMixin, ListView):
 
 
 class SetupView(ControlRoomMixin, TemplateView):
+    help_key = "setup"
     template_name = "control_room/setup.html"
 
     def get_context_data(self, **kwargs):

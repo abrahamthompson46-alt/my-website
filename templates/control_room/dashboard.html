@@ -31,6 +31,8 @@
     </div>
 </section>
 
+{% include "control_room/partials/page_help.html" %}
+
 {% if platform_settings.maintenance_mode %}
 <div class="control-alert control-alert--warning">
     <strong>Maintenance mode is active.</strong> Public visitors see the maintenance page. Staff retain full access.

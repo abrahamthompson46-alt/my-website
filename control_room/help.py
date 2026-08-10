@@ -1,0 +1,253 @@
+"""Contextual help content for Control Room pages."""
+
+from __future__ import annotations
+
+PAGE_HELP: dict[str, dict] = {
+    "dashboard": {
+        "title": "Super Dashboard guide",
+        "intro": "Your home base for running the marketing site without code or terminal access.",
+        "steps": [
+            "Check the status pills — maintenance mode blocks public visitors but staff still have access.",
+            "Use Platform Setup first on a new site to seed products, CMS pages, navigation, and demo content.",
+            "Open Site Settings to set branding, contact emails, and header buttons (Start Trial / Request Demo).",
+            "Use Products to publish catalog entries, pricing plans, and ChurchHub external links.",
+            "Ops Dashboard shows live demo requests, customers, and support tickets.",
+        ],
+        "tips": [
+            "Run seeds from Platform Setup if pricing plans or homepage content are missing.",
+            "After changing navigation JSON, save and refresh the public site to verify links.",
+        ],
+        "mistakes": [
+            "Enabling maintenance mode during a launch without telling your team.",
+            "Skipping migrate/collectstatic on the server after pulling code updates.",
+        ],
+    },
+    "settings": {
+        "title": "Site Settings guide",
+        "intro": "Global branding and behavior applied to every public page instantly after save.",
+        "steps": [
+            "Set site name, tagline, and footer copyright under Branding.",
+            "Choose Zreta Sky & Mint (or Custom) under Brand colors — save to refresh the live palette.",
+            "Set default SEO title and OG image for pages that do not define their own metadata.",
+            "Configure contact and support emails — used in footers and system emails.",
+            "Header CTA labels/URLs control the top-right buttons. Use contact:trial and contact:demo.",
+            "Turn on maintenance mode only when deploying; add a clear maintenance message.",
+        ],
+        "tips": [
+            "Demo form, newsletter, and partner toggles hide sections site-wide when disabled.",
+        ],
+        "mistakes": [
+            "Using contact:form for CTAs — use contact:trial or contact:demo instead.",
+            "Picking a dark brand preset and wondering why the homepage looks too dark.",
+        ],
+    },
+    "navigation": {
+        "title": "Navigation guide",
+        "intro": "Menus for the public header, footer, and internal portals.",
+        "steps": [
+            "Edit public_header to change the Products mega menu and top links.",
+            "Use url_name (e.g. products:detail) plus url_kwargs (e.g. {\"slug\": \"churchhub\"}) for product links.",
+            "Use plain url for external links such as https://mychurch.zreta.com/contact/.",
+            "Save the menu, then open the live site and test every link in desktop and mobile nav.",
+        ],
+        "tips": [
+            "Invalid url_name values fail silently to # — always test after editing JSON.",
+        ],
+        "mistakes": [
+            "Pointing all products to products:list instead of each product detail page.",
+            "Breaking JSON syntax — use a JSON validator before saving.",
+        ],
+    },
+    "navigation_edit": {
+        "title": "Editing a navigation menu",
+        "intro": "Each menu is a JSON array of items stored in the database.",
+        "steps": [
+            "Keep the structure as a JSON array [ {...}, {...} ].",
+            "Mega menus use type: \"mega\" with columns and links arrays.",
+            "Save, then visit the public site to confirm links resolve correctly.",
+        ],
+        "tips": ["Copy the default from common/navigation.py if you need a clean starting point."],
+        "mistakes": ["Trailing commas in JSON will prevent save."],
+    },
+    "redirects": {
+        "title": "URL Redirects guide",
+        "intro": "Redirect old paths to new URLs without redeploying code.",
+        "steps": [
+            "from_path must start with / and match the old URL path.",
+            "Use to_path for internal paths or to_url_name for a named Django route.",
+            "Choose 301 for permanent SEO moves, 302 for temporary redirects.",
+        ],
+        "tips": ["Test redirects in a private/incognito window to avoid cache confusion."],
+        "mistakes": ["Creating redirect loops (A → B → A)."],
+    },
+    "redirect_form": {
+        "title": "Adding or editing a redirect",
+        "intro": "One redirect rule maps a single incoming path to a destination.",
+        "steps": [
+            "Enter the exact path visitors will request (including leading slash).",
+            "Provide either a destination path or a url_name — not both unless intentional.",
+            "Leave notes for your team explaining why the redirect exists.",
+        ],
+        "tips": [],
+        "mistakes": ["Forgetting the leading slash on from_path."],
+    },
+    "announcements": {
+        "title": "Announcements guide",
+        "intro": "Timed banners on public pages and/or the customer portal.",
+        "steps": [
+            "Set starts_at and ends_at to control visibility automatically.",
+            "Choose variant (info, warning, success) for visual emphasis.",
+            "Use show_on_public and show_on_portal to target the right audience.",
+        ],
+        "tips": ["Deactivate instead of deleting to preserve history."],
+        "mistakes": ["Leaving expired announcements marked active without end dates."],
+    },
+    "announcement_form": {
+        "title": "Creating an announcement",
+        "intro": "Short message with optional link displayed site-wide.",
+        "steps": [
+            "Keep the message under two lines for mobile readability.",
+            "Add link_url and link_label if the banner should drive to a CTA page.",
+            "Preview on the homepage after saving.",
+        ],
+        "tips": [],
+        "mistakes": [],
+    },
+    "flags": {
+        "title": "Feature Flags guide",
+        "intro": "Toggle platform features without code deploys.",
+        "steps": [
+            "demo_form — shows/hides demo request forms on marketing pages.",
+            "newsletter — controls newsletter signup sections.",
+            "public_registration — allows or blocks self-service signups.",
+            "Use the quick toggle on the list or edit for label/description updates.",
+        ],
+        "tips": ["Document flag keys before sharing access with other admins."],
+        "mistakes": ["Disabling demo_form while still linking CTAs to #demo anchors."],
+    },
+    "flag_form": {
+        "title": "Editing a feature flag",
+        "intro": "Keys are referenced in templates — do not rename keys casually.",
+        "steps": [
+            "Use lowercase keys with underscores (e.g. demo_form).",
+            "Write a clear description so future admins understand impact.",
+        ],
+        "tips": [],
+        "mistakes": ["Changing the key field on a flag already used in code."],
+    },
+    "content": {
+        "title": "Content Hub guide",
+        "intro": "Jump to Control Room tools or Django Admin for each content domain.",
+        "steps": [
+            "Products — catalog, pricing, and publishing (Control Room + Admin for media).",
+            "CMS pages / heroes — homepage and landing content (Admin).",
+            "Blog & marketing — posts, events, case studies (Admin).",
+            "Leads & demos — review submissions in Ops → Demo Requests.",
+        ],
+        "tips": ["Admin opens in a new tab — use it for screenshots, videos, and FAQs."],
+        "mistakes": ["Expecting pricing tiers to appear without running seed_products or creating plans."],
+    },
+    "products": {
+        "title": "Products guide",
+        "intro": "Manage your product catalog, publishing, and ChurchHub links from here.",
+        "steps": [
+            "Click Add product or Edit to set name, slug, descriptions, and hero image.",
+            "Enable Is published and Is featured to show on the homepage.",
+            "Set Demo URL and Register URL for ChurchHub (mychurch.zreta.com/contact/ and /apply/).",
+            "Open Manage on a product → Pricing plans to create Starter / Pro / Enterprise tiers.",
+            "Upload screenshots, templates, and videos via Django Admin (linked from product detail).",
+            "Use View public page to preview /products/your-slug/ before sharing.",
+        ],
+        "tips": [
+            "If no pricing appears, go to Platform Setup and run seed_products, then edit currencies in pricing.",
+            "Slug must match URL — churchhub → /products/churchhub/.",
+        ],
+        "mistakes": [
+            "Saving a product as draft (not published) and expecting it on the homepage.",
+            "Uploading only one screenshot — the gallery needs items with the correct Kind set.",
+        ],
+    },
+    "product_form": {
+        "title": "Product editor guide",
+        "intro": "Core catalog fields — pricing and media are managed on the product detail page.",
+        "steps": [
+            "Basics — name, slug, category, tagline, status (use GA when live), accent color.",
+            "Publishing — is_published, is_featured, sort_order (lower = first), hero image.",
+            "Links — Demo URL, Register URL, external app URL for ChurchHub buttons.",
+            "After save you land on the product detail page — add pricing plans next.",
+        ],
+        "tips": ["Hero image appears at the top of the public product page."],
+        "mistakes": ["Changing slug after sharing links — old URLs will 404 unless you add a redirect."],
+    },
+    "product_detail": {
+        "title": "Product activity & next steps",
+        "intro": "Track demos and subscriptions, then finish pricing and media setup.",
+        "steps": [
+            "Click Manage pricing plans to add tiers, currencies, and feature bullets.",
+            "Open Admin links for screenshots (set Kind = Template or Screenshot) and videos.",
+            "View public page and pricing page to verify buttons and plans display correctly.",
+            "Review demo requests here or in Ops → Demo Requests.",
+        ],
+        "tips": [
+            "Pricing page URL: /products/<slug>/pricing/ — only visible when at least one plan is published.",
+        ],
+        "mistakes": ["Creating plans but leaving is_published unchecked on the plan."],
+    },
+    "product_pricing": {
+        "title": "Pricing plans guide",
+        "intro": "Plans appear on /products/<slug>/pricing/ when published with at least one price tier.",
+        "steps": [
+            "Click Add pricing plan — name it Starter, Pro, or Enterprise.",
+            "Set billing interval (monthly/annual) and mark one plan as Popular if desired.",
+            "Add a Pricing tier with currency (GHS, USD), region (global), and amount.",
+            "Add plan features as bullet lines shown on the pricing card.",
+            "Check Is published on the plan, save, then preview the public pricing page.",
+        ],
+        "tips": [
+            "Use Contact sales (no amount) for Enterprise tiers — enables Contact Sales button.",
+            "To change currency, edit the tier row — do not create duplicate tiers for the same currency.",
+        ],
+        "mistakes": [
+            "Saving a plan without any pricing tier — page shows Contact Sales only.",
+            "Forgetting to publish the plan after creating it.",
+        ],
+    },
+    "product_pricing_form": {
+        "title": "Editing a pricing plan",
+        "intro": "Each plan needs at least one tier (currency + amount) to show a price.",
+        "steps": [
+            "Fill plan name and billing interval first.",
+            "Under tiers, set currency to GHS or USD and enter the numeric amount.",
+            "Add feature bullets — one per row, included/excluded toggles strikethrough.",
+            "Save and click View pricing page to confirm display.",
+        ],
+        "tips": [],
+        "mistakes": ["Leaving amount empty on a non-contact-sales plan."],
+    },
+    "setup": {
+        "title": "Platform Setup guide",
+        "intro": "One-click seeds populate demo content — safe to re-run; existing records may update.",
+        "steps": [
+            "Run seed_products first if pricing plans or catalog entries are missing.",
+            "Run seed_control_room for navigation menus and platform settings.",
+            "Run seed_cms for homepage sections and hero content.",
+            "Use Run all only on a fresh install or when you intentionally want to refresh seeds.",
+        ],
+        "tips": ["After seeding products, edit ChurchHub URLs and currencies in Control Room."],
+        "mistakes": ["Running seeds on production with real customer data without reviewing impact."],
+    },
+    "changelog": {
+        "title": "Change Log guide",
+        "intro": "Audit trail of actions taken in Control Room.",
+        "steps": [
+            "Filter mentally by area (products, platform_settings, navigation, etc.).",
+            "Use alongside Ops activity logs for full operational history.",
+        ],
+        "tips": [],
+        "mistakes": [],
+    },
+}
+
+
+def get_page_help(key: str) -> dict | None:
+    return PAGE_HELP.get(key)

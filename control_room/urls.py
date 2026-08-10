@@ -4,6 +4,10 @@ from control_room.product_views import (
     ProductCreateView,
     ProductDetailView,
     ProductListView,
+    ProductPricingListView,
+    ProductPricingPlanCreateView,
+    ProductPricingPlanDeleteView,
+    ProductPricingPlanUpdateView,
     ProductUpdateView,
 )
 from control_room.views import (
@@ -54,6 +58,18 @@ urlpatterns = [
     path("products/new/", ProductCreateView.as_view(), name="product_create"),
     path("products/<uuid:pk>/", ProductDetailView.as_view(), name="product_detail"),
     path("products/<uuid:pk>/edit/", ProductUpdateView.as_view(), name="product_edit"),
+    path("products/<uuid:pk>/pricing/", ProductPricingListView.as_view(), name="product_pricing"),
+    path("products/<uuid:product_pk>/pricing/new/", ProductPricingPlanCreateView.as_view(), name="product_pricing_create"),
+    path(
+        "products/<uuid:product_pk>/pricing/<uuid:pk>/edit/",
+        ProductPricingPlanUpdateView.as_view(),
+        name="product_pricing_edit",
+    ),
+    path(
+        "products/<uuid:product_pk>/pricing/<uuid:pk>/delete/",
+        ProductPricingPlanDeleteView.as_view(),
+        name="product_pricing_delete",
+    ),
     path("setup/", SetupView.as_view(), name="setup"),
     path("setup/run/<slug:key>/", SeedRunView.as_view(), name="seed_run"),
     path("setup/run-all/", SeedRunAllView.as_view(), name="seed_run_all"),
