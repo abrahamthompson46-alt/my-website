@@ -1,0 +1,29 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>This Privacy Policy explains how {{ SITE_NAME }} ("we", "us") collects and uses information when you visit our website, request a demo, create an account, or use our customer portal.</p>
+
+<h2>Information we collect</h2>
+<ul>
+    <li><strong>Contact details</strong> — name, work email, phone, organization, and messages you submit through demo or contact forms.</li>
+    <li><strong>Account data</strong> — login email, profile information, subscription and billing records in the customer portal.</li>
+    <li><strong>Technical data</strong> — IP address, browser type, pages visited, and security/audit logs required to operate the platform safely.</li>
+</ul>
+
+<h2>How we use information</h2>
+<ul>
+    <li>Respond to demo requests, sales inquiries, and support tickets.</li>
+    <li>Provision trials, subscriptions, invoices, and product access.</li>
+    <li>Send service emails such as verification, onboarding, billing receipts, and product updates.</li>
+    <li>Protect the platform through rate limiting, fraud prevention, and audit logging.</li>
+</ul>
+
+<h2>Data retention</h2>
+<p>We retain account and billing records for as long as your subscription is active and as required for legal, tax, and audit purposes. Demo request records are retained for sales follow-up unless you ask us to delete them.</p>
+
+<h2>Your choices</h2>
+<p>You may request access, correction, or deletion of personal data by contacting <a href="mailto:{{ CONTACT_EMAIL|default:'privacy@zreta.com' }}">{{ CONTACT_EMAIL|default:"privacy@zreta.com" }}</a>. Verified customers can update profile details in the customer portal.</p>
+
+<h2>Contact</h2>
+<p>Questions about this policy: <a href="mailto:{{ CONTACT_EMAIL|default:'privacy@zreta.com' }}">{{ CONTACT_EMAIL|default:"privacy@zreta.com" }}</a>.</p>
+{% endblock %}

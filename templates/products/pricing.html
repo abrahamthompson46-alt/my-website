@@ -14,52 +14,44 @@
 {% block content %}
 <section class="section products-pricing">
     <div class="container">
-        {% include "components/layout/page_header.html" with title=product.name|add:" Pricing" subtitle="Choose the plan that fits your organization." %}
+        {% include "components/layout/page_header.html" with title=product.name|add:" Pricing" subtitle="Transparent plans with monthly and annual billing. Start a 14-day free trial or purchase instantly." %}
 
-        {% if plans %}
+        {% if monthly_plans or annual_plans or plans %}
+        {% if monthly_plans %}
+        <h2 class="pricing-section-title">Monthly billing</h2>
+        <div class="grid grid--3 pricing-grid">
+            {% for plan in monthly_plans %}
+            {% include "products/partials/pricing_card.html" with plan=plan product=product %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if annual_plans %}
+        <h2 class="pricing-section-title">Annual billing <span class="pricing-section-title__note">Save up to 20%</span></h2>
+        <div class="grid grid--3 pricing-grid">
+            {% for plan in annual_plans %}
+            {% include "products/partials/pricing_card.html" with plan=plan product=product %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if not monthly_plans and not annual_plans %}
         <div class="grid grid--3 pricing-grid">
             {% for plan in plans %}
-            <article class="pricing-card{% if plan.is_popular %} pricing-card--popular{% endif %}">
-                {% if plan.is_popular %}<span class="pricing-card__badge">Most Popular</span>{% endif %}
-                <h3 class="pricing-card__name">{{ plan.name }}</h3>
-                {% if plan.description %}<p class="pricing-card__desc">{{ plan.description }}</p>{% endif %}
-                <div class="pricing-card__price">
-                    {% with tier=plan.tiers.first %}
-                    {% if tier %}
-                    <span class="pricing-card__amount">{{ tier.display_price }}</span>
-                    {% if not plan.is_contact_sales and tier.amount %}
-                    <span class="pricing-card__interval">/ {{ plan.get_billing_interval_display|lower }}</span>
-                    {% endif %}
-                    {% else %}
-                    <span class="pricing-card__amount">Contact Sales</span>
-                    {% endif %}
-                    {% endwith %}
-                </div>
-                {% if plan.plan_features.exists %}
-                <ul class="pricing-card__features">
-                    {% for pf in plan.plan_features.all %}
-                    <li class="{% if not pf.is_included %}is-excluded{% endif %}">
-                        <svg class="icon icon--xs" aria-hidden="true" data-icon="{% if pf.is_included %}check{% else %}x{% endif %}"></svg>
-                        {{ pf.text }}
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                <div class="pricing-card__action">
-                    {% if plan.is_contact_sales %}
-                    <a href="#demo" class="btn btn--secondary btn--md btn--full">Contact Sales</a>
-                    {% else %}
-                    {% ui_button label="Get Started" url_name="contact:trial" variant="primary" size="md" extra_class="btn--full" type="link" %}
-                    {% endif %}
-                </div>
-            </article>
+            {% include "products/partials/pricing_card.html" with plan=plan product=product %}
             {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="pricing-footnotes">
+            <p>All paid plans include email support. Prices shown in USD; GHS tiers available where listed. Taxes may apply.</p>
+            <p>Questions? <a href="#demo">Request a demo</a> or see our <a href="{% url 'website:refund' %}">refund policy</a>.</p>
         </div>
         {% else %}
         {% ui_empty_state illustration="billing" title="Pricing unavailable" message="Pricing is not yet available for this product." action_label="Contact Sales" action_url="#demo" %}
         {% endif %}
+
+        {% include "products/partials/demo_request.html" with product=product form=demo_form heading="Questions about pricing?" form_action=request.path %}
     </div>
 </section>
-
-{% include "products/partials/demo_request.html" with product=product form=demo_form %}
 {% endblock %}

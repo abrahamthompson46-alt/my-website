@@ -3,20 +3,26 @@
     <div class="container site-footer__inner">
         <div class="site-footer__brand">
             <a href="{% url 'website:home' %}" class="brand-link brand-link--inverse">
-                <span class="brand-mark" aria-hidden="true"></span>
+                {% include "includes/brand_logo.html" %}
                 <span class="brand-text">{{ SITE_NAME }}</span>
             </a>
             <p class="site-footer__tagline">{{ SITE_TAGLINE|default:"Trusted enterprise software for regulated industries worldwide." }}</p>
             <div class="site-footer__social">
-                <a href="#" class="site-footer__social-link" aria-label="LinkedIn">
+                {% if SOCIAL_LINKEDIN_URL %}
+                <a href="{{ SOCIAL_LINKEDIN_URL }}" class="site-footer__social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
                     <svg class="icon icon--sm" aria-hidden="true" data-icon="linkedin"></svg>
                 </a>
-                <a href="#" class="site-footer__social-link" aria-label="X">
+                {% endif %}
+                {% if SOCIAL_TWITTER_URL %}
+                <a href="{{ SOCIAL_TWITTER_URL }}" class="site-footer__social-link" aria-label="X" target="_blank" rel="noopener noreferrer">
                     <svg class="icon icon--sm" aria-hidden="true" data-icon="twitter"></svg>
                 </a>
-                <a href="#" class="site-footer__social-link" aria-label="YouTube">
+                {% endif %}
+                {% if SOCIAL_YOUTUBE_URL %}
+                <a href="{{ SOCIAL_YOUTUBE_URL }}" class="site-footer__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
                     <svg class="icon icon--sm" aria-hidden="true" data-icon="youtube"></svg>
                 </a>
+                {% endif %}
             </div>
         </div>
 

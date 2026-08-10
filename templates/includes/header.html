@@ -2,7 +2,7 @@
 <header class="site-header" role="banner" data-header>
     <div class="container site-header__inner">
         <a href="{% url 'website:home' %}" class="brand-link" aria-label="{{ SITE_NAME }} home">
-            <span class="brand-mark" aria-hidden="true"></span>
+            {% include "includes/brand_logo.html" %}
             <span class="brand-text">{{ SITE_NAME }}</span>
         </a>
 

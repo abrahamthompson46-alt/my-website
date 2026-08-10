@@ -121,9 +121,11 @@ PUBLIC_FOOTER_COLUMNS = [
     {
         "title": "Legal",
         "links": [
-            {"label": "Privacy", "url_name": "pages:list"},
-            {"label": "Terms", "url_name": "pages:list"},
-            {"label": "Security", "url_name": "pages:list"},
+            {"label": "Privacy", "url_name": "website:privacy"},
+            {"label": "Terms", "url_name": "website:terms"},
+            {"label": "Security", "url_name": "website:security"},
+            {"label": "Refund Policy", "url_name": "website:refund"},
+            {"label": "System Status", "url_name": "website:status"},
         ],
     },
 ]
@@ -180,6 +182,7 @@ CONTROL_ROOM_NAV = [
     {"section": "Platform"},
     {"label": "Platform Setup", "url_name": "control_room:setup", "icon": "database"},
     {"label": "Site Settings", "url_name": "control_room:settings", "icon": "settings"},
+    {"label": "Team & Access", "url_name": "control_room:team", "icon": "users"},
     {"label": "Navigation", "url_name": "control_room:navigation", "icon": "menu"},
     {"label": "Redirects", "url_name": "control_room:redirects", "icon": "external-link"},
     {"label": "Announcements", "url_name": "control_room:announcements", "icon": "bell"},

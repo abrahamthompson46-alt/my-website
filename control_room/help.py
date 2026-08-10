@@ -27,6 +27,7 @@ PAGE_HELP: dict[str, dict] = {
         "intro": "Global branding and behavior applied to every public page instantly after save.",
         "steps": [
             "Set site name, tagline, and footer copyright under Branding.",
+            "Upload brand logo and favicon — they appear in the header, footer, and browser tab.",
             "Choose Zreta Sky & Mint (or Custom) under Brand colors — save to refresh the live palette.",
             "Set default SEO title and OG image for pages that do not define their own metadata.",
             "Configure contact and support emails — used in footers and system emails.",
@@ -245,6 +246,36 @@ PAGE_HELP: dict[str, dict] = {
         ],
         "tips": [],
         "mistakes": [],
+    },
+    "team": {
+        "title": "Team & Access guide",
+        "intro": "Invite staff, assign roles, and control who can access Control Room and Operations.",
+        "steps": [
+            "Only Platform Owners and Platform Admins can manage team members.",
+            "Enter email, choose a role, and send invitation — the invitee receives a secure link.",
+            "Pending invitations can be revoked before they are accepted.",
+            "Open a staff member to assign additional roles or remove roles.",
+            "Staff with Control Room access must enroll in MFA after accepting an invite.",
+        ],
+        "tips": [
+            "Run promote_platform_owner for the first bootstrap owner account.",
+            "Upload your logo under Site Settings → Branding.",
+        ],
+        "mistakes": [
+            "Inviting the same email twice — revoke the old invite first.",
+            "Removing Platform Owner role without another superuser available.",
+        ],
+    },
+    "team_user": {
+        "title": "Managing a team member",
+        "intro": "View roles and assign or remove access for an individual staff user.",
+        "steps": [
+            "Review currently assigned roles and their descriptions.",
+            "Use Assign role to add Platform Admin, Support Agent, or Billing Admin.",
+            "Remove roles the user no longer needs — permissions sync automatically.",
+        ],
+        "tips": ["Staff flag controls Control Room / Operations access."],
+        "mistakes": ["Removing all roles but leaving staff access enabled without purpose."],
     },
 }
 

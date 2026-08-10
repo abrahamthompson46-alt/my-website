@@ -18,6 +18,7 @@ class AuthFlowTests(TestCase):
             email="user@test.com",
             password="SecurePass123!",
         )
+        get_or_create_security_profile(self.user).mark_email_verified()
 
     def test_login_redirects_to_portal(self):
         response = self.client.post(

@@ -1,0 +1,19 @@
+{% extends "base_public.html" %}
+
+{% block title %}Invitation unavailable — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section auth-page">
+    <div class="container auth-page__panel-narrow">
+        <h1>Invitation unavailable</h1>
+        {% if invitation and invitation.status != "pending" %}
+        <p>This invitation has already been {{ invitation.get_status_display|lower }}.</p>
+        {% elif invitation %}
+        <p>This invitation expired on {{ invitation.expires_at|date:"F j, Y" }}.</p>
+        {% else %}
+        <p>This invitation link is invalid.</p>
+        {% endif %}
+        <p><a href="{% url 'accounts:login' %}">Sign in</a> or contact your platform administrator for a new invite.</p>
+    </div>
+</section>
+{% endblock %}

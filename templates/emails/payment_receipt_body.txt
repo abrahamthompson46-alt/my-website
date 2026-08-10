@@ -1,0 +1,11 @@
+Hi {{ user.first_name|default:user.email }},
+
+We received your payment.
+
+Reference: {{ payment.reference }}
+Amount: {{ payment.currency }} {{ payment.amount }}
+Status: {{ payment.get_status_display }}
+
+Thank you for your business.
+
+— {{ site_name }}

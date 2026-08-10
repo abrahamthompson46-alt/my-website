@@ -1,0 +1,1 @@
+Your {{ product.name }} trial ends in {{ days_left }} day{{ days_left|pluralize }} — {{ site_name }}

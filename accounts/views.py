@@ -16,12 +16,14 @@ from django.views.generic import TemplateView, View
 
 from accounts.backends import record_failed_login, reset_failed_login
 from accounts.forms import (
+    AcceptInvitationForm,
     EnterprisePasswordResetForm,
     EnterpriseSetPasswordForm,
     MFAChallengeForm,
     MFAEnrollConfirmForm,
     MFADisableForm,
     PortalLoginForm,
+    RegistrationForm,
 )
 from accounts.models import AuditEventType, MFAMethod
 from accounts.services.audit import log_audit_event
@@ -382,6 +384,163 @@ class MFADisableView(PortalMixin, View):
         disable_mfa(request.user, request=request)
         messages.success(request, "Multi-factor authentication has been disabled.")
         return redirect("customer_portal:security")
+
+
+class RegisterView(View):
+    """Self-serve signup for trials and plan checkout."""
+
+    template_name = "accounts/register.html"
+
+    def _registration_enabled(self):
+        try:
+            from control_room.services import get_platform_settings
+
+            return get_platform_settings().public_registration_enabled
+        except Exception:
+            return getattr(settings, "PUBLIC_REGISTRATION_ENABLED", True)
+
+    def _next_url(self, request, selection):
+        if not selection:
+            return reverse("customer_portal:dashboard")
+        if selection.action == "buy" and selection.tier:
+            return (
+                reverse("payments:checkout")
+                + f"?plan={selection.plan.pk}&tier={selection.tier.pk}"
+            )
+        return reverse("customer_portal:dashboard")
+
+    def get(self, request):
+        if not self._registration_enabled():
+            messages.info(request, "Self-serve registration is currently unavailable. Please contact sales.")
+            return redirect("contact:demo")
+
+        from common.services.plan_selection import selection_from_session
+
+        selection = selection_from_session(request.session.get("plan_start"))
+        return render(
+            request,
+            self.template_name,
+            {
+                "form": RegistrationForm(),
+                "plan_selection": selection,
+            },
+        )
+
+    def post(self, request):
+        if not self._registration_enabled():
+            messages.error(request, "Registration is disabled.")
+            return redirect("contact:demo")
+
+        from common.services.onboarding_email import send_trial_welcome_email
+        from common.services.plan_selection import selection_from_session
+        from common.services.trial_provisioning import provision_trial
+
+        form = RegistrationForm(request.POST)
+        selection = selection_from_session(request.session.get("plan_start"))
+        if not form.is_valid():
+            return render(
+                request,
+                self.template_name,
+                {"form": form, "plan_selection": selection},
+            )
+
+        user = form.save()
+        send_verification_email(request, user)
+
+        if selection and selection.action == "trial":
+            subscription = provision_trial(
+                user=user,
+                product=selection.product,
+                plan=selection.plan,
+                tier=selection.tier,
+                company=form.cleaned_data.get("company", ""),
+            )
+            try:
+                send_trial_welcome_email(request, user, subscription)
+            except Exception:
+                pass
+            request.session.pop("plan_start", None)
+            messages.success(
+                request,
+                f"Your {selection.product.name} trial is ready. Verify your email to access the customer portal.",
+            )
+        else:
+            messages.success(
+                request,
+                "Account created. Verify your email to continue.",
+            )
+
+        auth_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        track_user_session(request, user)
+        return redirect("accounts:verify_email_prompt")
+
+
+class AcceptInvitationView(View):
+    template_name = "accounts/accept_invite.html"
+
+    def get_invitation(self, token):
+        from accounts.services.invitations import get_invitation_by_token
+
+        return get_invitation_by_token(token)
+
+    def get(self, request, token):
+        invitation = self.get_invitation(token)
+        if not invitation or not invitation.is_valid:
+            return render(request, "accounts/invite_invalid.html", {"invitation": invitation})
+
+        existing = User.objects.filter(email__iexact=invitation.email).first()
+        return render(
+            request,
+            self.template_name,
+            {
+                "invitation": invitation,
+                "form": AcceptInvitationForm(invitation_email=invitation.email),
+                "existing_user": existing,
+            },
+        )
+
+    def post(self, request, token):
+        from accounts.services.email import get_or_create_security_profile, send_verification_email
+        from accounts.services.invitations import accept_invitation
+
+        invitation = self.get_invitation(token)
+        if not invitation or not invitation.is_valid:
+            return render(request, "accounts/invite_invalid.html", {"invitation": invitation})
+
+        existing = User.objects.filter(email__iexact=invitation.email).first()
+        if existing and request.POST.get("accept_existing"):
+            accept_invitation(invitation, user=existing)
+            messages.success(request, f"Welcome back! Your {invitation.role.name} access is now active.")
+            auth_login(request, existing, backend="django.contrib.auth.backends.ModelBackend")
+            track_user_session(request, existing)
+            return redirect("control_room:dashboard" if existing.is_staff else "customer_portal:dashboard")
+
+        existing = User.objects.filter(email__iexact=invitation.email).first()
+        if existing:
+            return render(
+                request,
+                self.template_name,
+                {"invitation": invitation, "form": None, "existing_user": existing},
+            )
+
+        form = AcceptInvitationForm(request.POST, invitation_email=invitation.email)
+        if not form.is_valid():
+            return render(
+                request,
+                self.template_name,
+                {"invitation": invitation, "form": form, "existing_user": None},
+            )
+
+        user = form.save()
+        accept_invitation(invitation, user=user)
+        profile = get_or_create_security_profile(user)
+        profile.mark_email_verified()
+        auth_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        track_user_session(request, user)
+        messages.success(request, f"Account created. Welcome to the team as {invitation.role.name}.")
+        if invitation.grant_staff_access:
+            return redirect("accounts:mfa_enroll")
+        return redirect("customer_portal:dashboard")
 
 
 def _post_login_url(user):

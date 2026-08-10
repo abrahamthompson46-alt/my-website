@@ -1,0 +1,40 @@
+{% extends "base_public.html" %}
+
+{% block title %}System Status — {{ SITE_NAME }}{% endblock %}
+
+{% block breadcrumbs %}
+{% include "components/breadcrumbs.html" with items=breadcrumb_items %}
+{% endblock %}
+
+{% block content %}
+<section class="section status-page">
+    <div class="container">
+        <header class="status-page__header">
+            <h1>System Status</h1>
+            <p class="status-page__overall status-page__overall--{{ overall_status }}">
+                {% if overall_status == "operational" %}All systems operational{% else %}Some systems degraded{% endif %}
+            </p>
+        </header>
+
+        <div class="status-grid">
+            <article class="status-card status-card--{{ checks.database|default:'unknown' }}">
+                <h2>Website &amp; API</h2>
+                <p>{{ checks.database|title }}</p>
+            </article>
+            <article class="status-card status-card--{{ checks.cache|default:'unknown' }}">
+                <h2>Cache</h2>
+                <p>{{ checks.cache|title }}</p>
+            </article>
+        </div>
+
+        <div class="status-page__support">
+            <h2>Support commitments</h2>
+            <ul>
+                <li>Target first response: <strong>{{ support_sla_hours }} business hours</strong></li>
+                <li>Support email: <a href="mailto:{{ support_email }}">{{ support_email }}</a></li>
+                <li>Health probe: <a href="{% url 'health_check' %}">/health/</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

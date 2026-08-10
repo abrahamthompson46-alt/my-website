@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView, View
 
 from cms.models import Testimonial
 from cms.services import get_product_hero, get_published_downloads, get_published_faqs
@@ -158,6 +158,12 @@ class ProductPricingView(PublishedProductMixin, DetailView):
         context = super().get_context_data(**kwargs)
         product = self.object
         context["plans"] = product.plans.filter(is_published=True).prefetch_related("tiers", "plan_features")
+        context["annual_plans"] = product.plans.filter(
+            is_published=True, billing_interval="annual"
+        ).prefetch_related("tiers", "plan_features")
+        context["monthly_plans"] = product.plans.filter(
+            is_published=True, billing_interval="monthly"
+        ).prefetch_related("tiers", "plan_features")
         context["demo_form"] = ProductDemoRequestForm(product=product)
         context["breadcrumb_items"] = [
             {"label": "Home", "url_name": "website:home"},
@@ -166,6 +172,28 @@ class ProductPricingView(PublishedProductMixin, DetailView):
             {"label": "Pricing"},
         ]
         return context
+
+    def post(self, request, *args, **kwargs):
+        from common.services.demo_requests import (
+            is_demo_rate_limited,
+            log_demo_rate_limit,
+            log_demo_submission,
+        )
+
+        self.object = self.get_object()
+        if is_demo_rate_limited(request):
+            log_demo_rate_limit(request)
+            messages.error(request, "Too many demo requests. Please try again later.")
+            return redirect(reverse("products:pricing", kwargs={"slug": self.object.slug}) + "#demo")
+
+        form = ProductDemoRequestForm(request.POST, product=self.object)
+        if form.is_valid():
+            demo = form.save()
+            log_demo_submission(request, demo)
+            messages.success(request, "Thanks! We'll follow up about pricing and demos shortly.")
+            return redirect(reverse("products:pricing", kwargs={"slug": self.object.slug}) + "#demo")
+        context = self.get_context_data(demo_form=form)
+        return self.render_to_response(context)
 
 
 class ProductCompareView(TemplateView):
@@ -229,3 +257,66 @@ class ProductCompareView(TemplateView):
             query = "&".join(f"p={slug}" for slug in slugs)
             return redirect(f"{reverse('products:compare')}?{query}")
         return self.render_to_response(self.get_context_data(compare_form=form))
+
+
+class PlanStartView(View):
+    """Begin a trial or purchase flow for a specific pricing plan."""
+
+    def get(self, request, slug):
+        plan_slug = request.GET.get("plan", "").strip()
+        action = request.GET.get("action", "trial").strip()
+        tier_id = request.GET.get("tier") or None
+        currency = request.GET.get("currency") or None
+
+        if not plan_slug:
+            messages.error(request, "Select a plan to continue.")
+            return redirect("products:pricing", slug=slug)
+
+        from common.services.plan_selection import (
+            get_plan_selection,
+            selection_to_session,
+        )
+
+        try:
+            selection = get_plan_selection(
+                product_slug=slug,
+                plan_slug=plan_slug,
+                action=action,
+                tier_id=tier_id,
+                currency=currency,
+            )
+        except ValueError as exc:
+            messages.error(request, str(exc))
+            return redirect("products:pricing", slug=slug)
+
+        request.session["plan_start"] = selection_to_session(selection)
+
+        if request.user.is_authenticated:
+            if selection.action == "trial":
+                from common.services.onboarding_email import send_trial_welcome_email
+                from common.services.trial_provisioning import provision_trial
+
+                subscription = provision_trial(
+                    user=request.user,
+                    product=selection.product,
+                    plan=selection.plan,
+                    tier=selection.tier,
+                )
+                try:
+                    send_trial_welcome_email(request, request.user, subscription)
+                except Exception:
+                    pass
+                request.session.pop("plan_start", None)
+                messages.success(
+                    request,
+                    f"Your {selection.product.name} trial is active until {subscription.trial_ends_at:%b %d, %Y}.",
+                )
+                return redirect("customer_portal:dashboard")
+            checkout_url = (
+                reverse("payments:checkout")
+                + f"?plan={selection.plan.pk}&tier={selection.tier.pk}"
+            )
+            request.session.pop("plan_start", None)
+            return redirect(checkout_url)
+
+        return redirect("accounts:register")

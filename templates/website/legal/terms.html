@@ -1,0 +1,23 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>These Terms of Service govern your use of the {{ SITE_NAME }} website, customer portal, and related services.</p>
+
+<h2>Accounts</h2>
+<p>You must provide accurate registration information and keep your credentials secure. You are responsible for activity under your account.</p>
+
+<h2>Trials and subscriptions</h2>
+<p>Free trials are time-limited and convert to paid subscriptions unless cancelled before the trial end date. Plan features, usage limits, and pricing are described on each product pricing page.</p>
+
+<h2>Acceptable use</h2>
+<p>You may not misuse the platform, attempt unauthorized access, interfere with service availability, or upload unlawful content.</p>
+
+<h2>Availability</h2>
+<p>We aim for reliable service but do not guarantee uninterrupted access. Scheduled maintenance may occur with reasonable notice when possible.</p>
+
+<h2>Liability</h2>
+<p>To the extent permitted by law, {{ SITE_NAME }} is not liable for indirect or consequential damages arising from use of the marketing site or portal. Product-specific agreements may apply to deployed applications.</p>
+
+<h2>Contact</h2>
+<p>Legal inquiries: <a href="mailto:{{ CONTACT_EMAIL|default:'legal@zreta.com' }}">{{ CONTACT_EMAIL|default:"legal@zreta.com" }}</a>.</p>
+{% endblock %}

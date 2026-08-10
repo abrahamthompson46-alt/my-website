@@ -1,22 +1,18 @@
 {% load ui_tags %}
 {% if cms_hero and cms_hero.cta_primary_url %}
 <a href="{{ cms_hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ cms_hero.cta_primary_label|default:"Get started" }}</a>
-{% elif product.register_url %}
-<a href="{{ product.register_url }}" class="btn btn--primary btn--lg" target="_blank" rel="noopener noreferrer">Register your church</a>
+{% elif product.plans.exists %}
+<a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--primary btn--lg">View pricing &amp; start trial</a>
 {% else %}
-{% ui_button label="Start Free Trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
+{% ui_button label="Start Free Trial" url_name="contact:trial" variant="primary" size="lg" %}
 {% endif %}
 
-{% if product.demo_url %}
-<a href="{{ product.demo_url }}" class="btn btn--secondary btn--lg" target="_blank" rel="noopener noreferrer">Request a demo</a>
-{% else %}
-<a href="#demo" class="btn btn--secondary btn--lg">Request Demo</a>
-{% endif %}
+<a href="#demo" class="btn btn--secondary btn--lg">Request a demo</a>
 
 {% if product.external_app_url %}
-<a href="{{ product.external_app_url }}" class="btn btn--ghost btn--lg" target="_blank" rel="noopener noreferrer">Open app</a>
+<a href="{{ product.external_app_url }}" class="btn btn--ghost btn--lg" target="_blank" rel="noopener noreferrer">Open live app</a>
 {% endif %}
 
 {% if product.plans.exists %}
-<a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg">View Pricing</a>
+<a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg">Compare plans</a>
 {% endif %}

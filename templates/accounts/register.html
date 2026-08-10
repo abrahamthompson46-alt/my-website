@@ -1,0 +1,44 @@
+{% extends "base_public.html" %}
+{% load ui_tags %}
+
+{% block title %}Create your account — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="section auth-page">
+    <div class="container auth-page__grid">
+        <div class="auth-page__intro">
+            <h1>Create your account</h1>
+            {% if plan_selection %}
+            <p>Start your <strong>{{ plan_selection.product.name }}</strong> {{ plan_selection.plan.name }} {% if plan_selection.action == "trial" %}free trial{% else %}subscription{% endif %}.</p>
+            <ul class="auth-page__benefits">
+                <li>14-day free trial — no credit card required</li>
+                <li>Instant portal access after email verification</li>
+                <li>License key and onboarding email included</li>
+            </ul>
+            {% else %}
+            <p>Sign up to access trials, subscriptions, invoices, and support in one place.</p>
+            {% endif %}
+        </div>
+
+        <div class="auth-page__panel">
+            <form method="post" class="form stack" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div class="alert alert--error">{{ form.non_field_errors }}</div>
+                {% endif %}
+                {% ui_field field=form.email %}
+                {% ui_field field=form.first_name %}
+                {% ui_field field=form.last_name %}
+                {% ui_field field=form.company %}
+                {% ui_field field=form.password1 %}
+                {% ui_field field=form.password2 %}
+                <div class="form-actions">
+                    {% ui_button label="Create account" type="submit" variant="primary" full_width=True %}
+                </div>
+            </form>
+            <p class="auth-page__footer">Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a></p>
+            <p class="auth-page__legal text-muted">By creating an account you agree to our <a href="{% url 'website:terms' %}">Terms</a> and <a href="{% url 'website:privacy' %}">Privacy Policy</a>.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>{{ SITE_NAME }} applies layered security controls across authentication, infrastructure, and operations. This page summarizes buyer-relevant practices — not a certification statement.</p>
+
+<h2>Authentication & access</h2>
+<ul>
+    <li>Email verification required for customer portal access.</li>
+    <li>Staff accounts require two-factor authentication (TOTP + backup codes).</li>
+    <li>Login rate limiting, account lockout, and session tracking/revocation.</li>
+    <li>Role-based access control for staff and operations areas.</li>
+</ul>
+
+<h2>Application security</h2>
+<ul>
+    <li>CSRF protection on authenticated and public forms.</li>
+    <li>Security headers including CSP, HSTS (production), and secure cookies.</li>
+    <li>Audit logging for authentication events, demo submissions, and admin changes.</li>
+    <li>Demo forms protected with honeypot and per-IP rate limits.</li>
+</ul>
+
+<h2>Data protection</h2>
+<ul>
+    <li>Passwords stored using Django's secure hashing framework.</li>
+    <li>Production deployments should use PostgreSQL, Redis, TLS, and restricted server access.</li>
+    <li>Payment card data is handled by configured payment gateways — not stored on this marketing platform.</li>
+</ul>
+
+<h2>Responsible disclosure</h2>
+<p>Report suspected vulnerabilities to <a href="mailto:{{ SUPPORT_EMAIL|default:'security@zreta.com' }}">{{ SUPPORT_EMAIL|default:"security@zreta.com" }}</a>. Include steps to reproduce and impact assessment.</p>
+
+<p>See also our <a href="{% url 'website:privacy' %}">Privacy Policy</a>.</p>
+{% endblock %}

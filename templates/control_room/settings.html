@@ -6,7 +6,7 @@
 {% block content %}
 {% include "control_room/partials/page_header.html" with title="Site Settings" subtitle="Branding, SEO defaults, contact information, maintenance mode, and global feature toggles." %}
 
-<form method="post" class="control-form">
+<form method="post" class="control-form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="ops-grid ops-grid--2">
         <section class="ops-panel">
@@ -16,6 +16,12 @@
                 {% ui_field field=form.site_tagline %}
                 {% ui_field field=form.site_description extra_class="form-field--full" %}
                 {% ui_field field=form.footer_copyright extra_class="form-field--full" %}
+                {% ui_field field=form.brand_logo extra_class="form-field--full" %}
+                {% if form.instance.brand_logo %}
+                <p class="control-form__hint form-field--full">Current logo: <img src="{{ form.instance.brand_logo.url }}" alt="" class="brand-logo brand-logo--preview"></p>
+                {% endif %}
+                {% ui_field field=form.brand_favicon extra_class="form-field--full" %}
+                <p class="control-form__hint form-field--full">Upload your platform logo and optional favicon. Leave blank to keep the default gradient mark.</p>
             </div>
         </section>
         <section class="ops-panel">
@@ -71,6 +77,10 @@
                 {% ui_field field=form.newsletter_enabled %}
                 {% ui_field field=form.partner_program_enabled %}
                 {% ui_field field=form.public_registration_enabled %}
+                {% ui_field field=form.social_linkedin_url %}
+                {% ui_field field=form.social_twitter_url %}
+                {% ui_field field=form.social_youtube_url %}
+                {% ui_field field=form.support_sla_hours %}
             </div>
         </section>
     </div>

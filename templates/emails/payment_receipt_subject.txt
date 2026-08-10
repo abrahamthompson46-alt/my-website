@@ -1,0 +1,1 @@
+Payment receipt {{ payment.reference }} — {{ site_name }}

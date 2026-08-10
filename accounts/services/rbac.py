@@ -1,3 +1,5 @@
+from django.contrib.auth.models import Permission
+
 from accounts.models import Role, UserRole
 
 
@@ -13,6 +15,15 @@ def user_has_role(user, role_slug):
     return get_user_roles(user).filter(slug=role_slug).exists()
 
 
+def user_can_manage_team(user):
+    """Platform owners/admins and superusers can invite users and manage roles."""
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    return user_has_role(user, "platform-owner") or user_has_role(user, "platform-admin")
+
+
 def user_has_permission(user, perm_codename, app_label="accounts"):
     if user.is_superuser:
         return True
@@ -25,17 +36,26 @@ def user_has_permission(user, perm_codename, app_label="accounts"):
     )
 
 
+def sync_user_permissions(user):
+    """Rebuild direct user permissions from all active assigned roles."""
+    role_perms = Permission.objects.filter(
+        enterprise_roles__user_roles__user=user,
+        enterprise_roles__is_active=True,
+    ).distinct()
+    user.user_permissions.set(role_perms)
+
+
 def assign_role(user, role, assigned_by=None):
-    user_role, created = UserRole.objects.get_or_create(user=user, role=role, defaults={"assigned_by": assigned_by})
+    user_role, created = UserRole.objects.get_or_create(
+        user=user, role=role, defaults={"assigned_by": assigned_by}
+    )
     if created:
-        for permission in role.permissions.all():
-            user.user_permissions.add(permission)
+        sync_user_permissions(user)
     return user_role, created
 
 
 def remove_role(user, role):
     deleted, _ = UserRole.objects.filter(user=user, role=role).delete()
     if deleted:
-        for permission in role.permissions.all():
-            user.user_permissions.remove(permission)
+        sync_user_permissions(user)
     return bool(deleted)

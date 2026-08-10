@@ -4,7 +4,7 @@
     <div class="mobile-drawer__panel" role="dialog" aria-modal="true" aria-label="Navigation menu">
         <div class="mobile-drawer__header">
             <a href="{% url 'website:home' %}" class="brand-link">
-                <span class="brand-mark" aria-hidden="true"></span>
+                {% include "includes/brand_logo.html" %}
                 <span class="brand-text">{{ SITE_NAME }}</span>
             </a>
             <button type="button"

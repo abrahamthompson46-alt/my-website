@@ -1,0 +1,7 @@
+Hi {{ user.first_name|default:user.email }},
+
+Your {{ product.name }} trial ends in {{ days_left }} day{{ days_left|pluralize }}.
+
+Upgrade before it expires: {{ pricing_url }}
+
+— {{ site_name }}

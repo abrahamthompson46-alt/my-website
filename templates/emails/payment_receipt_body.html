@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html><body style="font-family:Arial,sans-serif;line-height:1.5;">
+<p>Hi {{ user.first_name|default:user.email }},</p>
+<p>We received your payment.</p>
+<ul>
+<li><strong>Reference:</strong> {{ payment.reference }}</li>
+<li><strong>Amount:</strong> {{ payment.currency }} {{ payment.amount }}</li>
+<li><strong>Status:</strong> {{ payment.get_status_display }}</li>
+</ul>
+<p>— {{ site_name }}</p>
+</body></html>

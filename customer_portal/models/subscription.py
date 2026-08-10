@@ -27,6 +27,13 @@ class Subscription(BaseModel):
         on_delete=models.PROTECT,
         related_name="subscriptions",
     )
+    pricing_plan = models.ForeignKey(
+        "products.PricingPlan",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="subscriptions",
+    )
     plan_name = models.CharField(max_length=120)
     status = models.CharField(
         max_length=20,
@@ -43,6 +50,7 @@ class Subscription(BaseModel):
     currency = models.CharField(max_length=3, default="USD")
     started_at = models.DateField()
     renews_at = models.DateField(null=True, blank=True)
+    trial_ends_at = models.DateField(null=True, blank=True)
     cancelled_at = models.DateField(null=True, blank=True)
 
     class Meta:

@@ -54,8 +54,8 @@ FEATURED_PRODUCTS = [
 WHY_CHOOSE_US = [
     {
         "icon": "shield-check",
-        "title": "Enterprise-grade security",
-        "description": "SOC 2-ready infrastructure, encryption at rest and in transit, and role-based access control.",
+        "title": "Security-first platform",
+        "description": "Email verification, staff MFA, audit logging, CSRF protection, and production security headers.",
     },
     {
         "icon": "layers",
@@ -65,22 +65,22 @@ WHY_CHOOSE_US = [
     {
         "icon": "globe",
         "title": "Built for Africa & beyond",
-        "description": "Multi-currency, offline-capable modules, and local compliance for regional markets.",
+        "description": "Multi-currency pricing, regional payment gateways, and workflows designed for emerging markets.",
     },
     {
         "icon": "headphones",
-        "title": "24/7 expert support",
-        "description": "Dedicated onboarding, training, and priority support with guaranteed response SLAs.",
+        "title": "Human onboarding",
+        "description": "Self-serve trials plus guided demos and support tickets with published response targets.",
     },
     {
         "icon": "zap",
-        "title": "Rapid deployment",
-        "description": "Go live in weeks, not months. Pre-built templates and migration tools accelerate adoption.",
+        "title": "Fast time to value",
+        "description": "Start a 14-day trial from any pricing page and access your customer portal immediately after verification.",
     },
     {
         "icon": "bar-chart",
         "title": "Actionable analytics",
-        "description": "Real-time dashboards and exportable reports to drive data-informed decisions.",
+        "description": "Operations dashboards for demos, revenue, subscriptions, and product activity.",
     },
 ]
 
@@ -113,21 +113,21 @@ INDUSTRIES = [
 
 TESTIMONIALS = [
     {
-        "quote": "We consolidated five legacy systems into one platform. Our team saves 20 hours per week on reporting alone.",
+        "quote": "The platform helped us consolidate operations and respond to demo requests much faster.",
         "name": "Sarah Okonkwo",
         "role": "CFO",
         "company": "Unity Microfinance",
         "initials": "SO",
     },
     {
-        "quote": "ChurchHub transformed how we engage our 3,000-member congregation. Giving increased 35% in the first year.",
+        "quote": "ChurchHub gave our team one place for members, giving, and events.",
         "name": "Rev. James Mwangi",
         "role": "Senior Pastor",
         "company": "Grace Community Church",
         "initials": "JM",
     },
     {
-        "quote": "The School Management platform reduced fee collection delays by 60%. Parents love the mobile portal.",
+        "quote": "Parents appreciate the portal, and our admin team spends less time on manual follow-ups.",
         "name": "Dr. Amina Hassan",
         "role": "Principal",
         "company": "Horizon Academy",
@@ -151,19 +151,19 @@ LATEST_NEWS = [
         "excerpt": "A practical framework for migrating from legacy systems without disrupting daily operations.",
     },
     {
-        "title": "Enterprise Platform achieves SOC 2 Type II certification",
+        "title": "Publishing our security overview and status page",
         "category": "Company",
         "date": "June 28, 2026",
         "read_time": "3 min read",
-        "excerpt": "Our commitment to security and compliance continues with independent third-party validation.",
+        "excerpt": "Transparent documentation of platform controls, support SLAs, and live health checks.",
     },
 ]
 
 STATISTICS = [
-    {"value": "2,500+", "label": "Organizations served"},
-    {"value": "18", "label": "Countries worldwide"},
-    {"value": "99.9%", "label": "Platform uptime SLA"},
-    {"value": "4.8/5", "label": "Customer satisfaction"},
+    {"value": "7", "label": "Modular products"},
+    {"value": "14 days", "label": "Free trial on every plan"},
+    {"value": "24h", "label": "Support response target"},
+    {"value": "3", "label": "Payment gateway options"},
 ]
 
 PARTNER_LOGOS = [
@@ -184,7 +184,7 @@ HERO = {
         "ChurchHub, Microfinance Core, and ERP Suite — modular products on one trusted "
         "platform, built for scale, security, and compliance across Africa and beyond."
     ),
-    "trust_text": "Trusted by 2,500+ organizations in 18 countries",
+    "trust_text": "Self-serve trials · Transparent pricing · Published security & status pages",
     "product_pills": ["ChurchHub", "Microfinance Core", "ERP Suite"],
 }
 

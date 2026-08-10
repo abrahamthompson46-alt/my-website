@@ -1,0 +1,12 @@
+Hello,
+
+{% if inviter %}{{ inviter.email }} has invited you{% else %}You have been invited{% endif %} to join {{ site_name }} as {{ invitation.role.name }}.
+
+{% if invitation.message %}{{ invitation.message }}
+
+{% endif %}Accept your invitation:
+{{ accept_url }}
+
+This link expires on {{ invitation.expires_at|date:"F j, Y" }}.
+
+— {{ site_name }}

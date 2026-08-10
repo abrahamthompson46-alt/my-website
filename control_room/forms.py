@@ -17,6 +17,8 @@ class PlatformSettingsForm(forms.ModelForm):
             "brand_theme_preset",
             "brand_primary_color",
             "brand_accent_color",
+            "brand_logo",
+            "brand_favicon",
             "default_seo_title",
             "seo_twitter_handle",
             "seo_default_og_image",
@@ -34,12 +36,18 @@ class PlatformSettingsForm(forms.ModelForm):
             "newsletter_enabled",
             "partner_program_enabled",
             "public_registration_enabled",
+            "social_linkedin_url",
+            "social_twitter_url",
+            "social_youtube_url",
+            "support_sla_hours",
         ]
         widgets = {
             "site_description": forms.Textarea(attrs={"rows": 3}),
             "maintenance_message": forms.Textarea(attrs={"rows": 3}),
             "brand_primary_color": forms.TextInput(attrs={"type": "color", "class": "control-color-input"}),
             "brand_accent_color": forms.TextInput(attrs={"type": "color", "class": "control-color-input"}),
+            "brand_logo": forms.ClearableFileInput(attrs={"class": "form-control", "accept": "image/*"}),
+            "brand_favicon": forms.ClearableFileInput(attrs={"class": "form-control", "accept": "image/*"}),
         }
 
     def __init__(self, *args, **kwargs):

@@ -1,0 +1,95 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Team & Access" subtitle="Invite platform staff, assign roles, and manage permissions." %}
+
+<div class="ops-grid ops-grid--2 control-panel-grid">
+    <section class="ops-panel control-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Invite team member</h2></div>
+        <div class="ops-panel__body">
+            <form method="post" class="form stack">
+                {% csrf_token %}
+                {% ui_form_fields invite_form %}
+                <div class="control-form__actions">
+                    {% ui_button label="Send invitation" type="submit" variant="primary" %}
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="ops-panel control-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Roles overview</h2></div>
+        <div class="ops-panel__body">
+            <ul class="control-role-list">
+                {% for role in roles %}
+                <li>
+                    <strong>{{ role.name }}</strong>
+                    <span class="text-muted">{{ role.permissions.count }} permission{{ role.permissions.count|pluralize }}</span>
+                    {% if role.description %}<p class="control-form__hint">{{ role.description }}</p>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+</div>
+
+<section class="ops-panel control-panel">
+    <div class="ops-panel__header"><h2 class="ops-panel__title">Pending invitations</h2></div>
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Email</th><th>Role</th><th>Invited by</th><th>Expires</th><th></th></tr></thead>
+            <tbody>
+                {% for invite in pending_invitations %}
+                <tr>
+                    <td>{{ invite.email }}</td>
+                    <td>{{ invite.role.name }}</td>
+                    <td>{% if invite.invited_by %}{{ invite.invited_by.email }}{% else %}—{% endif %}</td>
+                    <td>{{ invite.expires_at|date:"M j, Y" }}</td>
+                    <td>
+                        <form method="post" action="{% url 'control_room:team_revoke_invite' invite.pk %}" class="control-inline-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn--ghost btn--sm">Revoke</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No pending invitations.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="ops-panel control-panel">
+    <div class="ops-panel__header"><h2 class="ops-panel__title">Staff members</h2></div>
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>User</th><th>Roles</th><th>Staff</th><th></th></tr></thead>
+            <tbody>
+                {% for member in members %}
+                <tr>
+                    <td>
+                        <strong>{{ member.get_full_name|default:member.email }}</strong>
+                        <br><span class="text-muted">{{ member.email }}</span>
+                    </td>
+                    <td>
+                        {% for ur in member.user_roles.all %}
+                        <span class="control-badge">{{ ur.role.name }}</span>
+                        {% empty %}
+                        <span class="text-muted">No roles</span>
+                        {% endfor %}
+                    </td>
+                    <td>{% if member.is_staff %}Yes{% else %}No{% endif %}</td>
+                    <td><a href="{% url 'control_room:team_user' member.pk %}" class="btn btn--ghost btn--sm">Manage</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No staff members yet. Send an invitation above.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

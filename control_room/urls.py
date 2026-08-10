@@ -10,6 +10,13 @@ from control_room.product_views import (
     ProductPricingPlanUpdateView,
     ProductUpdateView,
 )
+from control_room.user_views import (
+    TeamAssignRoleView,
+    TeamListView,
+    TeamRemoveRoleView,
+    TeamRevokeInviteView,
+    TeamUserDetailView,
+)
 from control_room.views import (
     AnnouncementCreateView,
     AnnouncementDeleteView,
@@ -39,6 +46,11 @@ app_name = "control_room"
 urlpatterns = [
     path("", DashboardView.as_view(), name="dashboard"),
     path("settings/", SettingsView.as_view(), name="settings"),
+    path("team/", TeamListView.as_view(), name="team"),
+    path("team/<uuid:pk>/", TeamUserDetailView.as_view(), name="team_user"),
+    path("team/<uuid:pk>/assign-role/", TeamAssignRoleView.as_view(), name="team_assign_role"),
+    path("team/<uuid:pk>/remove-role/<uuid:role_pk>/", TeamRemoveRoleView.as_view(), name="team_remove_role"),
+    path("team/invites/<uuid:pk>/revoke/", TeamRevokeInviteView.as_view(), name="team_revoke_invite"),
     path("navigation/", NavigationListView.as_view(), name="navigation"),
     path("navigation/<uuid:pk>/", NavigationEditView.as_view(), name="navigation_edit"),
     path("redirects/", RedirectListView.as_view(), name="redirects"),

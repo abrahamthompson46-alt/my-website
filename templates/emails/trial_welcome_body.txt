@@ -1,0 +1,16 @@
+Hi {{ user.first_name|default:user.email }},
+
+Your {{ product.name }} trial ({{ subscription.plan_name }}) is now active.
+
+Trial ends: {{ trial_ends_at|date:"F j, Y" }}
+
+Next steps:
+1. Verify your email if you have not already.
+2. Open your customer portal: {{ portal_url }}
+{% if product.external_app_url %}
+3. Access {{ product.name }}: {{ product_url }}
+{% endif %}
+
+Need help? Reply to this email or contact {{ support_email }}.
+
+— {{ site_name }}

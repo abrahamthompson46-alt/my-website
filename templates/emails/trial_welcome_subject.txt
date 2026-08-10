@@ -1,0 +1,1 @@
+Your {{ product.name }} trial is ready — {{ site_name }}

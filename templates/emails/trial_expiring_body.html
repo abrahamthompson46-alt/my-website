@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html><body style="font-family:Arial,sans-serif;line-height:1.5;">
+<p>Hi {{ user.first_name|default:user.email }},</p>
+<p>Your <strong>{{ product.name }}</strong> trial ends in <strong>{{ days_left }} day{{ days_left|pluralize }}</strong>.</p>
+<p><a href="{{ pricing_url }}">View pricing and upgrade</a></p>
+<p>— {{ site_name }}</p>
+</body></html>

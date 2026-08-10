@@ -1,0 +1,21 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>This policy describes refunds, cancellations, and billing disputes for {{ SITE_NAME }} subscriptions purchased through our customer portal or sales team.</p>
+
+<h2>Free trials</h2>
+<p>Trials are free for the stated trial period. No payment is required to start a trial. When the trial ends, you must purchase a paid plan to retain access unless otherwise agreed in writing.</p>
+
+<h2>Cancellations</h2>
+<p>Monthly subscriptions may be cancelled before the next renewal date. Annual subscriptions are non-refundable after 14 days unless required by applicable law or covered by a signed enterprise agreement.</p>
+
+<h2>Refunds</h2>
+<ul>
+    <li>Duplicate charges or verified billing errors are refunded or credited.</li>
+    <li>Manual/offline payments are confirmed by our finance team before service activation.</li>
+    <li>Refund requests must be submitted within 14 days of the charge with invoice reference.</li>
+</ul>
+
+<h2>How to request help</h2>
+<p>Email <a href="mailto:{{ SUPPORT_EMAIL|default:'billing@zreta.com' }}">{{ SUPPORT_EMAIL|default:"billing@zreta.com" }}</a> or open a billing ticket from the customer portal. We aim to respond within {{ support_sla_hours|default:24 }} business hours.</p>
+{% endblock %}

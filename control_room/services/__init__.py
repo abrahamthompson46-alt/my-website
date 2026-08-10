@@ -58,11 +58,17 @@ def get_site_context() -> dict:
         "NEWSLETTER_ENABLED": ps.newsletter_enabled,
         "PARTNER_PROGRAM_ENABLED": ps.partner_program_enabled,
         "PUBLIC_REGISTRATION_ENABLED": ps.public_registration_enabled,
+        "SOCIAL_LINKEDIN_URL": ps.social_linkedin_url,
+        "SOCIAL_TWITTER_URL": ps.social_twitter_url,
+        "SOCIAL_YOUTUBE_URL": ps.social_youtube_url,
+        "SUPPORT_SLA_HOURS": ps.support_sla_hours,
         "BRAND_THEME_PRESET": ps.brand_theme_preset,
         "BRAND_PRIMARY_COLOR": brand["primary"],
         "BRAND_ACCENT_COLOR": brand["accent"],
         "BRAND_THEME_COLOR": brand["theme_color"],
         "BRAND_THEME_CSS": get_brand_theme_css(ps),
+        "BRAND_LOGO_URL": ps.brand_logo.url if ps.brand_logo else "",
+        "BRAND_FAVICON_URL": ps.brand_favicon.url if ps.brand_favicon else "",
     }
     return context
 

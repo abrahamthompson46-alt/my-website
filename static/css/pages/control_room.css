@@ -981,9 +981,38 @@
   margin-bottom: var(--space-6);
 }
 
-.control-panel__footer-link {
-  margin: var(--space-3) 0 0;
-  font-size: var(--text-body-sm);
+.brand-logo {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+.brand-logo--preview {
+  vertical-align: middle;
+  margin-left: var(--space-2);
+}
+
+.control-role-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.control-role-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.control-panel-grid {
+  margin-bottom: var(--space-6);
 }
 
 /* Contextual page help */

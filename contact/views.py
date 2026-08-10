@@ -72,7 +72,7 @@ class ContactView(SEOContextMixin, TemplateView):
             if intent == "trial":
                 messages.success(
                     request,
-                    "Thanks! We'll set up your free trial and email you within one business day.",
+                    "Thanks! You can also start instantly from our pricing page — we'll email setup details within one business day if you prefer guided onboarding.",
                 )
             else:
                 messages.success(

@@ -30,7 +30,17 @@ class PlatformSettings(BaseModel):
     demo_form_enabled = models.BooleanField(default=True)
     newsletter_enabled = models.BooleanField(default=True)
     partner_program_enabled = models.BooleanField(default=True)
-    public_registration_enabled = models.BooleanField(default=False)
+    public_registration_enabled = models.BooleanField(
+        default=True,
+        help_text="Allow self-serve signup and free trials from pricing pages.",
+    )
+    social_linkedin_url = models.URLField(blank=True, default="")
+    social_twitter_url = models.URLField(blank=True, default="")
+    social_youtube_url = models.URLField(blank=True, default="")
+    support_sla_hours = models.PositiveIntegerField(
+        default=24,
+        help_text="Target first-response time in business hours for support tickets.",
+    )
     brand_theme_preset = models.CharField(
         max_length=32,
         default="zreta_indigo",
@@ -45,6 +55,18 @@ class PlatformSettings(BaseModel):
         max_length=7,
         default="#c9a227",
         help_text="Accent brand color (hex), e.g. #c9a227",
+    )
+    brand_logo = models.ImageField(
+        upload_to="brand/",
+        blank=True,
+        null=True,
+        help_text="Platform logo shown in header and portals (PNG/SVG/JPG, max 2MB recommended).",
+    )
+    brand_favicon = models.ImageField(
+        upload_to="brand/",
+        blank=True,
+        null=True,
+        help_text="Optional favicon override (32×32 or 64×64 PNG/ICO/SVG).",
     )
 
     class Meta:

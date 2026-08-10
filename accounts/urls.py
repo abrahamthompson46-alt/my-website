@@ -2,6 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 from accounts.views import (
+    AcceptInvitationView,
     EnterprisePasswordResetConfirmView,
     EnterprisePasswordResetView,
     LoggedOutView,
@@ -11,6 +12,7 @@ from accounts.views import (
     MFAVerifyView,
     PortalLoginView,
     PortalLogoutView,
+    RegisterView,
     RevokeOtherSessionsView,
     SessionRevokeView,
     VerifyEmailPromptView,
@@ -20,6 +22,8 @@ from accounts.views import (
 app_name = "accounts"
 
 urlpatterns = [
+    path("register/", RegisterView.as_view(), name="register"),
+    path("invite/<str:token>/", AcceptInvitationView.as_view(), name="accept_invite"),
     path("login/", PortalLoginView.as_view(), name="login"),
     path("logout/", PortalLogoutView.as_view(), name="logout"),
     path("logged-out/", LoggedOutView.as_view(), name="logged_out"),
