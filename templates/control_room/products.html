@@ -4,15 +4,9 @@
 {% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 
 {% block content %}
-{% include "control_room/partials/page_header.html" with title="Products" subtitle="Create, publish, pricing plans, ChurchHub links, and track demo activity." %}
-<p class="ops-page-header__subtitle" style="margin-top:-1.5rem;margin-bottom:1.5rem;">{{ published_count }} published · {{ total_count }} total</p>
+{% include "control_room/partials/page_header.html" with title="Products" subtitle="Create, publish, pricing plans, ChurchHub links, and track demo activity." meta=page_meta action_label="Add product" action_url_name="control_room:product_create" secondary_action_label="Demo requests" secondary_action_url_name="operations:demo_requests" %}
 
-<div class="control-form__actions" style="margin-bottom:1.5rem;">
-    {% ui_button label="Add product" url_name="control_room:product_create" variant="primary" %}
-    {% ui_button label="Demo requests" url_name="operations:demo_requests" variant="secondary" %}
-</div>
-
-<div class="ops-panel">
+<div class="ops-panel control-panel">
     <div class="ops-panel__body ops-table-wrap">
         <table class="ops-table">
             <thead>
@@ -28,9 +22,18 @@
             <tbody>
                 {% for product in products %}
                 <tr>
-                    <td><strong>{{ product.name }}</strong><br><span class="text-muted">{{ product.slug }}</span></td>
+                    <td>
+                        <strong>{{ product.name }}</strong>
+                        <br><span class="text-muted">{{ product.slug }}</span>
+                    </td>
                     <td>{{ product.get_status_display }}</td>
-                    <td>{% if product.is_published %}Yes{% else %}Draft{% endif %}</td>
+                    <td>
+                        {% if product.is_published %}
+                        <span class="control-badge control-badge--success">Live</span>
+                        {% else %}
+                        <span class="control-badge">Draft</span>
+                        {% endif %}
+                    </td>
                     <td>{{ product.demo_count }}</td>
                     <td>{{ product.subscription_count }}</td>
                     <td class="cluster">
@@ -39,10 +42,17 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6">No products yet. <a href="{% url 'control_room:product_create' %}">Add your first product</a>.</td></tr>
+                <tr>
+                    <td colspan="6">
+                        No products yet.
+                        <a href="{% url 'control_room:product_create' %}">Add your first product</a>
+                        or run <strong>seed_products</strong> from Platform Setup.
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
 {% endblock %}

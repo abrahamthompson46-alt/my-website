@@ -57,14 +57,20 @@ def ui_button(
     form=None,
     data_attrs=None,
 ):
+    # When a destination URL is provided, render an anchor unless the caller
+    # explicitly chose submit/button behavior (e.g. form submit).
+    button_type = type
+    if (url or url_name) and type == "button":
+        button_type = "link"
+
     return {
         "label": label,
-        "href": _resolve_url(url, url_name, url_kwargs) if type == "link" else None,
+        "href": _resolve_url(url, url_name, url_kwargs) if button_type == "link" else None,
         "variant": variant if variant in BUTTON_VARIANTS else "primary",
         "size": size if size in BUTTON_SIZES else "md",
         "icon": icon,
         "icon_position": icon_position,
-        "type": type,
+        "type": button_type,
         "disabled": disabled,
         "loading": loading,
         "full_width": full_width,

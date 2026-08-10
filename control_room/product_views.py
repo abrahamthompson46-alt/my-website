@@ -50,8 +50,11 @@ class ProductListView(ControlRoomMixin, ListView):
             {"label": "Command Center", "url_name": "control_room:dashboard"},
             {"label": "Products"},
         ]
-        context["published_count"] = Product.objects.filter(is_published=True).count()
-        context["total_count"] = Product.objects.count()
+        published_count = Product.objects.filter(is_published=True).count()
+        total_count = Product.objects.count()
+        context["published_count"] = published_count
+        context["total_count"] = total_count
+        context["page_meta"] = f"{published_count} published · {total_count} total"
         return context
 
 
@@ -197,6 +200,7 @@ class ProductPricingListView(ControlRoomMixin, DetailView):
             {"label": "Pricing"},
         ]
         context["plans"] = product.plans.prefetch_related("tiers", "plan_features").order_by("sort_order", "name")
+        context["pricing_create_url"] = reverse("control_room:product_pricing_create", kwargs={"product_pk": product.pk})
         return context
 
 

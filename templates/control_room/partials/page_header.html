@@ -2,14 +2,21 @@
 <header class="ops-page-header control-page-header">
     {% if eyebrow %}<p class="ops-page-header__eyebrow">{{ eyebrow }}</p>{% endif %}
     <div class="ops-page-header__row">
-        <div>
+        <div class="control-page-header__intro">
             {% if title %}<h1 class="ops-page-header__title">{{ title }}</h1>{% endif %}
             {% if subtitle %}<p class="ops-page-header__subtitle">{{ subtitle }}</p>{% endif %}
+            {% if meta %}<p class="control-page-header__meta">{{ meta }}</p>{% endif %}
         </div>
-        {% if action_url or action_url_name %}
-        <div class="ops-page-header__actions">
+        {% if action_url or action_url_name or secondary_action_url_name %}
+        <div class="ops-page-header__actions control-page-header__actions">
+            {% load ui_tags %}
+            {% if secondary_action_url_name %}
+            {% ui_button label=secondary_action_label url_name=secondary_action_url_name variant="secondary" size="sm" %}
+            {% elif secondary_action_url %}
+            <a href="{{ secondary_action_url }}" class="btn btn--secondary btn--sm">{{ secondary_action_label }}</a>
+            {% endif %}
             {% if action_url_name %}
-            {% load ui_tags %}{% ui_button label=action_label|default:"Add new" url_name=action_url_name variant="primary" size="sm" %}
+            {% ui_button label=action_label|default:"Add new" url_name=action_url_name variant="primary" size="sm" %}
             {% elif action_url %}
             <a href="{{ action_url }}" class="btn btn--primary btn--sm">{{ action_label|default:"Add new" }}</a>
             {% endif %}
