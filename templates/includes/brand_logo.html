@@ -1,6 +1,6 @@
 {% load static %}
 {% if BRAND_LOGO_URL %}
-<img src="{{ BRAND_LOGO_URL }}" alt="" class="brand-logo" width="32" height="32">
+<img src="{{ BRAND_LOGO_URL }}" alt="{{ SITE_NAME }}" class="brand-logo" width="32" height="32">
 {% else %}
-<span class="brand-mark" aria-hidden="true"></span>
+<img src="{% static 'images/brand/logo-mark.svg' %}" alt="{{ SITE_NAME }}" class="brand-logo" width="32" height="32">
 {% endif %}
