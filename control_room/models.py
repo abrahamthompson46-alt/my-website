@@ -1,6 +1,8 @@
 from django.conf import settings as django_settings
 from django.db import models
 
+from control_room.validators import validate_brand_file_extension, validate_brand_file_size
+
 from core.models import BaseModel
 
 
@@ -56,17 +58,19 @@ class PlatformSettings(BaseModel):
         default="#c9a227",
         help_text="Accent brand color (hex), e.g. #c9a227",
     )
-    brand_logo = models.ImageField(
+    brand_logo = models.FileField(
         upload_to="brand/",
         blank=True,
         null=True,
-        help_text="Platform logo shown in header and portals (PNG/SVG/JPG, max 2MB recommended).",
+        validators=[validate_brand_file_extension, validate_brand_file_size],
+        help_text="Platform logo shown in header and portals (PNG, JPG, WEBP, or SVG; max 2MB).",
     )
-    brand_favicon = models.ImageField(
+    brand_favicon = models.FileField(
         upload_to="brand/",
         blank=True,
         null=True,
-        help_text="Optional favicon override (32×32 or 64×64 PNG/ICO/SVG).",
+        validators=[validate_brand_file_extension, validate_brand_file_size],
+        help_text="Optional favicon override (PNG, ICO, or SVG; 32×32 or 64×64 recommended).",
     )
 
     class Meta:

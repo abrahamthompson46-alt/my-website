@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from common import navigation as nav_constants
 from control_room.models import FeatureFlag, NavigationMenu, PlatformSettings, SiteAnnouncement
+from control_room.validators import favicon_mime_type
 
 CACHE_TTL = 300
 SETTINGS_CACHE_KEY = "control_room:platform_settings"
@@ -69,6 +70,7 @@ def get_site_context() -> dict:
         "BRAND_THEME_CSS": get_brand_theme_css(ps),
         "BRAND_LOGO_URL": ps.brand_logo.url if ps.brand_logo else "",
         "BRAND_FAVICON_URL": ps.brand_favicon.url if ps.brand_favicon else "",
+        "BRAND_FAVICON_TYPE": favicon_mime_type(ps.brand_favicon.url if ps.brand_favicon else ""),
     }
     return context
 

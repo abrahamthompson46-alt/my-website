@@ -3,6 +3,7 @@ from django import forms
 from common.forms import BaseModelForm
 from control_room.models import FeatureFlag, NavigationMenu, PlatformSettings, RedirectRule, SiteAnnouncement
 from control_room.services.theme import HEX_PATTERN, THEME_PRESETS, get_preset_choices, normalize_hex
+from control_room.validators import BRAND_FILE_EXTENSIONS, validate_brand_file_size
 from products.models import Product, ProductCategory
 from products.models.pricing import PlanFeature, PricingPlan, PricingTier
 
@@ -46,8 +47,18 @@ class PlatformSettingsForm(forms.ModelForm):
             "maintenance_message": forms.Textarea(attrs={"rows": 3}),
             "brand_primary_color": forms.TextInput(attrs={"type": "color", "class": "control-color-input"}),
             "brand_accent_color": forms.TextInput(attrs={"type": "color", "class": "control-color-input"}),
-            "brand_logo": forms.ClearableFileInput(attrs={"class": "form-control", "accept": "image/*"}),
-            "brand_favicon": forms.ClearableFileInput(attrs={"class": "form-control", "accept": "image/*"}),
+            "brand_logo": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control",
+                    "accept": ",".join(f".{ext}" for ext in BRAND_FILE_EXTENSIONS),
+                }
+            ),
+            "brand_favicon": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control",
+                    "accept": ",".join(f".{ext}" for ext in BRAND_FILE_EXTENSIONS),
+                }
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -83,6 +94,18 @@ class PlatformSettingsForm(forms.ModelForm):
         if value and not HEX_PATTERN.match(value.strip()):
             raise forms.ValidationError("Enter a valid hex color, e.g. #c9a227")
         return value
+
+    def _clean_brand_upload(self, field_name: str):
+        upload = self.cleaned_data.get(field_name)
+        if upload:
+            validate_brand_file_size(upload)
+        return upload
+
+    def clean_brand_logo(self):
+        return self._clean_brand_upload("brand_logo")
+
+    def clean_brand_favicon(self):
+        return self._clean_brand_upload("brand_favicon")
 
 
 class NavigationMenuForm(forms.ModelForm):

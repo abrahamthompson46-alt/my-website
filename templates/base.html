@@ -7,7 +7,7 @@
     <meta name="color-scheme" content="light dark">
     <meta name="theme-color" content="{{ BRAND_THEME_COLOR|default:'#1e1b4b' }}">
     {% render_seo_head %}
-    <link rel="icon" href="{% if BRAND_FAVICON_URL %}{{ BRAND_FAVICON_URL }}{% else %}{% static 'images/favicon.svg' %}{% endif %}" type="image/svg+xml">
+    <link rel="icon" href="{% if BRAND_FAVICON_URL %}{{ BRAND_FAVICON_URL }}{% else %}{% static 'images/favicon.svg' %}{% endif %}" type="{% if BRAND_FAVICON_URL %}{{ BRAND_FAVICON_TYPE|default:'image/png' }}{% else %}image/svg+xml{% endif %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
