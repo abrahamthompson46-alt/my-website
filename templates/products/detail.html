@@ -24,15 +24,7 @@
             {% if cms_hero.subheadline %}<p class="product-hero__tagline">{{ cms_hero.subheadline }}</p>{% elif product.tagline %}<p class="product-hero__tagline">{{ product.tagline }}</p>{% endif %}
             {% if product.short_description %}<p class="product-hero__desc">{{ product.short_description }}</p>{% endif %}
             <div class="cluster product-hero__actions">
-                {% if cms_hero.cta_primary_url %}
-                <a href="{{ cms_hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ cms_hero.cta_primary_label|default:"Start Free Trial" }}</a>
-                {% else %}
-                {% ui_button label="Start Free Trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
-                {% endif %}
-                <a href="#demo" class="btn btn--secondary btn--lg">Request Demo</a>
-                {% if product.plans.exists %}
-                <a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg">View Pricing</a>
-                {% endif %}
+                {% include "products/partials/product_hero_actions.html" %}
             </div>
         </div>
         {% include "products/partials/product_hero_media.html" %}
@@ -49,11 +41,7 @@
             {% if product.tagline %}<p class="product-hero__tagline">{{ product.tagline }}</p>{% endif %}
             {% if product.short_description %}<p class="product-hero__desc">{{ product.short_description }}</p>{% endif %}
             <div class="cluster product-hero__actions">
-                {% ui_button label="Start Free Trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
-                <a href="#demo" class="btn btn--secondary btn--lg">Request Demo</a>
-                {% if product.plans.exists %}
-                <a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg">View Pricing</a>
-                {% endif %}
+                {% include "products/partials/product_hero_actions.html" %}
             </div>
         </div>
         {% include "products/partials/product_hero_media.html" %}
@@ -105,26 +93,16 @@
 </section>
 {% endif %}
 
-{% if product.screenshots.count > 1 %}
-<section class="section section--alt">
-    <div class="container">
-        <header class="section__header section__header--center">
-            <h2 class="section__title">Screenshots</h2>
-        </header>
-        <div class="screenshot-gallery">
-            {% for shot in product.screenshots.all %}
-            <figure class="screenshot-gallery__item">
-                <img src="{{ shot.image.url }}" alt="{{ shot.alt_text }}" width="800" height="450" loading="lazy" decoding="async">
-                {% if shot.caption %}<figcaption>{{ shot.caption }}</figcaption>{% endif %}
-            </figure>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+{% if product_templates %}
+{% include "products/partials/media_gallery.html" with title="Website templates" subtitle="Preview the layouts and pages your church can launch with." items=product_templates section_alt=True %}
+{% endif %}
+
+{% if product_screenshots %}
+{% include "products/partials/media_gallery.html" with title="Screenshots" subtitle="Explore the product interface and key workflows." items=product_screenshots section_alt=False %}
 {% endif %}
 
 {% if product.videos.exists %}
-<section class="section">
+<section class="section{% if product_screenshots or product_templates %} section--alt{% endif %}">
     <div class="container">
         <header class="section__header section__header--center">
             <h2 class="section__title">Videos</h2>

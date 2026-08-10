@@ -3,6 +3,11 @@ from django.db import models
 from core.models import BaseModel
 
 
+class ScreenshotKind(models.TextChoices):
+    SCREENSHOT = "screenshot", "Screenshot"
+    TEMPLATE = "template", "Template preview"
+
+
 class ProductScreenshot(BaseModel):
     product = models.ForeignKey(
         "products.Product",
@@ -13,6 +18,11 @@ class ProductScreenshot(BaseModel):
     alt_text = models.CharField(max_length=255)
     image = models.ImageField(upload_to="products/screenshots/")
     caption = models.CharField(max_length=255, blank=True)
+    kind = models.CharField(
+        max_length=20,
+        choices=ScreenshotKind.choices,
+        default=ScreenshotKind.SCREENSHOT,
+    )
     sort_order = models.PositiveIntegerField(default=0)
     is_featured = models.BooleanField(default=False)
 

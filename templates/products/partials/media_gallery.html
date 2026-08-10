@@ -1,0 +1,18 @@
+<section class="section{% if section_alt %} section--alt{% endif %}">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">{{ title }}</h2>
+            {% if subtitle %}<p class="section__subtitle">{{ subtitle }}</p>{% endif %}
+        </header>
+        <div class="screenshot-gallery">
+            {% for shot in items %}
+            <figure class="screenshot-gallery__item{% if shot.kind == 'template' %} screenshot-gallery__item--template{% endif %}">
+                <img src="{{ shot.image.url }}" alt="{{ shot.alt_text }}" width="800" height="450" loading="lazy" decoding="async">
+                {% if shot.caption or shot.title %}
+                <figcaption>{% if shot.title %}{{ shot.title }}{% else %}{{ shot.caption }}{% endif %}</figcaption>
+                {% endif %}
+            </figure>
+            {% endfor %}
+        </div>
+    </div>
+</section>

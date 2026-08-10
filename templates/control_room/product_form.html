@@ -40,8 +40,11 @@
         <section class="ops-panel">
             <div class="ops-panel__header"><h2 class="ops-panel__title">Links & SEO</h2></div>
             <div class="ops-panel__body control-form__grid">
+                {% ui_field field=form.demo_url extra_class="form-field--full" %}
+                {% ui_field field=form.register_url extra_class="form-field--full" %}
                 {% ui_field field=form.external_app_url %}
                 {% ui_field field=form.documentation_url %}
+                <p class="control-form__hint form-field--full">Use <strong>Demo URL</strong> for hosted inquiry forms (e.g. ChurchHub contact page) and <strong>Register URL</strong> for church onboarding. Upload screenshots, templates, and videos in Django Admin.</p>
                 {% ui_field field=form.meta_title extra_class="form-field--full" %}
                 {% ui_field field=form.meta_description extra_class="form-field--full" %}
             </div>

@@ -50,6 +50,7 @@ class PricingPlanInline(admin.StackedInline):
 class ProductScreenshotInline(admin.TabularInline):
     model = ProductScreenshot
     extra = 0
+    fields = ("title", "alt_text", "kind", "image", "caption", "sort_order", "is_featured")
 
 
 class ProductVideoInline(admin.TabularInline):
@@ -100,7 +101,7 @@ class ProductAdmin(admin.ModelAdmin):
         (None, {"fields": ("name", "slug", "category", "tagline", "status", "accent")}),
         ("Descriptions", {"fields": ("short_description", "long_description")}),
         ("Publishing", {"fields": ("is_featured", "is_published", "sort_order", "launch_date")}),
-        ("Links", {"fields": ("external_app_url", "documentation_url", "hero_image")}),
+        ("Links", {"fields": ("demo_url", "register_url", "external_app_url", "documentation_url", "hero_image")}),
         ("SEO", {"fields": ("meta_title", "meta_description"), "classes": ("collapse",)}),
     )
 

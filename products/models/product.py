@@ -52,7 +52,18 @@ class Product(BaseModel):
     is_featured = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
     launch_date = models.DateField(null=True, blank=True)
-    external_app_url = models.URLField(blank=True)
+    external_app_url = models.URLField(
+        blank=True,
+        help_text="Live product URL, e.g. https://app.zreta.com or https://mychurch.zreta.com/",
+    )
+    demo_url = models.URLField(
+        blank=True,
+        help_text="External demo/inquiry form hosted by the product app, e.g. https://mychurch.zreta.com/contact/",
+    )
+    register_url = models.URLField(
+        blank=True,
+        help_text="External registration/onboarding URL, e.g. https://mychurch.zreta.com/apply/",
+    )
     documentation_url = models.URLField(blank=True)
     meta_title = models.CharField(max_length=255, blank=True)
     meta_description = models.TextField(blank=True)

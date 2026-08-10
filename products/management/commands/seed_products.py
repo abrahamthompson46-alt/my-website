@@ -58,6 +58,9 @@ class Command(BaseCommand):
                 "status": ProductStatus.GA,
                 "is_featured": True,
                 "sort_order": 1,
+                "demo_url": "https://mychurch.zreta.com/contact/",
+                "register_url": "https://mychurch.zreta.com/apply/",
+                "external_app_url": "https://mychurch.zreta.com/",
                 "modules": ["Members", "Giving", "Events", "Communications"],
                 "features": [
                     ("Member directory", "Centralized profiles, households, and engagement history."),
@@ -230,6 +233,9 @@ class Command(BaseCommand):
                 is_featured=item.get("is_featured", False),
                 is_published=True,
                 sort_order=item["sort_order"],
+                demo_url=item.get("demo_url", ""),
+                register_url=item.get("register_url", ""),
+                external_app_url=item.get("external_app_url", ""),
             )
 
             for i, mod_name in enumerate(item.get("modules", [])):

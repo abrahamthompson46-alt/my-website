@@ -164,6 +164,8 @@ class ProductForm(BaseModelForm):
             "sort_order",
             "launch_date",
             "external_app_url",
+            "demo_url",
+            "register_url",
             "documentation_url",
             "hero_image",
             "meta_title",

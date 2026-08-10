@@ -108,6 +108,10 @@ class ProductDetailView(SEOContextMixin, PublishedProductMixin, DetailView):
             is_published=True, product=product
         ).order_by("sort_order")
         context["cms_downloads"] = get_published_downloads(product)
+        from products.models.media import ScreenshotKind
+
+        context["product_screenshots"] = product.screenshots.filter(kind=ScreenshotKind.SCREENSHOT)
+        context["product_templates"] = product.screenshots.filter(kind=ScreenshotKind.TEMPLATE)
         return context
 
     def get_extra_schema(self, context):

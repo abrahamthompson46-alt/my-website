@@ -4,9 +4,35 @@
         <div class="home-demo__grid">
             <div class="home-demo__info">
                 <h2 class="section__title">{{ heading|default:"Request a demo" }}</h2>
-                <p class="section__subtitle">See {% if product %}{{ product.name }}{% else %}our platform{% endif %} in action with a personalized walkthrough from our team.</p>
+                <p class="section__subtitle">
+                    {% if product.demo_url %}
+                    Complete the secure inquiry form hosted by {% if product %}{{ product.name }}{% else %}our product team{% endif %}. We will follow up to schedule your walkthrough.
+                    {% else %}
+                    See {% if product %}{{ product.name }}{% else %}our platform{% endif %} in action with a personalized walkthrough from our team.
+                    {% endif %}
+                </p>
+                {% if product.demo_url %}
+                <ul class="home-demo__benefits">
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Secure hosted inquiry form</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> No account required to request a demo</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Response from the product team</li>
+                </ul>
+                {% endif %}
             </div>
             <div class="home-demo__form-panel">
+                {% if product.demo_url %}
+                <div class="product-external-cta">
+                    <p class="product-external-cta__text">The demo request form is hosted securely on {{ product.name }}.</p>
+                    <a href="{{ product.demo_url }}" class="btn btn--primary btn--md btn--full" target="_blank" rel="noopener noreferrer">
+                        Request a {{ product.name }} demo
+                    </a>
+                    {% if product.register_url %}
+                    <a href="{{ product.register_url }}" class="btn btn--secondary btn--md btn--full" target="_blank" rel="noopener noreferrer">
+                        Register your church
+                    </a>
+                    {% endif %}
+                </div>
+                {% else %}
                 <form method="post" action="{{ product.get_absolute_url }}#demo" class="form form--compact form--demo-grid" novalidate>
                     {% csrf_token %}
                     <div class="hp-field" aria-hidden="true">{{ form.company_website }}</div>
@@ -21,6 +47,7 @@
                         {% ui_button label=submit_label|default:"Request Demo" variant="primary" size="md" type="submit" %}
                     </div>
                 </form>
+                {% endif %}
             </div>
         </div>
     </div>
