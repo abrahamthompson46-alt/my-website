@@ -74,3 +74,26 @@ class MFAURLTests(TestCase):
         response = self.client.get(reverse("accounts:mfa_enroll"))
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response.url)
+
+    def test_mfa_enroll_rescan_regenerates_secret(self):
+        user = User.objects.create_user(
+            username="rescan-user",
+            email="rescan@example.com",
+            password="testpass123",
+        )
+        profile = get_or_create_security_profile(user)
+        profile.email_verified = True
+        profile.save(update_fields=["email_verified"])
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("accounts:mfa_enroll"))
+        self.assertEqual(response.status_code, 200)
+        first_secret = response.context["secret"]
+
+        response = self.client.get(reverse("accounts:mfa_enroll"), {"rescan": "1"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("accounts:mfa_enroll"))
+
+        response = self.client.get(reverse("accounts:mfa_enroll"))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.context["secret"], first_secret)

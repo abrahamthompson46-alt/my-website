@@ -15,6 +15,9 @@
             <div>
                 <p class="text-secondary">Or enter this secret manually:</p>
                 <code class="security-mfa-setup__secret">{{ secret }}</code>
+                <p style="margin-top: var(--space-3);">
+                    <a href="{% url 'accounts:mfa_enroll' %}?rescan=1">Scan again with a new QR code</a>
+                </p>
             </div>
         </div>
         <form method="post" class="form stack" novalidate>

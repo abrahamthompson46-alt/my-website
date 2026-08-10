@@ -287,6 +287,11 @@ class MFAEnrollView(PortalMixin, View):
         if profile.mfa_enabled:
             return redirect("customer_portal:security")
 
+        if request.GET.get("rescan"):
+            request.session.pop("mfa_enroll_secret", None)
+            messages.info(request, "A new QR code has been generated. Scan it with your authenticator app.")
+            return redirect("accounts:mfa_enroll")
+
         secret = request.session.get("mfa_enroll_secret")
         if not secret:
             secret = generate_totp_secret()
