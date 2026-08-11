@@ -141,12 +141,78 @@ PAGE_HELP: dict[str, dict] = {
         "intro": "Jump to Control Room tools or Django Admin for each content domain.",
         "steps": [
             "Products — catalog, pricing, and publishing (Control Room + Admin for media).",
+            "Documentation — articles, videos, downloads, and categories (Control Room).",
             "CMS pages / heroes — homepage and landing content (Admin).",
             "Blog & marketing — posts, events, case studies (Admin).",
             "Leads & demos — review submissions in Ops → Demo Requests.",
         ],
         "tips": ["Admin opens in a new tab — use it for screenshots, videos, and FAQs."],
         "mistakes": ["Expecting pricing tiers to appear without running seed_products or creating plans."],
+    },
+    "documentation": {
+        "title": "Documentation guide",
+        "intro": "Manage public help content at /docs/ without Django Admin.",
+        "steps": [
+            "Create categories first to organize articles, videos, and downloads.",
+            "Add articles for guides, FAQs, installation steps, and release notes.",
+            "Add videos with a YouTube/Vimeo URL or embed code — they appear on /docs/videos/.",
+            "Upload downloads (PDFs, SDKs) — files are served from /docs/downloads/.",
+            "Check Is published before expecting content on the live site.",
+            "Use View public docs or View live on an article to preview.",
+        ],
+        "tips": [
+            "Run seed_documentation from Platform Setup to populate starter content.",
+            "Link articles to a product to filter docs when visitors browse by product.",
+        ],
+        "mistakes": [
+            "Saving articles as drafts and wondering why /docs/ looks empty.",
+            "Creating downloads without uploading a file.",
+        ],
+    },
+    "doc_category_form": {
+        "title": "Documentation category",
+        "intro": "Categories group related articles, videos, and downloads.",
+        "steps": [
+            "Name and slug identify the category on /docs/categories/.",
+            "Optionally link to a product so docs filter by product slug.",
+            "Set sort_order to control display order (lower = first).",
+        ],
+        "tips": [],
+        "mistakes": ["Deleting a category that still has articles attached."],
+    },
+    "doc_article_form": {
+        "title": "Documentation article",
+        "intro": "Long-form help content shown at /docs/<slug>/.",
+        "steps": [
+            "Choose article type (guide, FAQ, installation, release note, etc.).",
+            "Write excerpt for cards and body for the full page (Markdown supported).",
+            "Assign a category and optional product for filtering.",
+            "Enable Is published and save — use View live to preview.",
+        ],
+        "tips": ["Featured articles may appear on the docs homepage."],
+        "mistakes": ["Duplicate slugs — each article slug must be unique."],
+    },
+    "doc_video_form": {
+        "title": "Documentation video",
+        "intro": "Tutorial videos linked from /docs/videos/.",
+        "steps": [
+            "Paste a video_url (YouTube/Vimeo) or embed_code for custom players.",
+            "Set duration_minutes for display on listing cards.",
+            "Assign category and product, then publish.",
+        ],
+        "tips": [],
+        "mistakes": ["Publishing without either video_url or embed_code."],
+    },
+    "doc_download_form": {
+        "title": "Documentation download",
+        "intro": "Upload files for visitors to download from /docs/downloads/.",
+        "steps": [
+            "Upload the file (PDF, ZIP, etc.) and choose file type.",
+            "Add title, description, and optional version label.",
+            "Publish when ready — file replaces previous upload on edit.",
+        ],
+        "tips": [],
+        "mistakes": ["Forgetting to upload a file on create."],
     },
     "products": {
         "title": "Products guide",

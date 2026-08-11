@@ -1,0 +1,57 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Documentation" subtitle="Manage help articles, tutorial videos, and downloadable files for /docs/." secondary_action_label="View public docs" secondary_action_url="/docs/" %}
+
+<div class="control-stats-grid">
+    <div class="ops-stat-card">
+        <p class="ops-stat-card__value">{{ stats.articles }}</p>
+        <p class="ops-stat-card__label">Articles</p>
+    </div>
+    <div class="ops-stat-card">
+        <p class="ops-stat-card__value">{{ stats.videos }}</p>
+        <p class="ops-stat-card__label">Videos</p>
+    </div>
+    <div class="ops-stat-card">
+        <p class="ops-stat-card__value">{{ stats.downloads }}</p>
+        <p class="ops-stat-card__label">Downloads</p>
+    </div>
+    <div class="ops-stat-card">
+        <p class="ops-stat-card__value">{{ stats.categories }}</p>
+        <p class="ops-stat-card__label">Categories</p>
+    </div>
+</div>
+
+<nav class="control-toolbar control-toolbar--compact" aria-label="Documentation sections">
+    {% ui_button label="Articles" url_name="control_room:doc_articles" variant="primary" size="sm" %}
+    {% ui_button label="Videos" url_name="control_room:doc_videos" variant="secondary" size="sm" %}
+    {% ui_button label="Downloads" url_name="control_room:doc_downloads" variant="secondary" size="sm" %}
+    {% ui_button label="Categories" url_name="control_room:doc_categories" variant="ghost" size="sm" %}
+</nav>
+
+<div class="ops-panel control-panel">
+    <div class="ops-panel__header"><h2 class="ops-panel__title">Recent articles</h2></div>
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Title</th><th>Type</th><th>Category</th><th>Published</th><th></th></tr></thead>
+            <tbody>
+                {% for article in recent_articles %}
+                <tr>
+                    <td><strong>{{ article.title }}</strong></td>
+                    <td>{{ article.get_article_type_display }}</td>
+                    <td>{% if article.category %}{{ article.category.name }}{% else %}—{% endif %}</td>
+                    <td>{% if article.is_published %}<span class="control-badge control-badge--success">Live</span>{% else %}<span class="control-badge">Draft</span>{% endif %}</td>
+                    <td><a href="{% url 'control_room:doc_article_edit' article.pk %}" class="btn btn--ghost btn--sm">Edit</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No articles yet. <a href="{% url 'control_room:doc_article_create' %}">Add your first article</a> or run <strong>seed_documentation</strong> from Platform Setup.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="control-panel__footer-link"><a href="{% url 'control_room:doc_articles' %}">Manage all articles →</a></p>
+    </div>
+</div>
+{% endblock %}

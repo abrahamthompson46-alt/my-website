@@ -61,3 +61,24 @@ class ControlRoomViewTests(TestCase):
 
     def test_brand_kit_loads(self):
         self._assert_staff_page_ok("control_room:brand_kit")
+
+    def test_documentation_hub_loads(self):
+        self._assert_staff_page_ok("control_room:documentation")
+
+    def test_documentation_lists_load(self):
+        for url_name in (
+            "control_room:doc_articles",
+            "control_room:doc_videos",
+            "control_room:doc_downloads",
+            "control_room:doc_categories",
+        ):
+            self._assert_staff_page_ok(url_name)
+
+    def test_documentation_create_forms_load(self):
+        for url_name in (
+            "control_room:doc_article_create",
+            "control_room:doc_video_create",
+            "control_room:doc_download_create",
+            "control_room:doc_category_create",
+        ):
+            self._assert_staff_page_ok(url_name)

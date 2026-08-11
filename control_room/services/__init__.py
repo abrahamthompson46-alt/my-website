@@ -218,8 +218,8 @@ def get_content_registry() -> list[dict]:
         _entry(
             key="docs",
             title="Documentation",
-            description="Articles, categories, API references",
-            admin_model="documentation.docarticle",
+            description="Articles, videos, downloads, and categories",
+            url_name="control_room:documentation",
             count=DocArticle.objects.count(),
             icon="file-check",
         ),

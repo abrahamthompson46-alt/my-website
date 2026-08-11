@@ -1,0 +1,30 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Documentation videos" subtitle="Tutorial and walkthrough videos linked from /docs/videos/." action_label="New video" action_url_name="control_room:doc_video_create" secondary_action_label="Documentation hub" secondary_action_url_name="control_room:documentation" %}
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Title</th><th>Category</th><th>Duration</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                {% for video in videos %}
+                <tr>
+                    <td><strong>{{ video.title }}</strong>{% if video.video_url %}<br><span class="text-muted">{{ video.video_url|truncatechars:50 }}</span>{% endif %}</td>
+                    <td>{% if video.category %}{{ video.category.name }}{% else %}—{% endif %}</td>
+                    <td>{% if video.duration_minutes %}{{ video.duration_minutes }} min{% else %}—{% endif %}</td>
+                    <td>{% if video.is_published %}<span class="control-badge control-badge--success">Live</span>{% else %}<span class="control-badge">Draft</span>{% endif %}</td>
+                    <td><a href="{% url 'control_room:doc_video_edit' video.pk %}" class="btn btn--ghost btn--sm">Edit</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No videos yet. <a href="{% url 'control_room:doc_video_create' %}">Add a video</a>.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
+{% endblock %}

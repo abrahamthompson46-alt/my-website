@@ -191,6 +191,7 @@ CONTROL_ROOM_NAV = [
     {"label": "Products", "url_name": "control_room:products", "icon": "package"},
     {"section": "Content"},
     {"label": "Content Hub", "url_name": "control_room:content", "icon": "layers"},
+    {"label": "Documentation", "url_name": "control_room:documentation", "icon": "file-text"},
     {"section": "Operations"},
     {"label": "Ops Dashboard", "url_name": "operations:dashboard", "icon": "bar-chart-2"},
     {"label": "Change Log", "url_name": "control_room:changelog", "icon": "list"},

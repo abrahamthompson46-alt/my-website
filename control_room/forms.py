@@ -245,3 +245,108 @@ class PlanFeatureForm(BaseModelForm):
         model = PlanFeature
         fields = ["text", "is_included", "sort_order"]
 
+
+class DocCategoryForm(BaseModelForm):
+    class Meta:
+        from documentation.models import DocCategory
+
+        model = DocCategory
+        fields = ["name", "slug", "description", "icon", "product", "sort_order", "is_published"]
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["product"].queryset = Product.objects.order_by("sort_order", "name")
+        self.fields["slug"].required = False
+
+
+class DocArticleForm(BaseModelForm):
+    class Meta:
+        from documentation.models import DocArticle
+
+        model = DocArticle
+        fields = [
+            "title",
+            "slug",
+            "article_type",
+            "category",
+            "product",
+            "excerpt",
+            "body",
+            "version",
+            "is_published",
+            "is_featured",
+            "sort_order",
+        ]
+        widgets = {
+            "excerpt": forms.Textarea(attrs={"rows": 2}),
+            "body": forms.Textarea(attrs={"rows": 14}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from documentation.models import DocCategory
+
+        self.fields["category"].queryset = DocCategory.objects.order_by("sort_order", "name")
+        self.fields["product"].queryset = Product.objects.order_by("sort_order", "name")
+        self.fields["slug"].required = False
+
+
+class DocVideoForm(BaseModelForm):
+    class Meta:
+        from documentation.models import DocVideo
+
+        model = DocVideo
+        fields = [
+            "title",
+            "description",
+            "category",
+            "product",
+            "video_url",
+            "embed_code",
+            "duration_minutes",
+            "sort_order",
+            "is_published",
+        ]
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 3}),
+            "embed_code": forms.Textarea(attrs={"rows": 4}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from documentation.models import DocCategory
+
+        self.fields["category"].queryset = DocCategory.objects.order_by("sort_order", "name")
+        self.fields["product"].queryset = Product.objects.order_by("sort_order", "name")
+
+
+class DocDownloadForm(BaseModelForm):
+    class Meta:
+        from documentation.models import DocDownload
+
+        model = DocDownload
+        fields = [
+            "title",
+            "description",
+            "category",
+            "product",
+            "file",
+            "file_type",
+            "version",
+            "sort_order",
+            "is_published",
+        ]
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from documentation.models import DocCategory
+
+        self.fields["category"].queryset = DocCategory.objects.order_by("sort_order", "name")
+        self.fields["product"].queryset = Product.objects.order_by("sort_order", "name")
+

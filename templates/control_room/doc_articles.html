@@ -1,0 +1,31 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Documentation articles" subtitle="Guides, FAQs, installation steps, and release notes shown on /docs/." action_label="New article" action_url_name="control_room:doc_article_create" secondary_action_label="Documentation hub" secondary_action_url_name="control_room:documentation" %}
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Title</th><th>Type</th><th>Category</th><th>Product</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td><strong>{{ article.title }}</strong><br><span class="text-muted">/docs/{{ article.slug }}/</span></td>
+                    <td>{{ article.get_article_type_display }}</td>
+                    <td>{% if article.category %}{{ article.category.name }}{% else %}—{% endif %}</td>
+                    <td>{% if article.product %}{{ article.product.name }}{% else %}—{% endif %}</td>
+                    <td>{% if article.is_published %}<span class="control-badge control-badge--success">Live</span>{% else %}<span class="control-badge">Draft</span>{% endif %}</td>
+                    <td><a href="{% url 'control_room:doc_article_edit' article.pk %}" class="btn btn--ghost btn--sm">Edit</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6">No articles yet. <a href="{% url 'control_room:doc_article_create' %}">Create one</a>.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
+{% endblock %}
