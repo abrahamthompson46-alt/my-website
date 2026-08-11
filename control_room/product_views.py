@@ -179,8 +179,15 @@ class ProductDetailView(ControlRoomMixin, DetailView):
         context["pricing_plans"] = (
             product.plans.prefetch_related("tiers", "plan_features").order_by("sort_order", "name")
         )
-        context["admin_screenshots_url"] = f"/admin/products/productscreenshot/?product__id__exact={product.pk}"
-        context["admin_videos_url"] = f"/admin/products/productvideo/?product__id__exact={product.pk}"
+        context["admin_screenshots_url"] = (
+            reverse("admin:products_productscreenshot_changelist")
+            + f"?product__id__exact={product.pk}"
+        )
+        context["admin_videos_url"] = (
+            reverse("admin:products_productvideo_changelist")
+            + f"?product__id__exact={product.pk}"
+        )
+        context["admin_product_url"] = reverse("admin:products_product_change", args=[product.pk])
         return context
 
 

@@ -73,6 +73,33 @@ class ProductComparisonEntryInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(ProductScreenshot)
+class ProductScreenshotAdmin(admin.ModelAdmin):
+    list_display = ("title", "alt_text", "product", "kind", "sort_order", "is_featured")
+    list_filter = ("product", "kind", "is_featured")
+    search_fields = ("title", "alt_text", "product__name")
+    list_select_related = ("product",)
+    autocomplete_fields = ("product",)
+
+
+@admin.register(ProductVideo)
+class ProductVideoAdmin(admin.ModelAdmin):
+    list_display = ("title", "product", "video_type", "sort_order")
+    list_filter = ("product", "video_type")
+    search_fields = ("title", "product__name")
+    list_select_related = ("product",)
+    autocomplete_fields = ("product",)
+
+
+@admin.register(ProductDownload)
+class ProductDownloadAdmin(admin.ModelAdmin):
+    list_display = ("title", "product", "file_type", "sort_order")
+    list_filter = ("product", "file_type")
+    search_fields = ("title", "product__name")
+    list_select_related = ("product",)
+    autocomplete_fields = ("product",)
+
+
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "sort_order", "is_active")

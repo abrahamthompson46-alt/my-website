@@ -97,3 +97,23 @@ class MFAURLTests(TestCase):
         response = self.client.get(reverse("accounts:mfa_enroll"))
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.context["secret"], first_secret)
+
+    def test_mfa_verify_rescan_shows_qr(self):
+        user = User.objects.create_user(
+            username="verify-rescan",
+            email="verify-rescan@example.com",
+            password="testpass123",
+        )
+        secret = generate_totp_secret()
+        _, hashed = generate_backup_codes(count=2)
+        enable_totp(user, secret, hashed)
+
+        session = self.client.session
+        session["mfa_pending_user_id"] = str(user.pk)
+        session.save()
+
+        response = self.client.get(reverse("accounts:mfa_verify"), {"rescan": "1"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["rescan_mode"])
+        self.assertIn("qr_data_uri", response.context)
+        self.assertIn("Scan again with a new QR code", response.content.decode())

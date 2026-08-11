@@ -515,6 +515,36 @@
 
 .auth-logout__checks .icon { color: #15803d; flex-shrink: 0; }
 
+.auth-mfa-setup {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: center;
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.auth-mfa-setup .security-mfa-setup__secret {
+  display: inline-block;
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-section);
+  font-size: var(--text-body-sm);
+  word-break: break-all;
+}
+
+.auth-panel__help {
+  margin-top: var(--space-5);
+  text-align: center;
+  font-size: var(--text-body-sm);
+  color: var(--text-secondary);
+}
+
+.auth-panel__help a {
+  color: var(--color-primary-600);
+  font-weight: var(--font-medium);
+}
+
 /* Legacy auth-card support for remaining pages */
 .auth-card {
   width: 100%;

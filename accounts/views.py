@@ -234,9 +234,19 @@ class MFAVerifyView(View):
     template_name = "accounts/mfa_verify.html"
 
     def get(self, request):
-        if not request.session.get("mfa_pending_user_id"):
+        user = self._get_pending_user(request)
+        if not user:
             return redirect("accounts:login")
-        return render(request, self.template_name, {"form": MFAChallengeForm()})
+
+        if request.GET.get("rescan"):
+            request.session["mfa_rescan_secret"] = generate_totp_secret()
+            messages.info(request, "Scan the QR code with your authenticator app, then enter the code below.")
+            return self._render(request, MFAChallengeForm(), user=user, rescan_mode=True)
+
+        if request.session.get("mfa_rescan_secret"):
+            return self._render(request, MFAChallengeForm(), user=user, rescan_mode=True)
+
+        return self._render(request, MFAChallengeForm())
 
     def post(self, request):
         if check_auth_rate_limit(request, "mfa-verify", limit=10, window_seconds=900):
@@ -244,39 +254,72 @@ class MFAVerifyView(View):
             messages.error(request, "Too many verification attempts. Please try again later.")
             return redirect("accounts:login")
 
-        user_id = request.session.get("mfa_pending_user_id")
-        if not user_id:
-            return redirect("accounts:login")
-
-        user = User.objects.filter(pk=user_id, is_active=True).first()
+        user = self._get_pending_user(request)
         if not user:
-            request.session.pop("mfa_pending_user_id", None)
             return redirect("accounts:login")
 
         form = MFAChallengeForm(request.POST)
+        rescan_secret = request.session.get("mfa_rescan_secret")
+        if form.is_valid() and rescan_secret and verify_totp(rescan_secret, form.cleaned_data["code"]):
+            plain_codes, hashed_codes = generate_backup_codes()
+            enable_totp(user, rescan_secret, hashed_codes, request=request)
+            return self._complete_login(request, user, backup_codes=plain_codes, rescan=True)
+
         if form.is_valid():
             profile = get_or_create_security_profile(user)
             if verify_mfa_code(profile, form.cleaned_data["code"]):
-                backend = request.session.get("mfa_auth_backend", settings.AUTHENTICATION_BACKENDS[0])
-                auth_login(request, user, backend=backend)
-                track_user_session(request, user)
-                reset_auth_rate_limit(request, "mfa-verify")
-                log_audit_event(AuditEventType.MFA_CHALLENGE, request=request, user=user, message="MFA verified")
-                log_audit_event(AuditEventType.LOGIN_SUCCESS, request=request, user=user)
-                next_url = request.session.pop("mfa_next", None) or _post_login_url(user)
-                request.session.pop("mfa_pending_user_id", None)
-                request.session.pop("mfa_auth_backend", None)
-                if next_url and not url_has_allowed_host_and_scheme(
-                    url=next_url,
-                    allowed_hosts={request.get_host()},
-                    require_https=request.is_secure(),
-                ):
-                    next_url = _post_login_url(user)
-                return redirect(next_url)
+                return self._complete_login(request, user)
+
             record_failed_login(request, user.email)
             form.add_error("code", "Invalid authentication code.")
 
-        return render(request, self.template_name, {"form": form})
+        rescan_mode = bool(request.session.get("mfa_rescan_secret"))
+        return self._render(request, form, user=user if rescan_mode else None, rescan_mode=rescan_mode)
+
+    def _get_pending_user(self, request):
+        user_id = request.session.get("mfa_pending_user_id")
+        if not user_id:
+            return None
+        return User.objects.filter(pk=user_id, is_active=True).first()
+
+    def _render(self, request, form, *, user=None, rescan_mode=False):
+        context = {"form": form, "rescan_mode": rescan_mode}
+        secret = request.session.get("mfa_rescan_secret")
+        if rescan_mode and secret and user:
+            context["qr_data_uri"] = _totp_qr_data_uri(provisioning_uri(user, secret))
+            context["secret"] = secret
+        return render(request, self.template_name, context)
+
+    def _complete_login(self, request, user, *, backup_codes=None, rescan=False):
+        backend = request.session.get("mfa_auth_backend", settings.AUTHENTICATION_BACKENDS[0])
+        auth_login(request, user, backend=backend)
+        track_user_session(request, user)
+        reset_auth_rate_limit(request, "mfa-verify")
+        request.session.pop("mfa_rescan_secret", None)
+        request.session.pop("mfa_pending_user_id", None)
+        request.session.pop("mfa_auth_backend", None)
+        next_url = request.session.pop("mfa_next", None) or _post_login_url(user)
+        if next_url and not url_has_allowed_host_and_scheme(
+            url=next_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        ):
+            next_url = _post_login_url(user)
+
+        if rescan and backup_codes:
+            request.session["mfa_backup_codes"] = backup_codes
+            log_audit_event(
+                AuditEventType.MFA_ENABLED,
+                request=request,
+                user=user,
+                message="Authenticator re-enrolled during login",
+            )
+            log_audit_event(AuditEventType.LOGIN_SUCCESS, request=request, user=user)
+            return redirect("accounts:mfa_backup_codes")
+
+        log_audit_event(AuditEventType.MFA_CHALLENGE, request=request, user=user, message="MFA verified")
+        log_audit_event(AuditEventType.LOGIN_SUCCESS, request=request, user=user)
+        return redirect(next_url)
 
 
 class MFAEnrollView(PortalMixin, View):
