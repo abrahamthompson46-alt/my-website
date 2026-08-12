@@ -87,19 +87,62 @@ def _fallback_nav(code: str):
     return fallbacks.get(code, [])
 
 
+def _merge_missing_nav_items(current: list, canonical: list) -> list:
+    """Insert canonical sidebar items that are missing from a stored menu."""
+    if not canonical:
+        return current
+    if not current:
+        return list(canonical)
+
+    current_urls = {item.get("url_name") for item in current if item.get("url_name")}
+    merged = list(current)
+
+    for idx, item in enumerate(canonical):
+        url = item.get("url_name")
+        if not url or url in current_urls:
+            continue
+
+        insert_at = len(merged)
+        for prev in reversed(canonical[:idx]):
+            prev_url = prev.get("url_name")
+            if prev_url:
+                for i, existing in enumerate(merged):
+                    if existing.get("url_name") == prev_url:
+                        insert_at = i + 1
+                        break
+                break
+            if prev.get("section"):
+                for i, existing in enumerate(merged):
+                    if existing.get("section") == prev.get("section"):
+                        insert_at = i + 1
+                break
+
+        merged.insert(insert_at, item)
+        current_urls.add(url)
+
+    return merged
+
+
 def get_navigation(code: str) -> list:
     cache_key = f"{NAV_CACHE_PREFIX}{code}"
     cached = cache.get(cache_key)
     if cached is not None:
-        return cached
-
-    menu = NavigationMenu.objects.filter(code=code, is_active=True).first()
-    if menu and menu.structure:
-        structure = menu.structure
+        structure = cached
     else:
-        structure = _fallback_nav(code)
+        menu = NavigationMenu.objects.filter(code=code, is_active=True).first()
+        if menu and menu.structure:
+            structure = menu.structure
+        else:
+            structure = _fallback_nav(code)
 
-    cache.set(cache_key, structure, CACHE_TTL)
+        if code == "control_room":
+            structure = _merge_missing_nav_items(structure, _fallback_nav(code))
+
+        cache.set(cache_key, structure, CACHE_TTL)
+
+    if code == "control_room":
+        return _merge_missing_nav_items(structure, _fallback_nav(code))
+
     return structure
 
 

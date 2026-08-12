@@ -1,5 +1,5 @@
 {% extends "base_control_room.html" %}
-{% load ui_tags humanize static %}
+{% load ui_tags humanize static common_tags %}
 
 {% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 
@@ -12,6 +12,9 @@
         <div class="superdash-hero__actions">
             {% ui_button label="Platform Setup" url_name="control_room:setup" variant="primary" icon="database" %}
             {% ui_button label="Site Settings" url_name="control_room:settings" variant="secondary" icon="settings" %}
+            {% if can_manage_platform_ops %}
+            {% ui_button label="Platform Ops" url_name="control_room:platform_ops" variant="secondary" icon="server" %}
+            {% endif %}
             <a href="{% url 'website:home' %}" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">View live site</a>
         </div>
     </div>
@@ -39,12 +42,20 @@
 </div>
 {% endif %}
 
+{% if user.is_staff and not can_manage_platform_ops %}
+<div class="control-alert control-alert--info">
+    <strong>Need Platform Ops?</strong> That area (email setup and GitHub deploy) is limited to the Platform Owner role.
+    {% if user_role_names %}Your roles: {{ user_role_names|join:", " }}.{% endif %}
+    Ask your owner to run <code>python manage.py promote_platform_owner your@email.com</code> on the server.
+</div>
+{% endif %}
+
 <div class="superdash-metrics">
     <article class="superdash-metric superdash-metric--highlight">
         <div class="superdash-metric__icon" aria-hidden="true"><svg class="icon icon--md" data-icon="dollar-sign"></svg></div>
         <div>
             <p class="superdash-metric__label">Revenue (30d)</p>
-            <p class="superdash-metric__value">${{ business_stats.revenue_30d|floatformat:0|intcomma }}</p>
+            <p class="superdash-metric__value">{{ business_stats.revenue_30d|format_cedi:0 }}</p>
         </div>
     </article>
     <article class="superdash-metric">

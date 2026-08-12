@@ -56,6 +56,8 @@ class DashboardView(ControlRoomMixin, TemplateView):
         context["seed_registry"] = get_seed_registry()
         context["seed_groups"] = self._group_seeds(get_seed_registry())
         context["last_seed_results"] = self.request.session.pop("last_seed_results", None)
+        from accounts.services.rbac import get_user_roles, user_can_manage_platform_ops
+
         context["control_modules"] = [
             {"title": "Site Settings", "description": "Branding, SEO, contact, maintenance", "url_name": "control_room:settings", "icon": "settings", "accent": "gold"},
             {"title": "Navigation", "description": "Header, footer, portal menus", "url_name": "control_room:navigation", "icon": "menu", "accent": "blue"},
@@ -67,6 +69,18 @@ class DashboardView(ControlRoomMixin, TemplateView):
             {"title": "Platform Setup", "description": "One-click seed & bootstrap", "url_name": "control_room:setup", "icon": "database", "accent": "green"},
             {"title": "Ops Dashboard", "description": "Revenue, customers, tickets", "url_name": "operations:dashboard", "icon": "bar-chart-2", "accent": "blue"},
         ]
+        if user_can_manage_platform_ops(self.request.user):
+            context["control_modules"].insert(
+                1,
+                {
+                    "title": "Platform Ops",
+                    "description": "Email SMTP setup and GitHub updates",
+                    "url_name": "control_room:platform_ops",
+                    "icon": "server",
+                    "accent": "navy",
+                },
+            )
+        context["user_role_names"] = list(get_user_roles(self.request.user).values_list("name", flat=True))
         context["breadcrumb_items"] = [{"label": "Super Dashboard"}]
         return context
 
