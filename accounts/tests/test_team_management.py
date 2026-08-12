@@ -4,7 +4,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from accounts.models import Role, StaffInvitation
-from accounts.services.invitations import accept_invitation, create_staff_invitation
+from accounts.services.invitations import accept_invitation, create_staff_invitation, get_invitation_by_token
 from accounts.services.email import get_or_create_security_profile
 from accounts.services.rbac import assign_role, remove_role, sync_user_permissions, user_can_manage_team
 
@@ -87,6 +87,30 @@ class StaffInvitationTests(TestCase):
         self.assertTrue(user.is_staff)
         self.assertEqual(invitation.status, "accepted")
         self.assertTrue(user.user_roles.filter(role=self.role).exists())
+
+    def test_invitation_expires_in_one_hour(self):
+        invitation, _ = create_staff_invitation(
+            email="timed@example.com",
+            role=self.role,
+            invited_by=self.inviter,
+        )
+        delta = invitation.expires_at - invitation.created_at
+        self.assertGreater(delta.total_seconds(), 3500)
+        self.assertLessEqual(delta.total_seconds(), 3600)
+
+    def test_invitation_link_is_one_time_use(self):
+        invitation, raw = create_staff_invitation(
+            email="once@example.com",
+            role=self.role,
+            invited_by=self.inviter,
+        )
+        user = User.objects.create_user(username="once", email="once@example.com", password="pass")
+        accept_invitation(invitation, user=user)
+
+        self.assertIsNone(get_invitation_by_token(raw))
+        response = self.client.get(reverse("accounts:accept_invite", kwargs={"token": raw}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "invalid or has already been used")
 
     def test_accept_invite_page_loads(self):
         invitation, raw = create_staff_invitation(

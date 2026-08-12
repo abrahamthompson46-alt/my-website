@@ -28,6 +28,16 @@
                 </ul>
             </div>
             {% endif %}
+            {% if email_status.deliverability_warnings %}
+            <div class="control-alert control-alert--info">
+                <p><strong>Reduce spam folder delivery</strong></p>
+                <ul>
+                    {% for warning in email_status.deliverability_warnings %}
+                    <li>{{ warning }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
             {% if ops_settings.last_email_test_at %}
             <p class="control-form__hint">
                 Last test: {{ ops_settings.last_email_test_at|date:"M j, Y g:i A" }} —

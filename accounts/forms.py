@@ -138,7 +138,12 @@ class AcceptInvitationForm(UserCreationForm):
         if "username" in self.fields:
             del self.fields["username"]
         for field in self.fields.values():
-            field.widget.attrs.setdefault("class", "form-control")
+            field.widget.attrs.setdefault("class", "auth-field__input")
+            field.widget.attrs.setdefault("autocomplete", "off")
+        self.fields["first_name"].widget.attrs["autocomplete"] = "given-name"
+        self.fields["last_name"].widget.attrs["autocomplete"] = "family-name"
+        self.fields["password1"].widget.attrs["autocomplete"] = "new-password"
+        self.fields["password2"].widget.attrs["autocomplete"] = "new-password"
 
     def save(self, commit=True):
         user = super().save(commit=False)

@@ -24,9 +24,12 @@
         </header>
 
         <div class="auth-shell__mobile-brand">
-            <a href="{% url 'website:home' %}" class="brand-link">
-                <span class="brand-mark" aria-hidden="true"></span>
-                <span class="brand-text">{{ SITE_NAME }}</span>
+            <a href="{% url 'website:home' %}" class="auth-brand__logo">
+                {% if BRAND_LOGO_URL %}
+                <img src="{{ BRAND_LOGO_URL }}" alt="{{ SITE_NAME }}" class="auth-brand__logo-image" width="140" height="36">
+                {% else %}
+                <img src="{% static 'images/brand/logo-full.svg' %}" alt="{{ SITE_NAME }}" class="auth-brand__logo-image" width="140" height="36">
+                {% endif %}
             </a>
         </div>
 

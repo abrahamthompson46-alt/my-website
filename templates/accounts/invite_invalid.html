@@ -1,19 +1,31 @@
-{% extends "base_public.html" %}
+{% extends "base_auth.html" %}
+{% load ui_tags %}
 
 {% block title %}Invitation unavailable — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
-<section class="section auth-page">
-    <div class="container auth-page__panel-narrow">
-        <h1>Invitation unavailable</h1>
-        {% if invitation and invitation.status != "pending" %}
-        <p>This invitation has already been {{ invitation.get_status_display|lower }}.</p>
-        {% elif invitation %}
-        <p>This invitation expired on {{ invitation.expires_at|date:"F j, Y" }}.</p>
-        {% else %}
-        <p>This invitation link is invalid.</p>
-        {% endif %}
-        <p><a href="{% url 'accounts:login' %}">Sign in</a> or contact your platform administrator for a new invite.</p>
+<section class="auth-panel auth-panel--invite">
+    <header class="auth-panel__header auth-panel__header--center">
+        <div class="auth-panel__badge auth-panel__badge--security" aria-hidden="true">
+            <svg class="icon icon--md" data-icon="alert-circle"></svg>
+        </div>
+        <h1 class="auth-panel__title">Invitation unavailable</h1>
+        <p class="auth-panel__subtitle">
+            {% if invitation and invitation.status == "accepted" %}
+            This invitation has already been used. Each invite link works only once.
+            {% elif invitation and invitation.status != "pending" %}
+            This invitation has already been {{ invitation.get_status_display|lower }}.
+            {% elif invitation %}
+            This invitation expired on {{ invitation.expires_at|date:"M j, Y g:i A" }}. Links are valid for one hour only.
+            {% else %}
+            This invitation link is invalid or has already been used.
+            {% endif %}
+        </p>
+    </header>
+
+    <div class="auth-form__actions auth-form__actions--stack">
+        {% ui_button label="Sign in" url_name="accounts:login" variant="primary" size="md" full_width=True %}
+        {% ui_button label="Contact support" url_name="contact:form" variant="secondary" size="md" full_width=True type="link" %}
     </div>
 </section>
 {% endblock %}

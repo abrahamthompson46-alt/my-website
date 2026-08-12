@@ -1,0 +1,69 @@
+{% extends "emails/base_branded.html" %}
+
+{% block email_title %}Team invitation — {{ site_name }}{% endblock %}
+
+{% block preheader %}{{ inviter_name }} invited you to join {{ site_name }} as {{ invitation.role.name }}.{% endblock %}
+
+{% block content %}
+<h1 class="email-hero-title" style="margin:0 0 12px;font-size:28px;line-height:36px;font-weight:700;color:#0f172a;text-align:center;">
+    You're invited to the team
+</h1>
+<p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#475569;text-align:center;">
+    {% if inviter %}
+    <strong style="color:#0f172a;">{{ inviter_name }}</strong> has invited you to join
+    {% else %}
+    You have been invited to join
+    {% endif %}
+    <strong style="color:#0f172a;">{{ site_name }}</strong>.
+</p>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 28px;background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;">
+    <tr>
+        <td style="padding:20px 24px;">
+            <p style="margin:0 0 6px;font-size:12px;line-height:18px;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;">Your role</p>
+            <p style="margin:0;font-size:20px;line-height:28px;font-weight:700;color:{{ brand_primary }};">{{ invitation.role.name }}</p>
+            {% if invitation.grant_staff_access %}
+            <p style="margin:10px 0 0;font-size:14px;line-height:22px;color:#475569;">Includes staff access to the Control Room after you accept.</p>
+            {% endif %}
+        </td>
+    </tr>
+</table>
+
+{% if invitation.message %}
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 28px;">
+    <tr>
+        <td style="padding:18px 20px;background-color:#fffbeb;border-left:4px solid {{ brand_accent }};border-radius:0 12px 12px 0;">
+            <p style="margin:0 0 6px;font-size:12px;line-height:18px;color:#92400e;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;">Personal note</p>
+            <p style="margin:0;font-size:15px;line-height:24px;color:#78350f;white-space:pre-line;">{{ invitation.message }}</p>
+        </td>
+    </tr>
+</table>
+{% endif %}
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;">
+    <tr>
+        <td align="center">
+            <a href="{{ accept_url }}" style="display:inline-block;padding:14px 28px;background-color:{{ brand_primary }};color:#ffffff;text-decoration:none;font-size:16px;line-height:24px;font-weight:700;border-radius:10px;box-shadow:0 8px 20px rgba(15,23,42,0.15);">
+                Accept invitation
+            </a>
+        </td>
+    </tr>
+</table>
+
+<p style="margin:0 0 8px;font-size:14px;line-height:22px;color:#64748b;text-align:center;">
+    This secure link expires in <strong style="color:#334155;">{{ invitation_ttl_hours }} hour{{ invitation_ttl_hours|pluralize }}</strong>
+    ({{ invitation.expires_at|date:"M j, Y g:i A" }}) and can only be used once.
+</p>
+<p style="margin:0;font-size:13px;line-height:20px;color:#94a3b8;text-align:center;word-break:break-all;">
+    Button not working? Copy this link:<br>
+    <a href="{{ accept_url }}" style="color:{{ brand_primary }};text-decoration:underline;">{{ accept_url }}</a>
+</p>
+{% endblock %}
+
+{% block footer_note %}
+<p style="margin:0 0 8px;">You received this because {{ inviter_name|default:site_name }} invited <strong>{{ invitation.email }}</strong> to join {{ site_name }}.</p>
+{% endblock %}
+
+{% block legal_note %}
+If you were not expecting a team invitation to {{ site_name }}, you can ignore this email{% if support_email %} or contact <a href="mailto:{{ support_email }}" style="color:{{ brand_primary }};text-decoration:none;">{{ support_email }}</a>{% endif %}.
+{% endblock %}

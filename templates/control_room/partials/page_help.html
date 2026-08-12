@@ -1,8 +1,9 @@
 {% if page_help %}
-<details class="control-help" open>
+<details class="control-help">
     <summary class="control-help__summary">
         <svg class="icon icon--sm control-help__icon" aria-hidden="true" data-icon="help-circle"></svg>
-        <span>{{ page_help.title|default:"How to use this page" }}</span>
+        <span class="control-help__title">{{ page_help.title|default:"How to use this page" }}</span>
+        <span class="control-help__toggle" aria-hidden="true"></span>
     </summary>
     <div class="control-help__body">
         {% if page_help.intro %}

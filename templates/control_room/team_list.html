@@ -47,7 +47,7 @@
                     <td>{{ invite.email }}</td>
                     <td>{{ invite.role.name }}</td>
                     <td>{% if invite.invited_by %}{{ invite.invited_by.email }}{% else %}—{% endif %}</td>
-                    <td>{{ invite.expires_at|date:"M j, Y" }}</td>
+                    <td>{{ invite.expires_at|date:"M j, g:i A" }}</td>
                     <td>
                         <form method="post" action="{% url 'control_room:team_revoke_invite' invite.pk %}" class="control-inline-form">
                             {% csrf_token %}

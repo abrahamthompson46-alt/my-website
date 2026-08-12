@@ -1,12 +1,18 @@
 Hello,
 
-{% if inviter %}{{ inviter.email }} has invited you{% else %}You have been invited{% endif %} to join {{ site_name }} as {{ invitation.role.name }}.
+{% if inviter %}{{ inviter_name }} ({{ inviter.email }}) has invited you{% else %}You have been invited{% endif %} to join {{ site_name }} as {{ invitation.role.name }}.
 
-{% if invitation.message %}{{ invitation.message }}
+{% if invitation.grant_staff_access %}This invitation includes staff access to the Control Room.{% endif %}
+
+{% if invitation.message %}Personal note from your inviter:
+{{ invitation.message }}
 
 {% endif %}Accept your invitation:
 {{ accept_url }}
 
-This link expires on {{ invitation.expires_at|date:"F j, Y" }}.
+This secure link expires in {{ invitation_ttl_hours }} hour{{ invitation_ttl_hours|pluralize }} ({{ invitation.expires_at|date:"M j, Y g:i A" }}) and can only be used once.
 
-— {{ site_name }}
+If you did not expect this invitation, you can safely ignore this email{% if support_email %} or contact {{ support_email }}{% endif %}.
+
+— The {{ site_name }} Team
+{{ site_url }}

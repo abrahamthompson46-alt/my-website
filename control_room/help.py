@@ -317,10 +317,11 @@ PAGE_HELP: dict[str, dict] = {
         "title": "Team & Access guide",
         "intro": "Invite staff, assign roles, and control who can access Control Room and Operations.",
         "steps": [
-            "Only Platform Owners and Platform Admins can manage team members.",
-            "Enter email, choose a role, and send invitation — the invitee receives a secure link.",
-            "Pending invitations can be revoked before they are accepted.",
-            "Open a staff member to assign additional roles or remove roles.",
+            "Open Control Room → Team & Access (/control/team/). Platform Owners and Platform Admins can use this page.",
+            "Invite: enter email, pick a role (Platform Admin, Support Agent, Billing Admin), and send — the invite link lasts 1 hour and works once.",
+            "Manage users: click a staff member to assign or remove roles; permissions sync automatically from each role.",
+            "Edit role permissions: Django Admin → Accounts → Roles → select a role → assign Permissions (for advanced setups).",
+            "Bootstrap the first owner on the server: python manage.py promote_platform_owner your@email.com",
             "Staff with Control Room access must enroll in MFA after accepting an invite.",
         ],
         "tips": [

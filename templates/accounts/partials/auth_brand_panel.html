@@ -1,10 +1,14 @@
 {% load static ui_tags %}
 <aside class="auth-brand" aria-label="Platform overview">
     <div class="auth-brand__mesh" aria-hidden="true"></div>
+    <div class="auth-brand__glow" aria-hidden="true"></div>
     <div class="auth-brand__inner">
-        <a href="{% url 'website:home' %}" class="auth-brand__logo brand-link brand-link--inverse">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <span class="brand-text">{{ SITE_NAME }}</span>
+        <a href="{% url 'website:home' %}" class="auth-brand__logo">
+            {% if BRAND_LOGO_URL %}
+            <img src="{{ BRAND_LOGO_URL }}" alt="{{ SITE_NAME }}" class="auth-brand__logo-image" width="168" height="40">
+            {% else %}
+            <img src="{% static 'images/brand/logo-full-inverse.svg' %}" alt="{{ SITE_NAME }}" class="auth-brand__logo-image" width="168" height="40">
+            {% endif %}
         </a>
 
         <div class="auth-brand__content">

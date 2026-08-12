@@ -1,1 +1,1 @@
-You're invited to join {{ site_name }}
+Join {{ site_name }} — team invitation from {{ inviter_name }}

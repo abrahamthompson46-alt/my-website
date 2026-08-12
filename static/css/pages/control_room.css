@@ -1115,6 +1115,36 @@
   font-weight: var(--font-semibold);
   color: var(--color-primary-800);
   list-style: none;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.control-help__summary:hover {
+  background: color-mix(in srgb, var(--color-primary-100) 55%, transparent);
+}
+
+.control-help[open] .control-help__summary {
+  border-bottom: 1px solid var(--color-primary-200);
+}
+
+.control-help__title {
+  flex: 1;
+}
+
+.control-help__toggle {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  margin-left: auto;
+  opacity: 0.72;
+}
+
+.control-help[open] .control-help__toggle {
+  transform: rotate(-135deg);
+  margin-top: 0.2rem;
 }
 
 .control-help__summary::-webkit-details-marker {
@@ -1122,9 +1152,21 @@
 }
 
 .control-help__body {
-  padding: 0 var(--space-5) var(--space-4);
+  padding: var(--space-4) var(--space-5) var(--space-4);
   font-size: var(--text-body-sm);
   color: var(--text-secondary);
+  animation: control-help-drop 0.22s ease;
+}
+
+@keyframes control-help-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .control-help__intro {

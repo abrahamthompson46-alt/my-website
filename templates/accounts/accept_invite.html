@@ -1,31 +1,90 @@
-{% extends "base_public.html" %}
-{% load ui_tags %}
+{% extends "base_auth.html" %}
+{% load static ui_tags %}
 
 {% block title %}Accept invitation — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
-<section class="section auth-page">
-    <div class="container auth-page__panel-narrow">
-        <h1>Join {{ SITE_NAME }}</h1>
-        <p>You have been invited as <strong>{{ invitation.role.name }}</strong>{% if invitation.invited_by %} by {{ invitation.invited_by.email }}{% endif %}.</p>
+<section class="auth-panel auth-panel--invite">
+    <header class="auth-panel__header auth-panel__header--center">
+        <div class="auth-panel__badge" aria-hidden="true">
+            <svg class="icon icon--md" data-icon="user-plus"></svg>
+        </div>
+        <p class="auth-panel__eyebrow">Team invitation</p>
+        <h1 class="auth-panel__title">Join {{ SITE_NAME }}</h1>
+        <p class="auth-panel__subtitle">
+            You have been invited as <strong>{{ invitation.role.name }}</strong>{% if invitation.invited_by %} by {{ invitation.invited_by.display_name }}{% endif %}.
+            This link expires {{ invitation.expires_at|timeuntil }} from now.
+        </p>
+    </header>
 
-        {% if existing_user %}
-        <p>An account already exists for {{ invitation.email }}. Accept the invitation to add your new role.</p>
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="accept_existing" value="1">
-            {% ui_button label="Accept invitation" type="submit" variant="primary" full_width=True %}
-        </form>
-        {% else %}
-        <form method="post" class="form stack">
-            {% csrf_token %}
-            {% ui_field field=form.first_name %}
-            {% ui_field field=form.last_name %}
-            {% ui_field field=form.password1 %}
-            {% ui_field field=form.password2 %}
-            {% ui_button label="Create account & accept" type="submit" variant="primary" full_width=True %}
-        </form>
+    {% if existing_user %}
+    <p class="auth-panel__subtitle">An account already exists for {{ invitation.email }}. Accept to add your new role.</p>
+    <form method="post" class="auth-form auth-form--invite">
+        {% csrf_token %}
+        <input type="hidden" name="accept_existing" value="1">
+        <div class="auth-form__actions">
+            {% ui_button label="Accept invitation" type="submit" variant="primary" size="md" full_width=True icon="check" %}
+        </div>
+    </form>
+    {% else %}
+    <form method="post" class="auth-form auth-form--invite" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="auth-alert auth-alert--error" role="alert">
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="alert-circle"></svg>
+            <span>{{ form.non_field_errors }}</span>
+        </div>
         {% endif %}
-    </div>
+
+        <div class="auth-form__row auth-form__row--2">
+            <div class="auth-field">
+                <label class="auth-field__label" for="{{ form.first_name.id_for_label }}">First name</label>
+                <div class="auth-field__control">
+                    {{ form.first_name }}
+                </div>
+                {% if form.first_name.errors %}<p class="auth-field__error">{{ form.first_name.errors.0 }}</p>{% endif %}
+            </div>
+            <div class="auth-field">
+                <label class="auth-field__label" for="{{ form.last_name.id_for_label }}">Last name</label>
+                <div class="auth-field__control">
+                    {{ form.last_name }}
+                </div>
+                {% if form.last_name.errors %}<p class="auth-field__error">{{ form.last_name.errors.0 }}</p>{% endif %}
+            </div>
+        </div>
+
+        <div class="auth-field">
+            <label class="auth-field__label" for="invite-email">Work email</label>
+            <div class="auth-field__control">
+                <input id="invite-email" type="email" class="auth-field__input" value="{{ invitation.email }}" readonly aria-readonly="true">
+            </div>
+        </div>
+
+        <div class="auth-field">
+            <label class="auth-field__label" for="{{ form.password1.id_for_label }}">Password</label>
+            <div class="auth-field__control">
+                {{ form.password1 }}
+            </div>
+            {% if form.password1.errors %}<p class="auth-field__error">{{ form.password1.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div class="auth-field">
+            <label class="auth-field__label" for="{{ form.password2.id_for_label }}">Confirm password</label>
+            <div class="auth-field__control">
+                {{ form.password2 }}
+            </div>
+            {% if form.password2.errors %}<p class="auth-field__error">{{ form.password2.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div class="auth-form__actions">
+            {% ui_button label="Create account & accept" type="submit" variant="primary" size="md" full_width=True icon="arrow-right" icon_position="trailing" %}
+        </div>
+    </form>
+    {% endif %}
+
+    <p class="auth-panel__help">
+        Already have access? <a href="{% url 'accounts:login' %}">Sign in</a>
+    </p>
 </section>
 {% endblock %}

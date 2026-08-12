@@ -18,6 +18,8 @@ class InvitationStatus(models.TextChoices):
 class StaffInvitation(BaseModel):
     """Invite a user to join the platform with a specific role."""
 
+    INVITATION_TTL_HOURS = 1
+
     email = models.EmailField(db_index=True)
     role = models.ForeignKey(
         "accounts.Role",
@@ -67,7 +69,12 @@ class StaffInvitation(BaseModel):
 
     @classmethod
     def default_expiry(cls):
-        return timezone.now() + timedelta(days=7)
+        return timezone.now() + timedelta(hours=cls.INVITATION_TTL_HOURS)
+
+    @classmethod
+    def burn_token(cls):
+        """Return a token hash that cannot be guessed from invitation URLs."""
+        return cls.hash_token(secrets.token_urlsafe(32))
 
     @staticmethod
     def hash_token(raw_token: str) -> str:

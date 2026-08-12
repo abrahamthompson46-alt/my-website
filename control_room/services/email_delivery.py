@@ -2,8 +2,17 @@
 
 from __future__ import annotations
 
+import uuid
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
+
+from common.services.email_branding import (
+    format_branded_sender,
+    get_deliverability_warnings,
+    get_email_brand_context,
+    get_reply_to_email,
+)
 
 
 class EmailConfigurationError(Exception):
@@ -99,23 +108,40 @@ def send_platform_mail(
     message: str,
     recipient_list: list[str],
     from_email: str | None = None,
+    from_name: str | None = None,
     html_message: str | None = None,
+    reply_to: list[str] | None = None,
+    headers: dict[str, str] | None = None,
     fail_silently: bool = False,
 ):
     config = get_platform_email_settings()
+    brand = get_email_brand_context()
     sender = _normalized_from_email(from_email) or config["from_email"]
     if not sender:
         raise EmailConfigurationError(
             "DEFAULT_FROM_EMAIL is not configured. Set it in Platform Ops or your server .env file."
         )
 
+    sender = format_branded_sender(sender, from_name or brand["from_name"])
+    reply_addresses = [addr.strip() for addr in (reply_to or []) if addr and "@" in addr]
+    if not reply_addresses:
+        fallback_reply = get_reply_to_email()
+        if fallback_reply:
+            reply_addresses = [fallback_reply]
+
     connection = get_platform_mail_connection()
     mail = EmailMultiAlternatives(
-        subject=subject,
+        subject=subject.strip(),
         body=message,
         from_email=sender,
         to=recipient_list,
         connection=connection,
+        reply_to=reply_addresses or None,
+        headers={
+            "X-Entity-Ref-ID": uuid.uuid4().hex,
+            "X-Auto-Response-Suppress": "All",
+            **(headers or {}),
+        },
     )
     if html_message:
         mail.attach_alternative(html_message, "text/html")
@@ -142,4 +168,5 @@ def get_email_status_summary() -> dict:
         "from_email": config["from_email"] or "—",
         "host": config["host"] or "—",
         "issues": issues,
+        "deliverability_warnings": get_deliverability_warnings(config["from_email"]),
     }
