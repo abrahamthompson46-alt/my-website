@@ -20,6 +20,12 @@ sitemaps = {
     "pages": CMSPageSitemap,
 }
 
+
+def _uses_local_media_storage() -> bool:
+    backend = settings.STORAGES.get("default", {}).get("BACKEND", "")
+    return "FileSystemStorage" in backend
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("health/", health_check, name="health_check"),
@@ -60,6 +66,9 @@ if settings.DEBUG:
         ] + urlpatterns
     except ImportError:
         pass
+elif _uses_local_media_storage():
+    # Fallback when nginx does not serve /media/ (common after cutover). Prefer nginx in production.
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = "common.views.handler404"
 handler500 = "common.views.handler500"
