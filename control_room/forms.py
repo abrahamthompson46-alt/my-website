@@ -350,3 +350,50 @@ class DocDownloadForm(BaseModelForm):
         self.fields["category"].queryset = DocCategory.objects.order_by("sort_order", "name")
         self.fields["product"].queryset = Product.objects.order_by("sort_order", "name")
 
+
+class PlatformEmailSettingsForm(BaseModelForm):
+    smtp_password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(render_value=False, attrs={"placeholder": "Leave blank to keep current password"}),
+        help_text="Leave blank to keep the saved SMTP password.",
+    )
+
+    class Meta:
+        from control_room.models import PlatformOperationsSettings
+
+        model = PlatformOperationsSettings
+        fields = [
+            "use_custom_smtp",
+            "smtp_host",
+            "smtp_port",
+            "smtp_use_tls",
+            "smtp_username",
+            "default_from_email",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["smtp_host"].widget.attrs.setdefault("placeholder", "smtp.yourprovider.com")
+        self.fields["default_from_email"].widget.attrs.setdefault("placeholder", "noreply@zreta.com")
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        password = self.cleaned_data.get("smtp_password")
+        if password:
+            instance.smtp_password = password
+        if commit:
+            instance.save()
+        return instance
+
+
+class PlatformDeploySettingsForm(forms.ModelForm):
+    confirm_deploy = forms.BooleanField(
+        required=False,
+        label="I understand this will pull code from GitHub and run migrate/collectstatic on the server.",
+    )
+
+    class Meta:
+        from control_room.models import PlatformOperationsSettings
+
+        model = PlatformOperationsSettings
+        fields = ["git_remote", "git_branch"]

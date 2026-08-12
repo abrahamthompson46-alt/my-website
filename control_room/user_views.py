@@ -64,7 +64,17 @@ class TeamListView(TeamManagementMixin, ListView):
         try:
             send_invitation_email(request, invitation, raw_token)
         except Exception as exc:
-            messages.warning(request, f"Invite created but email failed: {exc}")
+            log_control_change(
+                request.user,
+                area="team",
+                action="invite",
+                summary=f"Invited {invitation.email} as {invitation.role.name} (email failed)",
+            )
+            messages.warning(
+                request,
+                f"Invite created but email failed: {exc}. Configure email under Platform Ops.",
+            )
+            return redirect("control_room:team")
 
         log_control_change(
             request.user,

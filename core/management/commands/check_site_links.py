@@ -189,7 +189,7 @@ class Command(BaseCommand):
         for item in CONTROL_ROOM_NAV:
             if item.get("section") or item.get("external"):
                 continue
-            if item["url_name"] == "control_room:team":
+            if item["url_name"] in {"control_room:team", "control_room:platform_ops"}:
                 continue
             staff_routes.append((item["url_name"], item.get("url_kwargs") or {}))
 

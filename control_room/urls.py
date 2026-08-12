@@ -62,12 +62,14 @@ from control_room.views import (
     BrandKitDownloadView,
     BrandKitZipView,
 )
+from control_room.owner_views import PlatformOpsView
 
 app_name = "control_room"
 
 urlpatterns = [
     path("", DashboardView.as_view(), name="dashboard"),
     path("settings/", SettingsView.as_view(), name="settings"),
+    path("platform-ops/", PlatformOpsView.as_view(), name="platform_ops"),
     path("brand-kit/", BrandKitView.as_view(), name="brand_kit"),
     path("brand-kit/download/<slug:asset_key>/", BrandKitDownloadView.as_view(), name="brand_kit_download"),
     path("brand-kit/download-all.zip", BrandKitZipView.as_view(), name="brand_kit_zip"),

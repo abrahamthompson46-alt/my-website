@@ -1,0 +1,3 @@
+This is a test email from your platform control room.
+
+If you received this message, outbound email is configured correctly.

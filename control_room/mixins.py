@@ -2,7 +2,7 @@
 
 from django.core.exceptions import PermissionDenied
 
-from accounts.services.rbac import user_can_manage_team
+from accounts.services.rbac import user_can_manage_team, user_can_manage_platform_ops
 from control_room.help import get_page_help
 from operations.mixins import StaffRequiredMixin
 
@@ -25,7 +25,18 @@ class ControlRoomMixin(StaffRequiredMixin):
         if help_key:
             context["page_help"] = get_page_help(help_key)
         context["can_manage_team"] = user_can_manage_team(self.request.user)
+        context["can_manage_platform_ops"] = user_can_manage_platform_ops(self.request.user)
         return context
+
+
+class PlatformOwnerMixin(ControlRoomMixin):
+    """Restrict platform email/deploy tools to owners or granted operators."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_staff:
+            if not user_can_manage_platform_ops(request.user):
+                raise PermissionDenied("Platform owner access required for this area.")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class TeamManagementMixin(ControlRoomMixin):

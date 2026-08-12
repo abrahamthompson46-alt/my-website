@@ -95,6 +95,11 @@ def navigation(request):
 
     if path.startswith("/control/"):
         sidebar_nav = get_navigation("control_room") if db_ready else CONTROL_ROOM_NAV
+        if request.user.is_authenticated:
+            from accounts.services.rbac import user_can_manage_platform_ops
+
+            if not user_can_manage_platform_ops(request.user):
+                sidebar_nav = [item for item in sidebar_nav if not item.get("owner_only")]
         portal_type = "control"
     elif path.startswith("/ops/"):
         sidebar_nav = get_navigation("operations") if db_ready else OPERATIONS_NAV

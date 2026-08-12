@@ -101,6 +101,10 @@
 {% include "products/partials/media_gallery.html" with title="Screenshots" subtitle="Explore the product interface and key workflows." items=product_screenshots section_alt=False %}
 {% endif %}
 
+{% if product_screenshots or product_templates %}
+{% include "products/partials/screenshot_lightbox.html" %}
+{% endif %}
+
 {% if product.videos.exists %}
 <section class="section{% if product_screenshots or product_templates %} section--alt{% endif %}">
     <div class="container">
@@ -240,4 +244,8 @@
     </div>
 </section>
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/screenshot-lightbox.js' %}" defer></script>
 {% endblock %}

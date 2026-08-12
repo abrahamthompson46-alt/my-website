@@ -39,7 +39,7 @@ class ControlRoomViewTests(TestCase):
         )
 
     def test_control_room_nav_pages_load(self):
-        skip = {"control_room:team"}  # requires platform owner/admin role
+        skip = {"control_room:team", "control_room:platform_ops"}  # requires platform owner/admin role
         for item in CONTROL_ROOM_NAV:
             if item.get("section") or item.get("external"):
                 continue

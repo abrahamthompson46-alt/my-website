@@ -190,3 +190,47 @@ class ControlChangeLog(BaseModel):
 
     def __str__(self):
         return self.summary
+
+
+class PlatformOperationsSettings(BaseModel):
+    """Singleton email and deploy settings — platform owner only."""
+
+    singleton_key = models.CharField(max_length=32, unique=True, default="default", editable=False)
+    use_custom_smtp = models.BooleanField(
+        default=False,
+        help_text="When enabled, Control Room SMTP settings override environment email config.",
+    )
+    smtp_host = models.CharField(max_length=255, blank=True)
+    smtp_port = models.PositiveIntegerField(default=587)
+    smtp_use_tls = models.BooleanField(default=True)
+    smtp_username = models.CharField(max_length=255, blank=True)
+    smtp_password = models.CharField(max_length=255, blank=True)
+    default_from_email = models.EmailField(blank=True)
+    last_email_test_at = models.DateTimeField(null=True, blank=True)
+    last_email_test_status = models.CharField(max_length=32, blank=True)
+    last_email_test_message = models.TextField(blank=True)
+    git_remote = models.CharField(max_length=120, default="origin")
+    git_branch = models.CharField(max_length=120, default="main")
+    last_deploy_at = models.DateTimeField(null=True, blank=True)
+    last_deploy_status = models.CharField(max_length=32, blank=True)
+    last_deploy_output = models.TextField(blank=True)
+    last_deploy_commit = models.CharField(max_length=64, blank=True)
+
+    class Meta:
+        verbose_name = "Platform operations settings"
+        verbose_name_plural = "Platform operations settings"
+        permissions = [
+            ("manage_platform_operations", "Can manage platform email and deploy settings"),
+        ]
+
+    def __str__(self):
+        return "Platform operations"
+
+    def save(self, *args, **kwargs):
+        self.singleton_key = "default"
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(singleton_key="default")
+        return obj

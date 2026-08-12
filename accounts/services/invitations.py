@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.mail import send_mail
+from control_room.services.email_delivery import send_platform_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
@@ -35,11 +35,10 @@ def send_invitation_email(request, invitation, raw_token):
     }
     subject = render_to_string("emails/staff_invite_subject.txt", context).strip()
     body = render_to_string("emails/staff_invite_body.txt", context)
-    send_mail(
-        subject,
-        body,
-        settings.DEFAULT_FROM_EMAIL,
-        [invitation.email],
+    send_platform_mail(
+        subject=subject,
+        message=body,
+        recipient_list=[invitation.email],
         fail_silently=False,
     )
 

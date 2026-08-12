@@ -120,11 +120,33 @@
   gap: var(--space-6);
 }
 
+.screenshot-gallery__trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: var(--radius-lg);
+}
+
+.screenshot-gallery__trigger:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 3px;
+}
+
 .screenshot-gallery__item img {
   width: 100%;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-default);
   box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast), box-shadow var(--duration-fast);
+}
+
+.screenshot-gallery__trigger:hover img,
+.screenshot-gallery__trigger:focus-visible img {
+  box-shadow: var(--shadow-md);
+  transform: scale(1.01);
 }
 
 .screenshot-gallery__item figcaption {
@@ -136,6 +158,70 @@
 
 .screenshot-gallery__item--template img {
   border-color: var(--color-accent-200);
+}
+
+/* Screenshot lightbox */
+.screenshot-lightbox[hidden] {
+  display: none;
+}
+
+.screenshot-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.screenshot-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(15 23 42 / 0.88);
+}
+
+.screenshot-lightbox__panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: min(96vw, 1200px);
+  max-height: calc(100vh - var(--space-8));
+}
+
+.screenshot-lightbox__close {
+  position: absolute;
+  top: calc(var(--space-2) * -1);
+  right: 0;
+  color: #fff;
+  background: rgb(15 23 42 / 0.55);
+}
+
+.screenshot-lightbox__image {
+  width: 100%;
+  max-height: calc(100vh - 8rem);
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  background: var(--surface-card);
+}
+
+.screenshot-lightbox__caption {
+  margin: 0;
+  max-width: 48rem;
+  text-align: center;
+  color: #fff;
+  font-size: var(--text-body-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screenshot-gallery__trigger:hover img,
+  .screenshot-gallery__trigger:focus-visible img {
+    transform: none;
+  }
 }
 
 .product-external-cta {

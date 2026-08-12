@@ -182,6 +182,7 @@ CONTROL_ROOM_NAV = [
     {"section": "Platform"},
     {"label": "Platform Setup", "url_name": "control_room:setup", "icon": "database"},
     {"label": "Site Settings", "url_name": "control_room:settings", "icon": "settings"},
+    {"label": "Platform Ops", "url_name": "control_room:platform_ops", "icon": "server", "owner_only": True},
     {"label": "Team & Access", "url_name": "control_room:team", "icon": "users"},
     {"label": "Navigation", "url_name": "control_room:navigation", "icon": "menu"},
     {"label": "Redirects", "url_name": "control_room:redirects", "icon": "external-link"},

@@ -1,0 +1,108 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title="Platform Ops" subtitle="Configure outbound email and pull the latest code from GitHub. Platform owner access only." %}
+
+<div class="ops-grid ops-grid--2">
+    <section class="ops-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Email status</h2></div>
+        <div class="ops-panel__body">
+            <dl class="control-kv">
+                <div><dt>Source</dt><dd>{{ email_status.source|title }}</dd></div>
+                <div><dt>Backend</dt><dd>{{ email_status.backend }}</dd></div>
+                <div><dt>From address</dt><dd>{{ email_status.from_email }}</dd></div>
+                <div><dt>SMTP host</dt><dd>{{ email_status.host }}</dd></div>
+            </dl>
+            {% if email_status.configured %}
+            <p class="control-form__hint">Email looks configured. Send yourself a test message below.</p>
+            {% else %}
+            <div class="control-alert control-alert--warning">
+                <p><strong>Email is not ready.</strong></p>
+                <ul>
+                    {% for issue in email_status.issues %}
+                    <li>{{ issue }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% if ops_settings.last_email_test_at %}
+            <p class="control-form__hint">
+                Last test: {{ ops_settings.last_email_test_at|date:"M j, Y g:i A" }} —
+                {% if ops_settings.last_email_test_status == "success" %}
+                <span class="control-badge control-badge--success">Success</span>
+                {% else %}
+                <span class="control-badge">Failed</span>
+                {% endif %}
+                {% if ops_settings.last_email_test_message %}<br>{{ ops_settings.last_email_test_message }}{% endif %}
+            </p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="ops-panel">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Email setup</h2></div>
+        <div class="ops-panel__body">
+            <form method="post" class="control-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="save_email">
+                <div class="control-form__grid">
+                    {% ui_field field=email_form.use_custom_smtp extra_class="form-field--full" %}
+                    {% ui_field field=email_form.smtp_host %}
+                    {% ui_field field=email_form.smtp_port %}
+                    {% ui_field field=email_form.smtp_use_tls %}
+                    {% ui_field field=email_form.smtp_username extra_class="form-field--full" %}
+                    {% ui_field field=email_form.smtp_password extra_class="form-field--full" %}
+                    {% ui_field field=email_form.default_from_email extra_class="form-field--full" %}
+                </div>
+                <p class="control-form__hint">When custom SMTP is disabled, the server uses values from your <code>.env</code> file.</p>
+                <div class="control-form__actions">
+                    {% ui_button label="Save email settings" type="submit" variant="primary" %}
+                </div>
+            </form>
+            <form method="post" class="control-form control-form--compact">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="test_email">
+                {% ui_button label="Send test email to me" type="submit" variant="secondary" size="sm" %}
+            </form>
+        </div>
+    </section>
+
+    <section class="ops-panel ops-panel--full">
+        <div class="ops-panel__header"><h2 class="ops-panel__title">GitHub updates</h2></div>
+        <div class="ops-panel__body">
+            <p class="control-form__hint">
+                Pull the latest code from GitHub, run migrations, and collect static files on this server.
+                You still need to restart Gunicorn afterward: <code>sudo systemctl restart marketing-site</code>
+            </p>
+            {% if ops_settings.last_deploy_at %}
+            <p class="control-form__hint">
+                Last deploy: {{ ops_settings.last_deploy_at|date:"M j, Y g:i A" }}
+                {% if ops_settings.last_deploy_commit %} · commit <code>{{ ops_settings.last_deploy_commit }}</code>{% endif %}
+                · {% if ops_settings.last_deploy_status == "success" %}<span class="control-badge control-badge--success">Success</span>{% else %}<span class="control-badge">Failed</span>{% endif %}
+            </p>
+            {% endif %}
+            <form method="post" class="control-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="deploy">
+                <div class="control-form__grid">
+                    {% ui_field field=deploy_form.git_remote %}
+                    {% ui_field field=deploy_form.git_branch %}
+                    {% ui_field field=deploy_form.confirm_deploy extra_class="form-field--full" %}
+                </div>
+                <div class="control-form__actions">
+                    {% ui_button label="Pull latest from GitHub" type="submit" variant="primary" %}
+                </div>
+            </form>
+            {% if ops_settings.last_deploy_output %}
+            <details class="control-log-details">
+                <summary>Last deploy log</summary>
+                <pre class="control-log">{{ ops_settings.last_deploy_output }}</pre>
+            </details>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -7,7 +7,17 @@
         <div class="screenshot-gallery">
             {% for shot in items %}
             <figure class="screenshot-gallery__item{% if shot.kind == 'template' %} screenshot-gallery__item--template{% endif %}">
-                <img src="{{ shot.image.url }}" alt="{{ shot.alt_text }}" width="800" height="450" loading="lazy" decoding="async">
+                <button
+                    type="button"
+                    class="screenshot-gallery__trigger"
+                    data-screenshot-lightbox-open
+                    data-lightbox-src="{{ shot.image.url }}"
+                    data-lightbox-alt="{{ shot.alt_text }}"
+                    {% if shot.title or shot.caption %}data-lightbox-caption="{% if shot.title %}{{ shot.title }}{% else %}{{ shot.caption }}{% endif %}"{% endif %}
+                    aria-label="Zoom {{ shot.alt_text }}"
+                >
+                    <img src="{{ shot.image.url }}" alt="{{ shot.alt_text }}" width="800" height="450" loading="lazy" decoding="async">
+                </button>
                 {% if shot.caption or shot.title %}
                 <figcaption>{% if shot.title %}{{ shot.title }}{% else %}{{ shot.caption }}{% endif %}</figcaption>
                 {% endif %}

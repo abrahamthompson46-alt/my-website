@@ -24,6 +24,21 @@ def user_can_manage_team(user):
     return user_has_role(user, "platform-owner") or user_has_role(user, "platform-admin")
 
 
+def user_is_platform_owner(user):
+    if not user.is_authenticated:
+        return False
+    return user.is_superuser or user_has_role(user, "platform-owner")
+
+
+def user_can_manage_platform_ops(user):
+    """Platform owners, superusers, or users with the override permission."""
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser or user_has_role(user, "platform-owner"):
+        return True
+    return user_has_permission(user, "manage_platform_operations", app_label="control_room")
+
+
 def user_has_permission(user, perm_codename, app_label="accounts"):
     if user.is_superuser:
         return True
