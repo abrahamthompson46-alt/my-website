@@ -10,7 +10,7 @@
 
 
 
-        {% include "cms/partials/section_header.html" with section=industries_section eyebrow="Industries" title="Solutions for every sector" subtitle="Purpose-built products addressing the unique challenges of your industry." %}
+        {% include "cms/partials/section_header.html" with section=industries_section eyebrow="Industries" title="Solutions for every sector" subtitle="Purpose-built products for faith, finance, education, and healthcare." %}
 
 
 
@@ -42,7 +42,7 @@
 
 
 
-                    <h3 class="industry-card__title">{{ industry.title }}</h3>
+                    <h3 class="industry-card__title">{% if industry.title %}{{ industry.title }}{% else %}{{ industry.name }}{% endif %}</h3>
 
 
 

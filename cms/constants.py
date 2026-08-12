@@ -1,4 +1,4 @@
-"""CMS section key constants for home and about pages."""
+"""Homepage CMS section keys."""
 
 HOME_SECTIONS = [
     "featured_products",
@@ -8,7 +8,7 @@ HOME_SECTIONS = [
     "latest_news",
     "statistics",
     "cta",
-    "partner_logos",
+    "trust_signals",
     "request_demo",
     "newsletter",
 ]
@@ -20,4 +20,9 @@ ABOUT_SECTIONS = [
     "history",
     "team",
     "stats",
+]
+
+# Deprecated — kept so existing DB rows can be deactivated during sync.
+LEGACY_HOME_SECTIONS = [
+    "partner_logos",
 ]

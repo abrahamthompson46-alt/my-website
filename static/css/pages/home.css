@@ -161,6 +161,29 @@
   color: var(--color-accent-500);
 }
 
+.home-hero__trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.home-hero__trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+}
+
+.home-hero__trust-item .icon {
+  color: var(--color-accent-500);
+  flex-shrink: 0;
+}
+
 /* ── Product cards ── */
 .home-products__grid {
   gap: var(--space-6);
@@ -613,7 +636,52 @@
   flex-shrink: 0;
 }
 
-/* ── Partner logos ── */
+/* ── Trust signals ── */
+.home-trust__grid {
+  gap: var(--space-6);
+}
+
+.home-trust__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.home-trust__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-50);
+  color: var(--color-accent-600);
+}
+
+[data-theme="dark"] .home-trust__icon {
+  background: rgba(20, 184, 166, 0.12);
+  color: var(--color-accent-300);
+}
+
+.home-trust__title {
+  font-size: var(--text-heading-sm);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.home-trust__text {
+  font-size: var(--text-body-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── Partner logos (legacy) ── */
 .home-partners__logos {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

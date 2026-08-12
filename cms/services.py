@@ -168,10 +168,33 @@ def build_home_context():
     if not latest_news:
         latest_news = fallback["latest_news"]
 
+    from website.services.homepage import (
+        get_trust_signals,
+        should_show_home_news,
+        should_show_home_testimonials,
+    )
+
+    trust_items = items_for("trust_signals", "trust_signals")
+    if trust_items and hasattr(trust_items[0], "title"):
+        trust_signals = [
+            {
+                "icon": item.icon or "check-circle",
+                "title": item.title,
+                "description": item.description,
+            }
+            for item in trust_items
+        ]
+    else:
+        trust_signals = get_trust_signals(fallback.get("trust_signals"))
+
+    def header_or_fallback(key, fallback_key):
+        return header_for(key) or fallback.get(fallback_key, {})
+
     return {
         "cms_page": page_ctx["page"],
         "hero": hero,
         "hero_banner": hero_banner,
+        "trust_strip": fallback.get("trust_strip", []),
         "featured_products_section": header_for("featured_products"),
         "why_choose_us_section": header_for("why_choose_us"),
         "why_choose_us": items_for("why_choose_us"),
@@ -179,16 +202,18 @@ def build_home_context():
         "industries": items_for("industries"),
         "testimonials_section": header_for("testimonials"),
         "testimonials": testimonials,
+        "show_testimonials": should_show_home_testimonials(testimonials),
         "latest_news_section": header_for("latest_news"),
         "latest_news": latest_news,
+        "show_latest_news": should_show_home_news(latest_news),
         "statistics_section": header_for("statistics"),
         "statistics": items_for("statistics"),
-        "cta_section": header_for("cta"),
-        "partner_logos_section": header_for("partner_logos"),
-        "partner_logos": items_for("partner_logos"),
-        "request_demo_section": header_for("request_demo"),
+        "cta_section": header_or_fallback("cta", "cta_section"),
+        "request_demo_section": header_or_fallback("request_demo", "request_demo_section"),
         "demo_benefits": items_for("request_demo"),
-        "newsletter_section": header_for("newsletter"),
+        "newsletter_section": header_or_fallback("newsletter", "newsletter_section"),
+        "trust_signals": trust_signals,
+        "trust_signals_section": header_for("trust_signals"),
     }
 
 

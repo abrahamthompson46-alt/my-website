@@ -6,7 +6,7 @@
 
   function init() {
     var sections = document.querySelectorAll(
-      ".home-products, .home-why, .home-industries, .home-testimonials, .home-news, .home-cta, .home-partners, .home-demo, .home-newsletter"
+      ".home-products, .home-stats, .home-why, .home-industries, .home-trust, .home-testimonials, .home-news, .home-cta, .home-demo, .home-newsletter"
     );
 
     sections.forEach(function (el) {

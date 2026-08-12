@@ -32,19 +32,28 @@
 
             <div class="home-hero__actions cluster">
                 {% if hero.cta_primary_url %}
-                <a href="{{ hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ hero.cta_primary_label|default:"Start Free Trial" }}</a>
+                <a href="{{ hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ hero.cta_primary_label|default:"Start ChurchHub trial" }}</a>
                 {% else %}
-                {% ui_button label=hero.cta_primary_label|default:"Start Free Trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
+                {% ui_button label=hero.cta_primary_label|default:"Start ChurchHub trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
                 {% endif %}
 
                 {% if hero.cta_secondary_url %}
-                <a href="{{ hero.cta_secondary_url }}" class="btn btn--secondary btn--lg">{{ hero.cta_secondary_label|default:"Request a Demo" }}</a>
+                <a href="{{ hero.cta_secondary_url }}" class="btn btn--secondary btn--lg">{{ hero.cta_secondary_label|default:"Request a demo" }}</a>
                 {% else %}
-                {% ui_button label=hero.cta_secondary_label|default:"Request a Demo" url_name="contact:demo" variant="secondary" size="lg" type="link" %}
+                <a href="#request-demo" class="btn btn--secondary btn--lg">{{ hero.cta_secondary_label|default:"Request a demo" }}</a>
                 {% endif %}
             </div>
 
-            {% if hero.trust_text %}
+            {% if trust_strip %}
+            <ul class="home-hero__trust-strip" aria-label="Platform highlights">
+                {% for item in trust_strip %}
+                <li class="home-hero__trust-item">
+                    <svg class="icon icon--sm" aria-hidden="true" data-icon="{{ item.icon }}"></svg>
+                    {{ item.label }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% elif hero.trust_text %}
             <p class="home-hero__trust">
                 <svg class="icon icon--sm" aria-hidden="true" data-icon="shield-check"></svg>
                 {{ hero.trust_text }}

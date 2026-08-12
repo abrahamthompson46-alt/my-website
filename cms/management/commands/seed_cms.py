@@ -12,19 +12,19 @@ from cms.models import (
     FAQCategory,
     HeroBanner,
     HeroPlacement,
-    NewsArticle,
     PageSection,
     PageType,
     SectionItem,
     TeamMember,
-    Testimonial,
 )
 from website.content import (
+    CTA,
     HERO,
     INDUSTRIES,
-    PARTNER_LOGOS,
+    NEWSLETTER,
+    REQUEST_DEMO,
     STATISTICS,
-    TESTIMONIALS,
+    TRUST_SIGNALS,
     WHY_CHOOSE_US,
 )
 
@@ -47,8 +47,8 @@ class Command(BaseCommand):
             headline=HERO["headline"],
             subheadline=HERO["subheadline"],
             trust_text=HERO["trust_text"],
-            cta_primary_label="Start Free Trial",
-            cta_secondary_label="Request a Demo",
+            cta_primary_label=HERO.get("cta_primary_label", "Start ChurchHub trial"),
+            cta_secondary_label=HERO.get("cta_secondary_label", "Request a demo"),
             cta_secondary_url="#request-demo",
             is_active=True,
         )
@@ -60,20 +60,24 @@ class Command(BaseCommand):
             hero=hero,
             is_published=True,
             published_at=now,
-            meta_title="Enterprise Software for Every Industry",
+            meta_title="ChurchHub & modular enterprise software",
+            meta_description=(
+                "ChurchHub for faith communities — members, giving, events, and communications. "
+                "Built on Zreta with GHS pricing, Mobile Money, and enterprise security."
+            ),
         )
 
         section_defs = [
-            ("featured_products", "Our Products", "Featured products", "Modular SaaS solutions designed for your industry."),
-            ("why_choose_us", "Why Choose Us", "Built for enterprise reliability", "The platform global organizations trust."),
+            ("featured_products", "Live today", "Start with ChurchHub", "Our flagship product for faith communities — with more modular products rolling out on the same platform."),
+            ("why_choose_us", "Why Choose Us", "Built for enterprise reliability", "Security, modular design, and support you can verify on this site."),
             ("industries", "Industries", "Solutions for every sector", "Purpose-built products for your industry."),
-            ("testimonials", "Testimonials", "What our customers say", "Organizations worldwide rely on our platform."),
+            ("testimonials", "Testimonials", "What our customers say", "Verified customer stories appear here as they are published."),
             ("latest_news", "Latest News", "From our blog", "Product updates, guides, and company news."),
             ("statistics", "", "", ""),
-            ("cta", "", "Ready to transform your organization?", "Join 2,500+ organizations on our platform."),
-            ("partner_logos", "Partners", "Trusted by industry leaders", "Technology and implementation partners worldwide."),
-            ("request_demo", "Request a Demo", "See the platform in action", "Schedule a personalized walkthrough."),
-            ("newsletter", "", "Stay ahead with product insights", "Monthly updates on features and best practices."),
+            ("cta", "", CTA["title"], CTA["subtitle"]),
+            ("trust_signals", "Why teams trust Zreta", "Built for real operations", "Payments, security, and support you can verify on this site."),
+            ("request_demo", REQUEST_DEMO["eyebrow"], REQUEST_DEMO["title"], REQUEST_DEMO["subtitle"]),
+            ("newsletter", "", NEWSLETTER["title"], NEWSLETTER["subtitle"]),
         ]
 
         sections = {}
@@ -115,17 +119,19 @@ class Command(BaseCommand):
                 sort_order=i,
             )
 
-        for i, item in enumerate(PARTNER_LOGOS):
+        for i, item in enumerate(TRUST_SIGNALS):
             SectionItem.objects.create(
-                section=sections["partner_logos"],
-                title=item["name"],
+                section=sections["trust_signals"],
+                title=item["title"],
+                description=item["description"],
+                icon=item["icon"],
                 sort_order=i,
             )
 
         demo_benefits = [
             ("30-minute tailored demo", "check-circle"),
-            ("Q&A with product experts", "check-circle"),
-            ("Custom pricing proposal", "check-circle"),
+            ("Q&A with product specialists", "check-circle"),
+            ("GHS pricing overview", "check-circle"),
             ("No commitment required", "check-circle"),
         ]
         for i, (title, icon) in enumerate(demo_benefits):
@@ -135,29 +141,6 @@ class Command(BaseCommand):
                 icon=icon,
                 sort_order=i,
             )
-
-        for i, item in enumerate(TESTIMONIALS):
-            Testimonial.objects.create(
-                quote=item["quote"],
-                author_name=item["name"],
-                author_role=item["role"],
-                company=item["company"],
-                initials=item["initials"],
-                show_on_home=True,
-                is_published=True,
-                sort_order=i,
-            )
-
-        NewsArticle.objects.create(
-            title="Enterprise Platform expands to 18 countries",
-            slug="enterprise-platform-expands-18-countries",
-            category="Company News",
-            excerpt="Our global footprint continues to grow with new regional data centers and local support teams.",
-            body="Enterprise Platform expands operations across Africa, Europe, and Asia-Pacific.",
-            is_featured=True,
-            is_published=True,
-            published_at=now,
-        )
 
         about_hero = HeroBanner.objects.create(
             name="About Hero",

@@ -82,7 +82,7 @@ class Command(BaseCommand):
                 "short_description": "End-to-end loan lifecycle, savings, collections, and regulatory reporting built for scale.",
                 "long_description": "Microfinance Core delivers a complete banking platform for MFIs, SACCOs, and cooperatives with loan origination, disbursement, collections, and compliance reporting.",
                 "status": ProductStatus.GA,
-                "is_featured": True,
+                "is_featured": False,
                 "sort_order": 2,
                 "modules": ["Clients", "Loans", "Savings", "Reporting"],
                 "features": [
@@ -105,7 +105,7 @@ class Command(BaseCommand):
                 "short_description": "Finance, inventory, procurement, and CRM integrated in one modular ERP platform.",
                 "long_description": "ERP Suite connects finance, supply chain, procurement, and customer management into a single source of truth for operational excellence.",
                 "status": ProductStatus.GA,
-                "is_featured": True,
+                "is_featured": False,
                 "sort_order": 3,
                 "modules": ["Finance", "Inventory", "Procurement", "CRM"],
                 "features": [
@@ -128,7 +128,7 @@ class Command(BaseCommand):
                 "short_description": "Admissions, academics, fees, attendance, and parent engagement — streamlined.",
                 "long_description": "School Management simplifies academic and administrative workflows for K-12 and higher-ed institutions with integrated admissions, grading, and fee collection.",
                 "status": ProductStatus.GA,
-                "is_featured": True,
+                "is_featured": False,
                 "sort_order": 4,
                 "modules": ["Admissions", "Academics", "Fees", "Parent Portal"],
                 "features": [
@@ -151,7 +151,7 @@ class Command(BaseCommand):
                 "short_description": "Appointments, billing, pharmacy, lab, and patient records in a compliant platform.",
                 "long_description": "Hospital Management streamlines clinical and administrative workflows for hospitals and clinics with EMR-lite, billing, pharmacy, and lab integrations.",
                 "status": ProductStatus.GA,
-                "is_featured": True,
+                "is_featured": False,
                 "sort_order": 5,
                 "modules": ["Appointments", "Billing", "Pharmacy", "Laboratory"],
                 "features": [
@@ -174,7 +174,7 @@ class Command(BaseCommand):
                 "short_description": "Employee records, payroll processing, leave, recruitment, and performance in one system.",
                 "long_description": "HR & Payroll automates people operations from hire to retire with compliant payroll, leave management, and performance reviews.",
                 "status": ProductStatus.GA,
-                "is_featured": True,
+                "is_featured": False,
                 "sort_order": 6,
                 "modules": ["Employee Records", "Payroll", "Leave", "Recruitment"],
                 "features": [

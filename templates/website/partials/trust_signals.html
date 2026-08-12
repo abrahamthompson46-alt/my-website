@@ -1,0 +1,17 @@
+<section class="section section--alt home-trust" aria-labelledby="trust-heading">
+    <div class="container">
+        {% include "cms/partials/section_header.html" with section=trust_signals_section eyebrow="Why teams trust Zreta" title="Built for real operations" subtitle="Payments, security, and support you can verify on this site." %}
+
+        <div class="grid grid--4 home-trust__grid">
+            {% for signal in trust_signals %}
+            <article class="home-trust__card">
+                <span class="home-trust__icon" aria-hidden="true">
+                    <svg class="icon icon--lg" data-icon="{{ signal.icon|default:'check-circle' }}"></svg>
+                </span>
+                <h3 class="home-trust__title">{{ signal.title }}</h3>
+                <p class="home-trust__text">{{ signal.description }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>

@@ -1,24 +1,12 @@
 <section class="home-stats" aria-label="Platform statistics">
-
     <div class="container">
-
         <div class="home-stats__grid">
-
             {% for stat in statistics %}
-
             <div class="home-stats__item">
-
-                <p class="home-stats__value tabular-nums">{% if stat.value %}{{ stat.value }}{% else %}{{ stat.value }}{% endif %}</p>
-
+                <p class="home-stats__value tabular-nums">{{ stat.value }}</p>
                 <p class="home-stats__label">{% if stat.label %}{{ stat.label }}{% else %}{{ stat.title }}{% endif %}</p>
-
             </div>
-
             {% endfor %}
-
         </div>
-
     </div>
-
 </section>
-

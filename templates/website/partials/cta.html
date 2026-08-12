@@ -1,50 +1,22 @@
 {% load ui_tags %}
 
 <section class="section home-cta" aria-labelledby="cta-heading">
-
     <div class="container">
-
         <div class="home-cta__panel">
-
             <div class="home-cta__content">
-
-                {% if cta_section.title %}
-
-                <h2 id="cta-heading" class="home-cta__title">{{ cta_section.title }}</h2>
-
-                {% else %}
-
-                <h2 id="cta-heading" class="home-cta__title">Ready to transform your organization?</h2>
-
-                {% endif %}
-
-                {% if cta_section.subtitle %}
-
-                <p class="home-cta__text">{{ cta_section.subtitle }}</p>
-
-                {% elif cta_section.body %}
-
-                <p class="home-cta__text">{{ cta_section.body }}</p>
-
-                {% else %}
-
-                <p class="home-cta__text">Join 2,500+ organizations running on our enterprise platform. Start your free trial today — no credit card required.</p>
-
-                {% endif %}
-
+                <h2 id="cta-heading" class="home-cta__title">
+                    {% if cta_section.title %}{{ cta_section.title }}{% else %}Ready to modernize your operations?{% endif %}
+                </h2>
+                <p class="home-cta__text">
+                    {% if cta_section.subtitle %}{{ cta_section.subtitle }}
+                    {% elif cta_section.body %}{{ cta_section.body }}
+                    {% else %}Start a free trial or book a demo — no credit card required for trials.{% endif %}
+                </p>
             </div>
-
             <div class="home-cta__actions cluster">
-
-                {% ui_button label="Start Free Trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
-
-                {% ui_button label="Talk to Sales" url_name="contact:demo" variant="secondary" size="lg" type="link" %}
-
+                {% ui_button label="Start ChurchHub trial" url_name="contact:trial" variant="primary" size="lg" type="link" %}
+                <a href="#request-demo" class="btn btn--secondary btn--lg">Request a demo</a>
             </div>
-
         </div>
-
     </div>
-
 </section>
-

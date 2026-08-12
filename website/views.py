@@ -13,6 +13,7 @@ from core.seo.mixins import SEOContextMixin
 from marketing.forms import NewsletterSubscribeForm
 from products.models import Product, ProductDemoRequest
 from website.forms import DemoRequestForm
+from website.services.homepage import get_homepage_featured_products
 
 
 class LegalPageMixin(SEOContextMixin, TemplateView):
@@ -115,11 +116,7 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(build_home_context())
-        context["featured_products"] = (
-            Product.objects.filter(is_featured=True, is_published=True)
-            .prefetch_related("features")
-            .order_by("sort_order")
-        )
+        context["featured_products"] = get_homepage_featured_products()
         context.setdefault("demo_form", DemoRequestForm())
         context.setdefault("newsletter_form", NewsletterSubscribeForm())
         context["seo_meta"] = home_seo(self.request)

@@ -1,9 +1,9 @@
 {% extends "base_public.html" %}
 {% load static %}
 
-{% block title %}{{ SITE_NAME }} — Enterprise Software for Every Industry{% endblock %}
+{% block title %}{{ SITE_NAME }} — ChurchHub & modular enterprise software{% endblock %}
 
-{% block meta_description %}Modular SaaS platform powering churches, hospitals, schools, microfinance institutions, and enterprises worldwide. ChurchHub, ERP Suite, School Management, and more.{% endblock %}
+{% block meta_description %}ChurchHub for faith communities — members, giving, events, and communications. Built on Zreta with GHS pricing, Mobile Money, and enterprise security.{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/pages/home.css' %}">
@@ -12,14 +12,18 @@
 {% block content %}
     {% include "website/partials/hero.html" %}
     {% include "website/partials/featured_products.html" %}
+    {% include "website/partials/statistics.html" %}
     {% include "website/partials/why_choose_us.html" %}
     {% include "website/partials/industries.html" %}
-    {% include "website/partials/testimonials.html" %}
-    {% include "website/partials/latest_news.html" %}
-    {% include "website/partials/statistics.html" %}
-    {% include "website/partials/cta.html" %}
-    {% include "website/partials/partner_logos.html" %}
     {% include "website/partials/request_demo.html" %}
+    {% include "website/partials/trust_signals.html" %}
+    {% if show_testimonials %}
+        {% include "website/partials/testimonials.html" %}
+    {% endif %}
+    {% if show_latest_news %}
+        {% include "website/partials/latest_news.html" %}
+    {% endif %}
+    {% include "website/partials/cta.html" %}
     {% include "website/partials/newsletter.html" %}
 {% endblock %}
 
