@@ -12,7 +12,7 @@ def format_cedi(value, decimals=0):
     try:
         amount = Decimal(str(value or 0))
     except (InvalidOperation, TypeError, ValueError):
-        return "GH₵0"
+        return "GH\u20b50"
 
     quant = Decimal("1") if int(decimals) == 0 else Decimal(f"1.{'0' * int(decimals)}")
     amount = amount.quantize(quant)
@@ -20,4 +20,4 @@ def format_cedi(value, decimals=0):
         display = intcomma(int(amount))
     else:
         display = intcomma(f"{amount:.{int(decimals)}f}")
-    return f"GH₵{display}"
+    return f"GH\u20b5{display}"

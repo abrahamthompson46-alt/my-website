@@ -9,8 +9,8 @@ class FormatCediFilterTests(SimpleTestCase):
         rendered = Template("{% load common_tags %}{{ value|format_cedi:0 }}").render(
             Context({"value": Decimal("12500")})
         )
-        self.assertEqual(rendered, "GH₵12,500")
+        self.assertEqual(rendered, "GH\u20b512,500")
 
     def test_formats_zero(self):
         rendered = Template("{% load common_tags %}{{ value|format_cedi:0 }}").render(Context({"value": 0}))
-        self.assertEqual(rendered, "GH₵0")
+        self.assertEqual(rendered, "GH\u20b50")

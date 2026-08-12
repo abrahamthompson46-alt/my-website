@@ -1,11 +1,11 @@
 {% extends "base_ops.html" %}
-{% load ui_tags humanize %}
+{% load ui_tags humanize common_tags %}
 
 {% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 {% block content %}
 {% include "operations/partials/page_header.html" with title="Payments" subtitle="Gateway transactions and manual payment queue." %}
 <div class="ops-cards">
-    <div class="ops-mini-card"><p class="ops-mini-card__label">Total revenue</p><p class="ops-mini-card__value">${{ revenue_total|default:0|floatformat:0|intcomma }}</p></div>
+    <div class="ops-mini-card"><p class="ops-mini-card__label">Total revenue</p><p class="ops-mini-card__value">{{ revenue_total|default:0|format_cedi:0 }}</p></div>
     <div class="ops-mini-card"><p class="ops-mini-card__label">Pending</p><p class="ops-mini-card__value">{{ pending_count }}</p></div>
     <div class="ops-mini-card"><p class="ops-mini-card__label">Refunds</p><p class="ops-mini-card__value">{{ refund_count }}</p></div>
 </div>

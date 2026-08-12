@@ -1,5 +1,5 @@
 {% extends "base_ops.html" %}
-{% load ui_tags humanize %}
+{% load ui_tags humanize common_tags %}
 
 {% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 
@@ -9,8 +9,8 @@
 <div class="ops-stats ops-stats--6">
     <div class="ops-stat ops-stat--primary">
         <p class="ops-stat__label">Revenue (30d)</p>
-        <p class="ops-stat__value">${{ stats.revenue_30d|floatformat:0|intcomma }}</p>
-        <p class="ops-stat__meta">${{ stats.revenue_7d|floatformat:0|intcomma }} last 7 days</p>
+        <p class="ops-stat__value">{{ stats.revenue_30d|format_cedi:0 }}</p>
+        <p class="ops-stat__meta">{{ stats.revenue_7d|format_cedi:0 }} last 7 days</p>
     </div>
     <div class="ops-stat">
         <p class="ops-stat__label">Customers</p>
@@ -44,7 +44,7 @@
         <div class="ops-panel__body">
             <div class="ops-chart">
                 {% for row in revenue_chart %}
-                <div class="ops-chart__bar-wrap" title="{{ row.day }}: ${{ row.total|default:0 }}">
+                <div class="ops-chart__bar-wrap" title="{{ row.day }}: {{ row.total|default:0|format_cedi:0 }}">
                     <div class="ops-chart__bar" style="height: {% widthratio row.total|default:0 stats.revenue_30d|default:1 100 %}%; min-height: 4px;"></div>
                     <span class="ops-chart__label">{{ row.day|date:"d" }}</span>
                 </div>

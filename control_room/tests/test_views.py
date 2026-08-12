@@ -47,6 +47,13 @@ class ControlRoomViewTests(TestCase):
                 continue
             self._assert_staff_page_ok(item["url_name"])
 
+    def test_dashboard_shows_cedi_revenue(self):
+        response = self.client.get(reverse("control_room:dashboard"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Revenue (30d)")
+        self.assertContains(response, "GH\u20b50")
+        self.assertNotContains(response, "$0")
+
     def test_product_detail_loads(self):
         self._assert_staff_page_ok("control_room:product_detail", {"pk": self.product.pk})
 

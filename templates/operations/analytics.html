@@ -1,5 +1,5 @@
 {% extends "base_ops.html" %}
-{% load ui_tags %}
+{% load ui_tags common_tags %}
 
 {% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 
@@ -9,7 +9,7 @@
 <div class="ops-stats ops-stats--6">
     <div class="ops-stat ops-stat--primary">
         <p class="ops-stat__label">Revenue (30d)</p>
-        <p class="ops-stat__value">${{ stats.revenue_30d|floatformat:0 }}</p>
+        <p class="ops-stat__value">{{ stats.revenue_30d|format_cedi:0 }}</p>
     </div>
     <div class="ops-stat"><p class="ops-stat__label">Customers</p><p class="ops-stat__value">{{ stats.customers }}</p></div>
     <div class="ops-stat"><p class="ops-stat__label">Subscriptions</p><p class="ops-stat__value">{{ stats.active_subscriptions }}</p></div>
