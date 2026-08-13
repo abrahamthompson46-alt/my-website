@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Zreta backup timer
+Documentation=file:/var/www/marketing-site/docs/ZRETA_BACKUP_POLICY.md
+
+[Timer]
+OnCalendar=*-*-* 02:30:00
+Persistent=true
+RandomizedDelaySec=900
+
+[Install]
+WantedBy=timers.target

@@ -45,6 +45,12 @@ htmlcov/
 .pytest_cache/
 .mypy_cache/
 
+# Backup artifacts (never commit)
+/var/backups/
+backups/
+*.pgdump
+backup-manifest-*.json
+
 # Node (frontend)
 node_modules/
 .env.save

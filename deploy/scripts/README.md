@@ -36,6 +36,20 @@ sudo bash deploy/scripts/phase3-cutover-zreta-marketing.sh
 | `setup-nginx-zreta.sh` | Greenfield nginx only (blocks if :8000 exists) |
 | `generate-secret-key.sh` | Print Django secret key |
 
+## Backup & disaster recovery (Phase 1A.2)
+
+| Script | Description |
+|--------|-------------|
+| `backup-database.sh` | PostgreSQL `pg_dump` (custom format) |
+| `backup-media.sh` | Tar.gz of `media/` |
+| `backup-all.sh` | Database + media + verify + prune |
+| `verify-backup.sh` | Checksum + `pg_restore --list` / tar test |
+| `restore-database.sh` | Restore to disposable or production DB |
+| `prune-backups.sh` | Retention cleanup |
+| `test-restore-drill.sh` | Non-production restore validation |
+
+Policy: [docs/ZRETA_BACKUP_POLICY.md](../../docs/ZRETA_BACKUP_POLICY.md)
+
 ## Nginx configs (`deploy/nginx/`)
 
 | File | Purpose |
