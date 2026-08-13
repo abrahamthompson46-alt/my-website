@@ -21,6 +21,7 @@ from core.backup.postgres_restore import (
     read_repo_file,
     restore_script_uses_app_user_for_pg_restore,
     restore_script_uses_local_peer_admin,
+    restore_scripts_validate_custom_user_table,
 )
 
 
@@ -162,3 +163,10 @@ class PostgresRestoreAuthTests(SimpleTestCase):
         text = read_repo_file("deploy/scripts/test-restore-drill.sh")
         self.assertTrue(drill_script_uses_local_admin_for_cleanup(text))
         self.assertIn("unset RESTORE_ALLOW_PRODUCTION", text)
+
+    def test_restore_scripts_validate_accounts_user_not_auth_user(self):
+        restore_text = read_repo_file("deploy/scripts/restore-database.sh")
+        drill_text = read_repo_file("deploy/scripts/test-restore-drill.sh")
+        self.assertTrue(restore_scripts_validate_custom_user_table(restore_text, drill_text))
+        self.assertNotIn("auth_user", restore_text)
+        self.assertNotIn("auth_user", drill_text)

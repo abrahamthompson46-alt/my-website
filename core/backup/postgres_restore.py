@@ -35,6 +35,13 @@ REQUIRED_APP_RESTORE_FLAGS = (
     "--exit-on-error",
 )
 
+# Django AUTH_USER_MODEL=accounts.User → table public.accounts_user (not auth_user).
+CUSTOM_USER_TABLE = "public.accounts_user"
+FORBIDDEN_USER_TABLE_REFERENCES = (
+    "FROM auth_user",
+    "from auth_user",
+)
+
 
 def read_repo_file(relative_path: str) -> str:
     return Path(relative_path).read_text(encoding="utf-8")
@@ -61,3 +68,11 @@ def drill_script_uses_local_admin_for_cleanup(script_text: str) -> bool:
     if "PSQL_ADMIN_USER" in script_text:
         return False
     return "pg_admin_drop_database" in script_text
+
+
+def restore_scripts_validate_custom_user_table(*script_texts: str) -> bool:
+    """Post-restore smoke queries must count rows from public.accounts_user."""
+    combined = "\n".join(script_texts)
+    if any(ref in combined for ref in FORBIDDEN_USER_TABLE_REFERENCES):
+        return False
+    return CUSTOM_USER_TABLE in combined

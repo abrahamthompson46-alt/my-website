@@ -81,7 +81,7 @@ pg_restore \
     "$DUMP_FILE"
 
 psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$RESTORE_TARGET_DB" -v ON_ERROR_STOP=1 \
-    -c "SELECT current_database() AS restored_db, COUNT(*) AS auth_user_rows FROM auth_user;" >/dev/null
+    -c "SELECT current_database() AS restored_db, COUNT(*) AS users FROM public.accounts_user;" >/dev/null
 
 log_backup_event INFO "Restore complete into $RESTORE_TARGET_DB"
 unset PGPASSWORD

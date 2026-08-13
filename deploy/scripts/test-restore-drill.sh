@@ -61,7 +61,7 @@ bash "$SCRIPT_DIR/restore-database.sh" "$BACKUP_DIR"
 psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DRILL_DB" -v ON_ERROR_STOP=1 <<'SQL'
 SELECT current_database() AS db;
 SELECT COUNT(*) AS django_migrations FROM django_migrations;
-SELECT COUNT(*) AS users FROM auth_user;
+SELECT COUNT(*) AS users FROM public.accounts_user;
 SQL
 
 log_backup_event INFO "DR drill validation queries OK"
