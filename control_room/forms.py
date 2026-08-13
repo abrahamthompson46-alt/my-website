@@ -384,16 +384,3 @@ class PlatformEmailSettingsForm(BaseModelForm):
         if commit:
             instance.save()
         return instance
-
-
-class PlatformDeploySettingsForm(forms.ModelForm):
-    confirm_deploy = forms.BooleanField(
-        required=False,
-        label="I understand this will pull code from GitHub and run migrate/collectstatic on the server.",
-    )
-
-    class Meta:
-        from control_room.models import PlatformOperationsSettings
-
-        model = PlatformOperationsSettings
-        fields = ["git_remote", "git_branch"]

@@ -4,7 +4,7 @@
 {% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 
 {% block content %}
-{% include "control_room/partials/page_header.html" with title="Platform Ops" subtitle="Configure outbound email and pull the latest code from GitHub. Platform owner access only." %}
+{% include "control_room/partials/page_header.html" with title="Platform Ops" subtitle="Configure outbound email. Platform owner access only." %}
 
 <div class="ops-grid ops-grid--2">
     <section class="ops-panel">
@@ -81,34 +81,26 @@
     </section>
 
     <section class="ops-panel ops-panel--full">
-        <div class="ops-panel__header"><h2 class="ops-panel__title">GitHub updates</h2></div>
+        <div class="ops-panel__header"><h2 class="ops-panel__title">Deployment</h2></div>
         <div class="ops-panel__body">
-            <p class="control-form__hint">
-                Pull the latest code from GitHub, run migrations, and collect static files on this server.
-                You still need to restart Gunicorn afterward: <code>sudo systemctl restart marketing-site</code>
-            </p>
+            <div class="control-alert control-alert--info">
+                <p><strong>Web-triggered deployment is disabled.</strong></p>
+                <p>
+                    Code updates must be deployed through the controlled VPS procedure
+                    (<code>docs/ZRETA_DEPLOYMENT_PROCEDURE.md</code>).
+                    The Django application does not run <code>git pull</code>, migrations, or service restarts from HTTP requests.
+                </p>
+            </div>
             {% if ops_settings.last_deploy_at %}
             <p class="control-form__hint">
-                Last deploy: {{ ops_settings.last_deploy_at|date:"M j, Y g:i A" }}
+                Last recorded deploy (historical): {{ ops_settings.last_deploy_at|date:"M j, Y g:i A" }}
                 {% if ops_settings.last_deploy_commit %} · commit <code>{{ ops_settings.last_deploy_commit }}</code>{% endif %}
                 · {% if ops_settings.last_deploy_status == "success" %}<span class="control-badge control-badge--success">Success</span>{% else %}<span class="control-badge">Failed</span>{% endif %}
             </p>
             {% endif %}
-            <form method="post" class="control-form">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="deploy">
-                <div class="control-form__grid">
-                    {% ui_field field=deploy_form.git_remote %}
-                    {% ui_field field=deploy_form.git_branch %}
-                    {% ui_field field=deploy_form.confirm_deploy extra_class="form-field--full" %}
-                </div>
-                <div class="control-form__actions">
-                    {% ui_button label="Pull latest from GitHub" type="submit" variant="primary" %}
-                </div>
-            </form>
             {% if ops_settings.last_deploy_output %}
             <details class="control-log-details">
-                <summary>Last deploy log</summary>
+                <summary>Historical deploy log</summary>
                 <pre class="control-log">{{ ops_settings.last_deploy_output }}</pre>
             </details>
             {% endif %}

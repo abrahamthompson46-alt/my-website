@@ -1,4 +1,4 @@
-"""Platform owner tools — email setup and GitHub deploy."""
+"""Platform owner tools — email setup and operational settings."""
 
 from django.contrib import messages
 from django.conf import settings
@@ -7,11 +7,10 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from control_room.forms import PlatformDeploySettingsForm, PlatformEmailSettingsForm
+from control_room.forms import PlatformEmailSettingsForm
 from control_room.mixins import PlatformOwnerMixin
 from control_room.models import PlatformOperationsSettings
 from control_room.services import log_control_change
-from control_room.services.deploy import DeployError, run_github_update
 from control_room.services.email_delivery import (
     EmailConfigurationError,
     get_email_status_summary,
@@ -35,7 +34,6 @@ class PlatformOpsView(PlatformOwnerMixin, TemplateView):
         ]
         context["ops_settings"] = ops
         context["email_form"] = kwargs.get("email_form", PlatformEmailSettingsForm(instance=ops))
-        context["deploy_form"] = kwargs.get("deploy_form", PlatformDeploySettingsForm(instance=ops))
         context["email_status"] = get_email_status_summary()
         context["env_email_backend"] = self.request.environ.get("EMAIL_BACKEND", "")
         return context
@@ -91,47 +89,16 @@ class PlatformOpsView(PlatformOwnerMixin, TemplateView):
             return redirect("control_room:platform_ops")
 
         if action == "deploy":
-            form = PlatformDeploySettingsForm(request.POST, instance=ops)
-            if not form.is_valid():
-                return self.render_to_response(self.get_context_data(deploy_form=form))
-            if not form.cleaned_data.get("confirm_deploy"):
-                form.add_error("confirm_deploy", "Confirm before pulling updates from GitHub.")
-                return self.render_to_response(self.get_context_data(deploy_form=form))
-
-            ops = form.save()
-            try:
-                result = run_github_update(remote=ops.git_remote, branch=ops.git_branch)
-            except DeployError as exc:
-                ops.last_deploy_at = timezone.now()
-                ops.last_deploy_status = "failed"
-                ops.last_deploy_output = str(exc)
-                ops.save(update_fields=["last_deploy_at", "last_deploy_status", "last_deploy_output", "updated_at"])
-                messages.error(request, f"Deploy failed: {exc}")
-                return redirect("control_room:platform_ops")
-
-            ops.last_deploy_at = result["finished_at"]
-            ops.last_deploy_status = result["status"]
-            ops.last_deploy_output = result["output"]
-            ops.last_deploy_commit = result["commit_after"]
-            ops.save(
-                update_fields=[
-                    "last_deploy_at",
-                    "last_deploy_status",
-                    "last_deploy_output",
-                    "last_deploy_commit",
-                    "updated_at",
-                ]
-            )
             log_control_change(
                 request.user,
                 area="platform_ops",
-                action="deploy",
-                summary=f"Pulled GitHub updates ({result['commit_before']} → {result['commit_after']})",
+                action="deploy_blocked",
+                summary="Web-triggered deployment is disabled; use VPS deployment procedure",
             )
-            messages.success(
+            messages.error(
                 request,
-                f"Updated from GitHub ({result['commit_before']} → {result['commit_after']}). "
-                "Restart the app server to load new code.",
+                "Web-triggered deployment has been disabled for security. "
+                "Use the controlled VPS procedure documented in docs/ZRETA_DEPLOYMENT_PROCEDURE.md.",
             )
             return redirect("control_room:platform_ops")
 

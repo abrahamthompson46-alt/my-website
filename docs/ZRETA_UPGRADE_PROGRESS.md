@@ -1,8 +1,17 @@
 # Zreta Platform — Upgrade Progress Tracker
 
-**Last updated:** 2026-08-13 (Phase 0 final verification complete)
+**Last updated:** 2026-08-13 (Phase 1A.1 verified)
 
 Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
+
+---
+
+## Phase 1A — Deployment security (Phase 1 subset)
+
+| ID | Task | Status | Notes |
+|----|------|--------|-------|
+| P1A-01 | Remove web-triggered git deploy (SEC-003) | VERIFIED | `deploy.py` removed; nginx private-media rules aligned |
+| P1A-02 | Document controlled VPS deployment procedure | VERIFIED | `docs/ZRETA_DEPLOYMENT_PROCEDURE.md` |
 
 ---
 
@@ -30,7 +39,7 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 | P1-02 | Private media / signed URLs | PARTIALLY IMPLEMENTED | Phase 0 (local FS + auth views); S3 signed URLs Phase 1+ |
 | P1-03 | Payment audit events | NOT STARTED |
 | P1-04 | Universal POST rate limiting | NOT STARTED |
-| P1-05 | CI/CD deploy (remove web git pull) | NOT STARTED |
+| P1-05 | CI/CD deploy (remove web git pull) | VERIFIED | Phase 1A.1 — web deploy removed; full CI/CD optional Phase 1+ |
 | P1-06 | Automated DB + media backups | NOT STARTED |
 | P1-07 | PostgreSQL SSL + statement_timeout | NOT STARTED |
 | P1-08 | CSP tightening (remove unsafe-inline) | NOT STARTED |
@@ -78,3 +87,5 @@ All items: **NOT STARTED**
 | 2026-08-13 | Initial audit completed |
 | 2026-08-13 | Phase 0 security fixes implemented (95 tests) |
 | 2026-08-13 | Phase 0 final corrections: migration 0002, view-level checkout tests, docs (98 tests) |
+| 2026-08-13 | Phase 1A.1 started: web deploy removed, deployment procedure documented |
+| 2026-08-13 | Phase 1A.1 verified: nginx private-media deny rules in zreta.com.conf (102 tests) |

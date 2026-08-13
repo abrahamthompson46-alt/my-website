@@ -335,12 +335,11 @@ PAGE_HELP: dict[str, dict] = {
     },
     "platform_ops": {
         "title": "Platform Ops guide",
-        "intro": "Owner-only tools for outbound email and pulling GitHub updates on the server.",
+        "intro": "Owner-only tools for outbound email configuration.",
         "steps": [
             "Enable custom SMTP and enter host, port, username, password, and from address.",
             "Send a test email to yourself before inviting staff.",
-            "Use Pull latest from GitHub to run git pull, migrate, and collectstatic.",
-            "Restart Gunicorn after deploy: sudo systemctl restart marketing-site",
+            "Deploy code updates using the VPS procedure in docs/ZRETA_DEPLOYMENT_PROCEDURE.md (not from this web UI).",
         ],
         "tips": [
             "Grant manage_platform_operations permission to another role if a non-owner should access this page.",
@@ -348,7 +347,7 @@ PAGE_HELP: dict[str, dict] = {
         ],
         "mistakes": [
             "Using file-based email backend without EMAIL_FILE_PATH in .env.",
-            "Expecting Gunicorn to restart automatically — that still requires sudo on the VPS.",
+            "Attempting to deploy from the browser — web-triggered git pull has been removed for security.",
         ],
     },
     "team_user": {
