@@ -20,7 +20,7 @@ WHY_CHOOSE_US = [
     {
         "icon": "layers",
         "title": "Modular by design",
-        "description": "Start with ChurchHub today and add more products as your organization grows.",
+        "description": "Zreta ships focused products for different sectors — start with ChurchHub today as more solutions roll out.",
     },
     {
         "icon": "globe",
@@ -97,17 +97,19 @@ TRUST_STRIP = [
 ]
 
 HERO = {
-    "eyebrow": "ChurchHub by Zreta",
-    "headline": "Modern software for faith communities and growing organizations",
-    "headline_line1": "Modern software for",
-    "headline_line2": "faith communities",
+    "eyebrow": "Zreta · Enterprise software company",
+    "headline": "Enterprise software for organizations that need to scale",
+    "headline_line1": "Enterprise software for",
+    "headline_line2": "organizations that scale",
     "subheadline": (
-        "ChurchHub is live today — members, giving, events, and communications in one place. "
-        "More modular products are rolling out on the same secure Zreta platform."
+        "Zreta builds modular software products for growing organizations. "
+        "ChurchHub — our first live product — helps faith communities manage members, giving, "
+        "and events. Additional products for financial services, ERP, and business operations "
+        "are in development."
     ),
     "trust_text": "14-day free trial · GHS pricing · Mobile Money payments · Published security pages",
-    "product_pills": ["ChurchHub", "Member directory", "Online giving", "Events"],
-    "cta_primary_label": "Start ChurchHub trial",
+    "product_pills": ["ChurchHub — live today", "Financial services", "ERP & operations", "Modular roadmap"],
+    "cta_primary_label": "Explore ChurchHub",
     "cta_secondary_label": "Request a demo",
 }
 
@@ -118,8 +120,11 @@ CTA = {
 
 REQUEST_DEMO = {
     "eyebrow": "Request a Demo",
-    "title": "See ChurchHub in action",
-    "subtitle": "Schedule a walkthrough with our team. We'll show you members, giving, events, and how Zreta fits your organization.",
+    "title": "See Zreta products in action",
+    "subtitle": (
+        "Schedule a walkthrough with our team. We'll demo ChurchHub — our live product — "
+        "and explain how upcoming Zreta solutions fit your organization."
+    ),
 }
 
 NEWSLETTER = {

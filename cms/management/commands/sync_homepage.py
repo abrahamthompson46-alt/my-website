@@ -51,10 +51,11 @@ class Command(BaseCommand):
             hero.is_active = True
             hero.save()
 
-        page.meta_title = "ChurchHub & modular enterprise software"
+        page.meta_title = "Zreta — Enterprise software company"
         page.meta_description = (
-            "ChurchHub for faith communities — members, giving, events, and communications. "
-            "Built on Zreta with GHS pricing, Mobile Money, and enterprise security."
+            "Zreta builds modular enterprise software. ChurchHub is live today for faith communities. "
+            "Financial services, ERP, and business products are in development. "
+            "GHS pricing, Mobile Money, and enterprise security."
         )
         page.save(update_fields=["meta_title", "meta_description", "updated_at"])
 

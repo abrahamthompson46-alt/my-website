@@ -14,6 +14,38 @@ fi
 
 cd "$APP_DIR"
 
+assert_canonical_deploy_allowed() {
+    local reasons=()
+    if [[ -d "$APP_DIR/venv" && ! -d "$APP_DIR/.venv" ]]; then
+        reasons+=("virtualenv at $APP_DIR/venv (production layout; canonical expects $APP_DIR/.venv)")
+    fi
+    if [[ -f /etc/systemd/system/marketing-site.service ]]; then
+        if grep -q '^User=churchhub' /etc/systemd/system/marketing-site.service 2>/dev/null; then
+            reasons+=("systemd unit User=churchhub (canonical expects User=marketing)")
+        fi
+        if grep -qE '127\.0\.0\.1:8001|--bind 127\.0\.0\.1:8001' /etc/systemd/system/marketing-site.service 2>/dev/null; then
+            reasons+=("systemd unit binds Gunicorn to 127.0.0.1:8001 (canonical expects unix:/run/zreta/gunicorn.sock)")
+        fi
+    fi
+    if ((${#reasons[@]} > 0)) && [[ "${DEPLOY_ALLOW_CANONICAL:-0}" != "1" ]]; then
+        echo "ERROR: Refusing canonical deploy-app.sh — production architecture not reconciled." >&2
+        echo "" >&2
+        echo "Detected:" >&2
+        local reason
+        for reason in "${reasons[@]}"; do
+            echo "  - $reason" >&2
+        done
+        echo "" >&2
+        echo "Production currently uses the churchhub/venv/8001 layout documented in" >&2
+        echo "docs/ZRETA_PRODUCTION_TRUTH.md. Reconcile production deliberately before" >&2
+        echo "running this script, or set DEPLOY_ALLOW_CANONICAL=1 only during a" >&2
+        echo "controlled migration window." >&2
+        exit 1
+    fi
+}
+
+assert_canonical_deploy_allowed
+
 echo "==> Installing Python dependencies..."
 sudo -u "$APP_USER" bash -c "
     test -d '$VENV' || python3 -m venv '$VENV'

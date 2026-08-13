@@ -1,4 +1,4 @@
-"""Homepage presentation rules — honest, ChurchHub-first, conversion-focused."""
+"""Homepage presentation rules — Zreta parent brand, ChurchHub as first live product."""
 
 from __future__ import annotations
 

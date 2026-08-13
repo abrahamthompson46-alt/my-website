@@ -82,6 +82,8 @@ class HomepageViewTests(TestCase):
         content = response.content.decode()
         self.assertNotIn("2,500", content)
         self.assertNotIn("Trusted by industry leaders", content)
+        self.assertNotIn("Modern software for faith communities", content)
+        self.assertIn("Zreta", content)
         self.assertIn("ChurchHub", content)
         self.assertIn("home-trust", content)
         self.assertIn("home-hero__trust-strip", content)

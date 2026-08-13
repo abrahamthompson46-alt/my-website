@@ -60,15 +60,16 @@ class Command(BaseCommand):
             hero=hero,
             is_published=True,
             published_at=now,
-            meta_title="ChurchHub & modular enterprise software",
+            meta_title="Zreta — Enterprise software company",
             meta_description=(
-                "ChurchHub for faith communities — members, giving, events, and communications. "
-                "Built on Zreta with GHS pricing, Mobile Money, and enterprise security."
+                "Zreta builds modular enterprise software. ChurchHub is live today for faith communities. "
+                "Financial services, ERP, and business products are in development. "
+                "GHS pricing, Mobile Money, and enterprise security."
             ),
         )
 
         section_defs = [
-            ("featured_products", "Live today", "Start with ChurchHub", "Our flagship product for faith communities — with more modular products rolling out on the same platform."),
+            ("featured_products", "Products", "Start with ChurchHub — live today", "Zreta is building a portfolio of modular products. ChurchHub is our first production release; additional solutions for financial services, ERP, and operations are in development."),
             ("why_choose_us", "Why Choose Us", "Built for enterprise reliability", "Security, modular design, and support you can verify on this site."),
             ("industries", "Industries", "Solutions for every sector", "Purpose-built products for your industry."),
             ("testimonials", "Testimonials", "What our customers say", "Verified customer stories appear here as they are published."),
