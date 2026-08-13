@@ -8,6 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$SCRIPT_DIR/lib/backup-common.sh"
 
 STATUS=0
+ensure_backup_layout
 
 run_step() {
     local label="$1"
