@@ -48,7 +48,7 @@ fi
 MANIFEST="$BACKUP_DIR/manifest.json"
 bash "$SCRIPT_DIR/verify-backup.sh" "$BACKUP_DIR"
 
-ARTIFACT_NAME="$(python - <<'PY' "$MANIFEST"
+ARTIFACT_NAME="$(python3 - <<'PY' "$MANIFEST"
 import json, sys
 print(json.load(open(sys.argv[1], encoding="utf-8"))["artifact"])
 PY

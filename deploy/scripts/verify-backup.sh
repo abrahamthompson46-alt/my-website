@@ -19,7 +19,7 @@ if [[ ! -f "$MANIFEST" ]]; then
     exit 1
 fi
 
-ARTIFACT_NAME="$(python - <<'PY' "$MANIFEST"
+ARTIFACT_NAME="$(python3 - <<'PY' "$MANIFEST"
 import json, sys
 print(json.load(open(sys.argv[1], encoding="utf-8"))["artifact"])
 PY
@@ -42,7 +42,7 @@ if [[ "$ARTIFACT_REAL" != "$BACKUP_DIR_REAL/"* ]]; then
     exit 1
 fi
 
-EXPECTED_SHA="$(python - <<'PY' "$MANIFEST"
+EXPECTED_SHA="$(python3 - <<'PY' "$MANIFEST"
 import json, sys
 print(json.load(open(sys.argv[1], encoding="utf-8"))["sha256"])
 PY
