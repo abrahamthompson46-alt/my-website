@@ -117,3 +117,55 @@ log_backup_event() {
     printf '%s [%s] %s\n' "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "$level" "$msg" | tee -a "$log_file"
     chmod 640 "$log_file" 2>/dev/null || true
 }
+
+# --- PostgreSQL restore: authentication split ---
+#
+# Admin DDL (terminate backends, drop/create database) runs as the local cluster
+# OS user (postgres) via Unix-domain peer authentication:
+#   sudo -u postgres psql|dropdb|createdb   (no -h, no -U, no PGPASSWORD)
+#
+# Restore and validation run as the application role (DB_USER) over TCP using
+# credentials from .env (PGPASSWORD / DB_PASSWORD). The marketing user must not
+# receive cluster-admin privileges.
+PG_LOCAL_ADMIN_OS_USER="${PG_LOCAL_ADMIN_OS_USER:-postgres}"
+
+pg_run_local_admin() {
+    # Prevent client tools from using the application password against the postgres role.
+    local saved_pgpassword="${PGPASSWORD:-}"
+    unset PGPASSWORD
+
+    local rc=0
+    if [[ "$(id -un)" == "$PG_LOCAL_ADMIN_OS_USER" ]]; then
+        "$@" || rc=$?
+    elif [[ "$(id -u)" -eq 0 ]] || command -v sudo >/dev/null 2>&1; then
+        require_command sudo
+        sudo -u "$PG_LOCAL_ADMIN_OS_USER" -- "$@" || rc=$?
+    else
+        echo "PostgreSQL admin operation requires root or the $PG_LOCAL_ADMIN_OS_USER OS user (peer auth)." >&2
+        echo "Run via: sudo bash deploy/scripts/test-restore-drill.sh" >&2
+        rc=1
+    fi
+
+    if [[ -n "$saved_pgpassword" ]]; then
+        export PGPASSWORD="$saved_pgpassword"
+    fi
+    return "$rc"
+}
+
+pg_admin_terminate_connections() {
+    local db_name="$1"
+    pg_run_local_admin psql -d postgres -v ON_ERROR_STOP=1 \
+        -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${db_name}' AND pid <> pg_backend_pid();" \
+        >/dev/null 2>&1 || true
+}
+
+pg_admin_drop_database() {
+    local db_name="$1"
+    pg_run_local_admin dropdb --if-exists "$db_name" >/dev/null 2>&1 || true
+}
+
+pg_admin_create_database() {
+    local db_name="$1"
+    local owner_user="$2"
+    pg_run_local_admin createdb -O "$owner_user" "$db_name"
+}

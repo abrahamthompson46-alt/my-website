@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # Restore a pg_dump custom-format backup into a target PostgreSQL database.
 #
+# Authentication split:
+#   - Admin DDL (terminate/drop/create DB): local postgres OS user + peer auth
+#     via pg_admin_* helpers in lib/backup-common.sh (no postgres role password).
+#   - pg_restore + validation: application DB_USER over TCP using DB_PASSWORD.
+#
 # Usage (disposable/test database):
 #   RESTORE_TARGET_DB=zreta_restore_test \
 #   bash deploy/scripts/restore-database.sh /var/backups/zreta/database/YYYYMMDD-HHMMSS
@@ -37,8 +42,6 @@ require_command createdb
 
 load_database_env
 
-PSQL_ADMIN_USER="${PSQL_ADMIN_USER:-postgres}"
-
 if is_production_db_name "$RESTORE_TARGET_DB" "$DB_NAME" && [[ "${RESTORE_ALLOW_PRODUCTION:-0}" != "1" ]]; then
     echo "Refusing to restore into production database '$DB_NAME'." >&2
     echo "Set RESTORE_ALLOW_PRODUCTION=1 only during a controlled disaster recovery." >&2
@@ -61,13 +64,12 @@ DUMP_FILE="$BACKUP_DIR/$ARTIFACT_NAME"
 
 log_backup_event INFO "Restoring $DUMP_FILE -> database $RESTORE_TARGET_DB"
 
-# Terminate connections and recreate target DB using PostgreSQL admin user.
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$PSQL_ADMIN_USER" -d postgres -v ON_ERROR_STOP=1 \
-    -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$RESTORE_TARGET_DB' AND pid <> pg_backend_pid();" \
-    >/dev/null 2>&1 || true
-dropdb -h "$DB_HOST" -p "$DB_PORT" -U "$PSQL_ADMIN_USER" "$RESTORE_TARGET_DB" >/dev/null 2>&1 || true
-createdb -h "$DB_HOST" -p "$DB_PORT" -U "$PSQL_ADMIN_USER" -O "$DB_USER" "$RESTORE_TARGET_DB"
+# Admin DDL: local postgres OS user + peer auth (see backup-common.sh).
+pg_admin_terminate_connections "$RESTORE_TARGET_DB"
+pg_admin_drop_database "$RESTORE_TARGET_DB"
+pg_admin_create_database "$RESTORE_TARGET_DB" "$DB_USER"
 
+# Restore + smoke query: application role over TCP (DB_PASSWORD from .env).
 pg_restore \
     --host="$DB_HOST" \
     --port="$DB_PORT" \

@@ -43,16 +43,13 @@ if is_production_db_name "$RESTORE_TARGET_DB" "$DB_NAME"; then
 fi
 
 DRILL_DB="$RESTORE_TARGET_DB"
-PSQL_ADMIN_USER="${PSQL_ADMIN_USER:-postgres}"
 
 cleanup_drill_db() {
     if [[ "${RESTORE_DRILL_KEEP_DB:-0}" == "1" || -z "${DRILL_DB:-}" ]]; then
         return 0
     fi
-    load_database_env
-    dropdb -h "$DB_HOST" -p "$DB_PORT" -U "$PSQL_ADMIN_USER" "$DRILL_DB" >/dev/null 2>&1 || true
+    pg_admin_drop_database "$DRILL_DB"
     log_backup_event INFO "DR drill dropped disposable database $DRILL_DB"
-    unset PGPASSWORD
 }
 
 trap cleanup_drill_db EXIT

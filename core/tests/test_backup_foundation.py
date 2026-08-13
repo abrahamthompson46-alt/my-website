@@ -15,6 +15,13 @@ from core.backup.manifest import (
     normalize_pg_identifier,
     verify_manifest_artifact,
 )
+from core.backup.postgres_restore import (
+    backup_common_defines_local_admin_helpers,
+    drill_script_uses_local_admin_for_cleanup,
+    read_repo_file,
+    restore_script_uses_app_user_for_pg_restore,
+    restore_script_uses_local_peer_admin,
+)
 
 
 class BackupPathSafetyTests(SimpleTestCase):
@@ -135,3 +142,23 @@ class BackupManifestTests(SimpleTestCase):
             ok, message = verify_manifest_artifact(manifest_path)
             self.assertFalse(ok)
             self.assertIn("unsafe", message.lower())
+
+
+class PostgresRestoreAuthTests(SimpleTestCase):
+    def test_backup_common_defines_local_peer_admin_helpers(self):
+        text = read_repo_file("deploy/scripts/lib/backup-common.sh")
+        self.assertTrue(backup_common_defines_local_admin_helpers(text))
+        self.assertIn("unset PGPASSWORD", text)
+        self.assertIn('sudo -u "$PG_LOCAL_ADMIN_OS_USER"', text)
+
+    def test_restore_database_uses_local_admin_for_ddl_and_app_user_for_restore(self):
+        text = read_repo_file("deploy/scripts/restore-database.sh")
+        self.assertTrue(restore_script_uses_local_peer_admin(text))
+        self.assertTrue(restore_script_uses_app_user_for_pg_restore(text))
+        self.assertIn("RESTORE_ALLOW_PRODUCTION", text)
+        self.assertIn('verify-backup.sh', text)
+
+    def test_drill_script_drops_disposable_db_via_local_admin(self):
+        text = read_repo_file("deploy/scripts/test-restore-drill.sh")
+        self.assertTrue(drill_script_uses_local_admin_for_cleanup(text))
+        self.assertIn("unset RESTORE_ALLOW_PRODUCTION", text)
