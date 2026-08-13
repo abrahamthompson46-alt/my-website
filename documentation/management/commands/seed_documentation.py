@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from documentation.models import DocAPIEndpoint, DocArticle, DocCategory, DocDownload, DocVideo
+from documentation.models import DocArticle, DocCategory, DocDownload, DocVideo
 from products.models import Product
 
 
@@ -30,15 +30,15 @@ class Command(BaseCommand):
         platform = DocCategory.objects.create(
             name="Platform",
             slug="platform",
-            description="Core platform concepts, architecture, and shared services.",
+            description="Core platform concepts for the Zreta marketing site, customer portal, and billing.",
             icon="layers",
             sort_order=1,
         )
-        api_cat = DocCategory.objects.create(
-            name="REST API",
-            slug="rest-api",
-            description="HTTP API endpoints for programmatic integration.",
-            icon="code",
+        roadmap = DocCategory.objects.create(
+            name="Roadmap",
+            slug="roadmap",
+            description="Planned integrations and future platform capabilities.",
+            icon="map",
             sort_order=2,
         )
 
@@ -54,9 +54,21 @@ class Command(BaseCommand):
             )
 
         getting_started = [
-            ("Welcome to the platform", "Overview of modules, deployment models, and key concepts.", "getting_started"),
-            ("Quick start guide", "Create your account, invite team members, and configure your first workspace.", "getting_started"),
-            ("Architecture overview", "Understand multi-tenant design, data isolation, and integration points.", "getting_started"),
+            (
+                "Welcome to Zreta",
+                "Overview of the public website, customer portal, subscriptions, and support.",
+                "getting_started",
+            ),
+            (
+                "Quick start guide",
+                "Create your account, verify email, start a trial, and access the customer portal.",
+                "getting_started",
+            ),
+            (
+                "Current platform scope",
+                "What is live today: marketing site, customer portal, subscription billing, and staff control room.",
+                "getting_started",
+            ),
         ]
         for i, (title, excerpt, atype) in enumerate(getting_started):
             DocArticle.objects.create(
@@ -65,7 +77,7 @@ class Command(BaseCommand):
                 slug=f"platform-{title.lower().replace(' ', '-')[:40]}",
                 article_type=atype,
                 excerpt=excerpt,
-                body=f"{excerpt}\n\nThis guide walks through the essential steps to get started with the enterprise platform.",
+                body=f"{excerpt}\n\nRefer to docs/ZRETA_SCOPE_TRUTH.md in the repository for the authoritative capability matrix.",
                 is_published=True,
                 is_featured=i == 0,
                 sort_order=i,
@@ -73,9 +85,9 @@ class Command(BaseCommand):
             )
 
         install_guides = [
-            ("System requirements", "Hardware, OS, and network prerequisites for on-premise and cloud deployments."),
-            ("Cloud deployment", "Deploy to AWS, Azure, or GCP using our infrastructure templates."),
-            ("On-premise installation", "Step-by-step installation for air-gapped and private data center environments."),
+            ("System requirements", "Supported browsers and recommended infrastructure for deploying this Django site."),
+            ("Production deployment", "Deploy with PostgreSQL, Redis, Gunicorn, and Nginx using the included deploy/ templates."),
+            ("Environment configuration", "Configure SMTP, payment gateways, and site URLs via environment variables."),
             ("Database setup", "Configure PostgreSQL, backups, and connection pooling."),
         ]
         for i, (title, body) in enumerate(install_guides):
@@ -94,8 +106,8 @@ class Command(BaseCommand):
         faqs = [
             ("How do I reset my password?", "Use the forgot password link on the login page or contact your administrator."),
             ("What browsers are supported?", "Latest versions of Chrome, Firefox, Safari, and Edge are fully supported."),
-            ("Is offline mode available?", "Selected modules support offline sync for field operations."),
-            ("How is data backed up?", "Automated daily backups with configurable retention and point-in-time recovery."),
+            ("Is there a public REST API today?", "Not yet. Programmatic integration is on the roadmap. See the Roadmap category."),
+            ("How is data backed up?", "Configure PostgreSQL and media backups as part of your production deployment."),
         ]
         for i, (question, answer) in enumerate(faqs):
             DocArticle.objects.create(
@@ -110,47 +122,58 @@ class Command(BaseCommand):
             )
 
         DocArticle.objects.create(
-            category=api_cat,
-            title="Authentication",
-            slug="api-authentication",
-            article_type="api",
-            excerpt="Authenticate API requests using bearer tokens and API keys.",
-            body="All API requests require a valid bearer token in the Authorization header.\n\nExample: Authorization: Bearer <token>",
+            category=roadmap,
+            title="REST API (planned)",
+            slug="roadmap-rest-api",
+            article_type="roadmap",
+            excerpt="A versioned HTTP API for integrations is planned but not implemented in the current codebase.",
+            body=(
+                "The current application is a Django monolith with server-rendered pages.\n\n"
+                "Future `/api/v1/` endpoints described in earlier drafts are roadmap items only."
+            ),
             is_published=True,
             is_featured=True,
             published_at=now,
         )
 
-        endpoints = [
-            ("List users", "GET", "/api/v1/users", "Returns a paginated list of users in the organization."),
-            ("Create user", "POST", "/api/v1/users", "Creates a new user account."),
-            ("Get subscription", "GET", "/api/v1/subscriptions/{id}", "Retrieves subscription details by ID."),
-            ("List invoices", "GET", "/api/v1/invoices", "Returns billing invoices for the authenticated account."),
-        ]
-        for i, (name, method, path, summary) in enumerate(endpoints):
-            DocAPIEndpoint.objects.create(
-                category=api_cat,
-                name=name,
-                method=method,
-                path=path,
-                summary=summary,
-                description=f"{summary} Refer to the authentication guide for required headers.",
-                request_example='curl -H "Authorization: Bearer $TOKEN" https://api.example.com' + path.replace("{id}", "123"),
-                response_example='{"data": [], "meta": {"page": 1, "total": 0}}',
-                sort_order=i,
-            )
+        DocArticle.objects.create(
+            category=roadmap,
+            title="Multi-tenant organization workspaces (planned)",
+            slug="roadmap-multi-tenancy",
+            article_type="roadmap",
+            excerpt="Organization-level data isolation is planned for future modular products.",
+            body=(
+                "Today, customer portal data is isolated per user account.\n\n"
+                "Shared organization/tenant workspaces are not implemented yet."
+            ),
+            is_published=True,
+            published_at=now,
+        )
+
+        DocArticle.objects.create(
+            category=roadmap,
+            title="Microfinance Core banking modules (planned)",
+            slug="roadmap-microfinance-core",
+            article_type="roadmap",
+            excerpt="Loans, savings, ledger, and core banking workflows are product roadmap items.",
+            body=(
+                "Microfinance Core is positioned as a future modular product.\n\n"
+                "The current repository implements marketing pages, subscription billing, and payment collection only."
+            ),
+            is_published=True,
+            published_at=now,
+        )
 
         for product in products:
             cat = product_cats[product.slug]
             DocArticle.objects.create(
                 category=cat,
                 product=product,
-                title=f"{product.name} — Release notes v2.1.0",
-                slug=f"{product.slug}-release-2-1-0",
-                article_type="release_note",
-                version="2.1.0",
-                excerpt="Performance improvements, new dashboard widgets, and bug fixes.",
-                body="This release includes enhanced reporting, improved mobile responsiveness, and security patches.",
+                title=f"{product.name} — product overview",
+                slug=f"{product.slug}-overview",
+                article_type="guide",
+                excerpt="Product positioning, current availability, and links to live demos where applicable.",
+                body="See the product detail page for current status (Generally Available, Beta, or Coming Soon).",
                 is_published=True,
                 published_at=now,
             )
@@ -158,7 +181,7 @@ class Command(BaseCommand):
                 category=cat,
                 product=product,
                 title=f"{product.name} product tour",
-                description="A 10-minute walkthrough of key features and workflows.",
+                description="A walkthrough of key features and workflows.",
                 video_url="https://example.com/videos/tour",
                 duration_minutes=10,
                 sort_order=0,
@@ -167,9 +190,9 @@ class Command(BaseCommand):
                 category=cat,
                 product=product,
                 title=f"{product.name} Admin Guide (PDF)",
-                description="Complete administrator reference manual.",
+                description="Administrator reference manual.",
                 file_type="pdf",
-                version="2.1",
+                version="1.0",
                 file=ContentFile(b"PDF placeholder", name=f"{product.slug}-admin-guide.pdf"),
             )
 

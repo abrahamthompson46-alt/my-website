@@ -3,6 +3,7 @@ from django.db.models import Sum
 from django.utils.text import slugify
 
 from common.money import ZERO, quantize_money
+from core.media_paths import private_payment_proof_upload_to
 from core.models import BaseModel
 
 
@@ -145,7 +146,7 @@ class ManualPaymentDetail(BaseModel):
     receipt_number = models.CharField(max_length=64, blank=True)
     received_by = models.CharField(max_length=120, blank=True)
     notes = models.TextField(blank=True)
-    proof_document = models.FileField(upload_to="payments/proofs/", blank=True)
+    proof_document = models.FileField(upload_to=private_payment_proof_upload_to, blank=True)
     confirmed_by = models.ForeignKey(
         "accounts.User",
         on_delete=models.SET_NULL,

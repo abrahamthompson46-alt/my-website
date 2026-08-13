@@ -1,9 +1,8 @@
 import json
 import logging
-from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
-from django.http import HttpResponse, JsonResponse
+from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -11,12 +10,14 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, TemplateView
 
+from core.media_paths import is_private_media_path
 from customer_portal.mixins import PortalMixin
 from payments.constants import MANUAL
 from payments.forms import CheckoutForm
 from payments.gateways.registry import list_available_gateways
-from payments.models import GatewayConfiguration, ManualPaymentMethod, Payment, PaymentStatus
-from payments.services.checkout import confirm_manual_payment, create_checkout
+from payments.models import GatewayConfiguration, ManualPaymentDetail, ManualPaymentMethod, Payment, PaymentStatus
+from payments.services.checkout import create_checkout
+from payments.services.pricing import CheckoutPricingError, resolve_checkout_pricing
 from payments.services.webhooks import process_webhook, verify_payment
 from products.models import PricingPlan, PricingTier
 
@@ -56,6 +57,12 @@ class PaymentDetailView(PortalMixin, DetailView):
             {"label": "Payments", "url_name": "payments:list"},
             {"label": self.object.reference},
         ]
+        manual_detail = getattr(self.object, "manual_detail", None)
+        if manual_detail and manual_detail.proof_document:
+            context["payment_proof_url"] = reverse(
+                "payments:proof_download",
+                kwargs={"pk": self.object.pk},
+            )
         return context
 
 
@@ -115,47 +122,29 @@ class CheckoutView(PortalMixin, TemplateView):
         if not form.is_valid():
             return self.render_to_response(self.get_context_data(form=form))
 
-        amount = None
-        currency = "USD"
-        pricing_plan = None
-        pricing_tier = None
         gateway_code = form.cleaned_data.get("gateway") or None
         manual_method = form.cleaned_data.get("manual_method")
         if manual_method:
             gateway_code = MANUAL
 
-        invoice = None
-        invoice_id = request.POST.get("invoice_id")
-        if invoice_id:
-            from customer_portal.models import Invoice
-
-            invoice = get_object_or_404(Invoice, pk=invoice_id, user=request.user)
-            amount = invoice.amount
-            currency = invoice.currency
-        else:
-            try:
-                pricing_plan, pricing_tier = _resolve_plan_checkout(request)
-            except ValueError as exc:
-                messages.error(request, str(exc))
-                return self.render_to_response(self.get_context_data(form=form))
-            if pricing_plan and pricing_tier:
-                amount = pricing_tier.amount
-                currency = pricing_tier.currency
-            else:
-                raw_amount = request.POST.get("amount")
-                if not raw_amount:
-                    messages.error(request, "Select a plan or invoice to pay.")
-                    return self.render_to_response(self.get_context_data(form=form))
-                try:
-                    amount = Decimal(str(raw_amount))
-                except (InvalidOperation, TypeError):
-                    messages.error(request, "Invalid payment amount.")
-                    return self.render_to_response(self.get_context_data(form=form))
-                currency = (request.POST.get("currency") or "USD").upper()[:3]
-
-        if not amount or amount <= 0:
-            messages.error(request, "Payment amount must be greater than zero.")
+        try:
+            pricing = resolve_checkout_pricing(
+                user=request.user,
+                invoice_id=request.POST.get("invoice_id"),
+                plan_id=request.POST.get("plan_id"),
+                tier_id=request.POST.get("tier_id"),
+                posted_amount=request.POST.get("amount"),
+                posted_currency=request.POST.get("currency"),
+            )
+        except CheckoutPricingError as exc:
+            messages.error(request, str(exc))
             return self.render_to_response(self.get_context_data(form=form))
+
+        amount = pricing["amount"]
+        currency = pricing["currency"]
+        invoice = pricing["invoice"]
+        pricing_plan = pricing["pricing_plan"]
+        pricing_tier = pricing["pricing_tier"]
 
         manual_detail = {}
         if manual_method == "bank_transfer":
@@ -200,7 +189,7 @@ class CheckoutView(PortalMixin, TemplateView):
                 reverse("payments:return", kwargs={"reference": payment.reference})
             )
             payment.save(update_fields=["callback_url", "updated_at"])
-        except ValueError as exc:
+        except (ValueError, CheckoutPricingError) as exc:
             messages.error(request, str(exc))
             return self.render_to_response(self.get_context_data(form=form))
 
@@ -229,6 +218,27 @@ class PaymentReturnView(PortalMixin, View):
         else:
             messages.warning(request, "Payment verification pending or failed.")
         return redirect("payments:detail", pk=payment.pk)
+
+
+class PaymentProofDownloadView(PortalMixin, View):
+    """Serve payment proof documents only to the owner or staff."""
+
+    def get(self, request, pk):
+        payment = get_object_or_404(Payment.objects.select_related("manual_detail"), pk=pk)
+        if payment.user_id != request.user.id and not request.user.is_staff:
+            raise Http404("Payment proof not found.")
+
+        detail = getattr(payment, "manual_detail", None)
+        if not detail or not detail.proof_document:
+            raise Http404("Payment proof not found.")
+
+        file_field = detail.proof_document
+        if not file_field.name or not is_private_media_path(file_field.name):
+            logger.warning("Blocked payment proof download for non-private path: %s", file_field.name)
+            raise Http404("Payment proof not found.")
+
+        filename = file_field.name.rsplit("/", 1)[-1]
+        return FileResponse(file_field.open("rb"), as_attachment=False, filename=filename)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

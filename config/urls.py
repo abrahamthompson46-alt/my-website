@@ -9,8 +9,11 @@ import config.admin  # noqa: F401 — white-label admin branding
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.http import Http404
 from django.urls import include, path, re_path
 from django.views.static import serve
+
+from core.media_paths import is_private_media_path
 
 from core.sitemaps import BlogPostSitemap, CMSPageSitemap, ProductSitemap, StaticViewSitemap
 from core.views import health_check, robots_txt
@@ -28,8 +31,15 @@ def _uses_local_media_storage() -> bool:
     return "FileSystemStorage" in backend
 
 
+def _serve_public_media(request, path, document_root=None):
+    """Serve only non-sensitive files from local media storage."""
+    if is_private_media_path(path):
+        raise Http404("Private media is not publicly accessible.")
+    return serve(request, path, document_root=document_root)
+
+
 def _local_media_urlpatterns():
-    """Serve /media/ from disk. Django's static() helper is a no-op when DEBUG is False."""
+    """Serve public /media/ from disk. Private paths require authenticated views."""
     if not _uses_local_media_storage():
         return []
 
@@ -40,7 +50,7 @@ def _local_media_urlpatterns():
     return [
         re_path(
             rf"^{re.escape(prefix)}(?P<path>.*)$",
-            serve,
+            _serve_public_media,
             {"document_root": settings.MEDIA_ROOT},
         ),
     ]

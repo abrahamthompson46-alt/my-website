@@ -19,6 +19,10 @@
         {% ui_alert message="This manual payment is awaiting admin confirmation." variant="info" %}
         {% endif %}
 
+        {% if payment_proof_url %}
+        <p><strong>Proof:</strong> <a href="{{ payment_proof_url }}">View uploaded document</a></p>
+        {% endif %}
+
         {% if payment.authorization_url and payment.status == "processing" %}
         {% ui_button label="Continue payment" url=payment.authorization_url variant="primary" size="md" %}
         {% endif %}

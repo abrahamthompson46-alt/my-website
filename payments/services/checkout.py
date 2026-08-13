@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from payments.gateways.dto import PaymentInitRequest, RecurringRequest
 from payments.gateways.registry import get_gateway_from_model
+from payments.services.pricing import CheckoutPricingError, assert_payment_matches_sources
 from payments.models import (
     GatewayConfiguration,
     ManualPaymentDetail,
@@ -56,6 +57,13 @@ def create_checkout(
     gateway_config = resolve_gateway(gateway_code)
     if not gateway_config:
         raise ValueError("No active payment gateway configured.")
+
+    assert_payment_matches_sources(
+        amount=amount,
+        currency=currency,
+        invoice=invoice,
+        pricing_tier=pricing_tier,
+    )
 
     reference = generate_reference()
     idempotency_key = idempotency_key or reference
