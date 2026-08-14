@@ -1,4 +1,4 @@
-"""Homepage presentation rules — Zreta parent brand, ChurchHub as first live product."""
+"""Homepage presentation rules — Zreta platform with multiple product lines."""
 
 from __future__ import annotations
 
@@ -13,26 +13,24 @@ _PLACEHOLDER_TESTIMONIAL_AUTHORS = {
     "Dr. Amina Hassan",
 }
 
-# CMS seed article titles that should not display once sync has run.
+# CMS / marketing seed content that should not display on the public homepage.
 _PLACEHOLDER_NEWS_SLUGS = {
     "enterprise-platform-expands-18-countries",
+    "enterprise-platform-achieves-soc-2-type-ii",
 }
 
 
 def get_homepage_featured_products(limit: int = HOMEPAGE_FEATURED_LIMIT):
-    """Return published, available products with ChurchHub pinned first."""
-    qs = (
+    """Return published, available featured products ordered by catalog sort order."""
+    return list(
         Product.objects.filter(
             is_published=True,
             is_featured=True,
             status__in=[ProductStatus.GA, ProductStatus.BETA],
         )
         .prefetch_related("features", "plans")
-        .order_by("sort_order")
+        .order_by("sort_order")[:limit]
     )
-    products = list(qs)
-    products.sort(key=lambda product: (0 if product.slug == "churchhub" else 1, product.sort_order))
-    return products[:limit]
 
 
 def get_trust_signals(fallback: list | None = None) -> list:
@@ -47,6 +45,17 @@ def _item_author_name(item) -> str | None:
     return getattr(item, "author_name", None)
 
 
+def _item_slug(item) -> str:
+    if isinstance(item, dict):
+        return item.get("slug", "")
+    return getattr(item, "slug", "")
+
+
+def filter_home_news(articles):
+    """Drop seeded placeholder articles from homepage news modules."""
+    return [article for article in articles if _item_slug(article) not in _PLACEHOLDER_NEWS_SLUGS]
+
+
 def should_show_home_testimonials(testimonials) -> bool:
     if not testimonials:
         return False
@@ -58,11 +67,5 @@ def should_show_home_testimonials(testimonials) -> bool:
 
 
 def should_show_home_news(articles) -> bool:
-    if not articles:
-        return False
-    for article in articles:
-        slug = getattr(article, "slug", "")
-        if slug in _PLACEHOLDER_NEWS_SLUGS:
-            continue
-        return True
-    return False
+    articles = filter_home_news(articles)
+    return bool(articles)

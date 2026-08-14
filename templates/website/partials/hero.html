@@ -32,9 +32,9 @@
 
             <div class="home-hero__actions cluster">
                 {% if hero.cta_primary_url %}
-                <a href="{{ hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ hero.cta_primary_label|default:"Explore ChurchHub" }}</a>
+                <a href="{{ hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ hero.cta_primary_label|default:"Explore products" }}</a>
                 {% else %}
-                {% ui_button label=hero.cta_primary_label|default:"Explore ChurchHub" url_name="contact:trial" variant="primary" size="lg" type="link" %}
+                {% ui_button label=hero.cta_primary_label|default:"Explore products" url_name="products:list" variant="primary" size="lg" type="link" %}
                 {% endif %}
 
                 {% if hero.cta_secondary_url %}

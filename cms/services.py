@@ -82,10 +82,15 @@ def get_home_news(limit=3):
         NewsArticle.objects.filter(is_published=True).order_by("-published_at", "-created_at")[:limit]
     )
     if articles:
-        return articles
-    return list(
-        BlogPost.objects.filter(is_published=True).order_by("-published_at", "-created_at")[:limit]
+        from website.services.homepage import filter_home_news
+
+        return filter_home_news(articles)
+    posts = list(
+        BlogPost.objects.filter(is_published=True).order_by("-published_at", "-created_at")[: limit * 2]
     )
+    from website.services.homepage import filter_home_news
+
+    return filter_home_news(posts)[:limit]
 
 
 def get_about_team():
@@ -139,7 +144,7 @@ def build_home_context():
             "headline": hero_banner.headline,
             "subheadline": hero_banner.subheadline,
             "trust_text": hero_banner.trust_text,
-            "cta_primary_label": hero_banner.cta_primary_label or "Start Free Trial",
+            "cta_primary_label": hero_banner.cta_primary_label or "Explore products",
             "cta_primary_url": hero_banner.cta_primary_url or "",
             "cta_secondary_label": hero_banner.cta_secondary_label or "Request a Demo",
             "cta_secondary_url": hero_banner.cta_secondary_url or "#request-demo",

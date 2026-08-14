@@ -41,7 +41,7 @@ class Command(BaseCommand):
             full_name="Sarah Okonkwo",
             slug="sarah-okonkwo",
             role="Head of Product Marketing",
-            bio="Sarah leads product marketing and customer storytelling at Enterprise Platform.",
+            bio="Sarah leads product marketing and customer storytelling at Zreta.",
             is_published=True,
         )
 
@@ -58,7 +58,7 @@ class Command(BaseCommand):
         posts = [
             ("Introducing Hospital Management 2.0", "updates", "New patient timeline, lab integrations, and billing automation.", True),
             ("How to scale microfinance operations", "guides", "A practical framework for cloud-native core banking migration.", False),
-            ("Enterprise Platform achieves SOC 2 Type II", "company", "Independent third-party validation of our security controls.", False),
+            ("How Zreta approaches platform security", "company", "An overview of authentication, audit logging, and operational controls.", False),
         ]
         for i, (title, cat_key, excerpt, featured) in enumerate(posts):
             post = BlogPost.objects.create(
@@ -78,10 +78,10 @@ class Command(BaseCommand):
             post.tags.set([tags["SaaS"], tags["Enterprise"]])
 
         MarketingEvent.objects.create(
-            title="Enterprise Platform Live Demo",
-            slug="enterprise-platform-live-demo",
+            title="Zreta Live Demo",
+            slug="zreta-live-demo",
             event_type="webinar",
-            excerpt="See the full platform in a live 45-minute demo with Q&A.",
+            excerpt="See Zreta products in a live 45-minute demo with Q&A.",
             body="Join our product specialists for a comprehensive walkthrough.",
             starts_at=now + timedelta(days=14),
             ends_at=now + timedelta(days=14, hours=1),

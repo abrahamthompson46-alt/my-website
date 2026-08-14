@@ -1,5 +1,6 @@
-<section class="home-stats" aria-label="Platform statistics">
+<section class="home-stats" aria-labelledby="stats-heading">
     <div class="container">
+        {% include "cms/partials/section_header.html" with section=statistics_section eyebrow="Platform" title="Built for serious operations" subtitle="Shared standards across every Zreta product." %}
         <div class="home-stats__grid">
             {% for stat in statistics %}
             <div class="home-stats__item">

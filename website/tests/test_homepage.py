@@ -25,14 +25,13 @@ class HomepageServiceTests(TestCase):
             sort_order=sort_order,
         )
 
-    def test_featured_products_pin_churchhub_first(self):
+    def test_featured_products_respect_sort_order(self):
         erp = self._create_product("erp-suite", sort_order=1)
         churchhub = self._create_product("churchhub", sort_order=2)
         school = self._create_product("school-management", sort_order=3)
 
         featured = get_homepage_featured_products()
-        self.assertEqual([product.slug for product in featured], ["churchhub", "erp-suite", "school-management"])
-        self.assertEqual(featured[0].pk, churchhub.pk)
+        self.assertEqual([product.slug for product in featured], ["erp-suite", "churchhub", "school-management"])
 
     def test_featured_products_exclude_coming_soon(self):
         self._create_product("churchhub", sort_order=1)
@@ -74,6 +73,22 @@ class HomepageServiceTests(TestCase):
         )
         self.assertFalse(should_show_home_news([article]))
 
+    def test_should_hide_soc2_seed_blog_post(self):
+        from marketing.models import BlogPost, BlogCategory, Author
+
+        author = Author.objects.create(full_name="Editor", slug="editor", is_published=True)
+        category = BlogCategory.objects.create(name="Company", slug="company")
+        post = BlogPost.objects.create(
+            title="Enterprise Platform achieves SOC 2 Type II",
+            slug="enterprise-platform-achieves-soc-2-type-ii",
+            category=category,
+            author=author,
+            excerpt="Placeholder.",
+            body="Placeholder.",
+            is_published=True,
+        )
+        self.assertFalse(should_show_home_news([post]))
+
 
 class HomepageViewTests(TestCase):
     def test_homepage_uses_honest_copy(self):
@@ -84,7 +99,7 @@ class HomepageViewTests(TestCase):
         self.assertNotIn("Trusted by industry leaders", content)
         self.assertNotIn("Modern software for faith communities", content)
         self.assertIn("Zreta", content)
-        self.assertIn("ChurchHub", content)
+        self.assertIn("Explore products", content)
         self.assertIn("home-trust", content)
         self.assertIn("home-hero__trust-strip", content)
 

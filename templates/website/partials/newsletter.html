@@ -44,6 +44,13 @@
 
                 {{ newsletter_form.email }}
 
+                {% if newsletter_form.email.errors %}
+                <p class="auth-field__error" role="alert">{{ newsletter_form.email.errors.0 }}</p>
+                {% endif %}
+                {% if newsletter_form.non_field_errors %}
+                <p class="auth-field__error" role="alert">{{ newsletter_form.non_field_errors.0 }}</p>
+                {% endif %}
+
                 {% ui_button label="Subscribe" variant="primary" size="lg" type="submit" %}
 
             </form>

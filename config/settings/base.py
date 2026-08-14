@@ -18,7 +18,7 @@ DEBUG = env.bool("DJANGO_DEBUG", default=False)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
 SITE_URL = env("SITE_URL", default="http://localhost:8000")
-SITE_NAME = env("SITE_NAME", default="Enterprise Platform")
+SITE_NAME = env("SITE_NAME", default="Zreta")
 
 ROOT_URLCONF = "config.urls"
 

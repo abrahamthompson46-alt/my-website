@@ -47,7 +47,7 @@ class Command(BaseCommand):
             headline=HERO["headline"],
             subheadline=HERO["subheadline"],
             trust_text=HERO["trust_text"],
-            cta_primary_label=HERO.get("cta_primary_label", "Start ChurchHub trial"),
+            cta_primary_label=HERO.get("cta_primary_label", "Explore products"),
             cta_secondary_label=HERO.get("cta_secondary_label", "Request a demo"),
             cta_secondary_url="#request-demo",
             is_active=True,
@@ -60,21 +60,21 @@ class Command(BaseCommand):
             hero=hero,
             is_published=True,
             published_at=now,
-            meta_title="Zreta — Enterprise software company",
+            meta_title="Zreta — Modular enterprise software",
             meta_description=(
-                "Zreta builds modular enterprise software. ChurchHub is live today for faith communities. "
-                "Financial services, ERP, and business products are in development. "
-                "GHS pricing, Mobile Money, and enterprise security."
+                "Zreta is a modular enterprise software platform. Products for faith communities, "
+                "financial services, education, healthcare, ERP, and HR — with GHS pricing, "
+                "Mobile Money, and enterprise security."
             ),
         )
 
         section_defs = [
-            ("featured_products", "Products", "Start with ChurchHub — live today", "Zreta is building a portfolio of modular products. ChurchHub is our first production release; additional solutions for financial services, ERP, and operations are in development."),
+            ("featured_products", "Products", "Modular products on one platform", "Choose the Zreta products that fit your industry — each with shared billing, security, and customer portal access."),
             ("why_choose_us", "Why Choose Us", "Built for enterprise reliability", "Security, modular design, and support you can verify on this site."),
             ("industries", "Industries", "Solutions for every sector", "Purpose-built products for your industry."),
             ("testimonials", "Testimonials", "What our customers say", "Verified customer stories appear here as they are published."),
             ("latest_news", "Latest News", "From our blog", "Product updates, guides, and company news."),
-            ("statistics", "", "", ""),
+            ("statistics", "Platform", "Built for serious operations", "Shared standards across every Zreta product."),
             ("cta", "", CTA["title"], CTA["subtitle"]),
             ("trust_signals", "Why teams trust Zreta", "Built for real operations", "Payments, security, and support you can verify on this site."),
             ("request_demo", REQUEST_DEMO["eyebrow"], REQUEST_DEMO["title"], REQUEST_DEMO["subtitle"]),

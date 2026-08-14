@@ -23,13 +23,13 @@ from website.content import (
 
 
 class Command(BaseCommand):
-    help = "Refresh homepage hero, sections, stats, and trust signals from the canonical content baseline."
+    help = "Refresh homepage hero, sections, stats, trust signals, and platform branding from the canonical baseline."
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--products",
             action="store_true",
-            help="Also normalize homepage featured flags (ChurchHub-first, hide coming-soon from featured).",
+            help="Also normalize homepage featured flags for all GA/BETA products.",
         )
 
     @transaction.atomic
@@ -45,17 +45,18 @@ class Command(BaseCommand):
             hero.headline = HERO["headline"]
             hero.subheadline = HERO["subheadline"]
             hero.trust_text = HERO["trust_text"]
-            hero.cta_primary_label = HERO.get("cta_primary_label", "Start ChurchHub trial")
+            hero.cta_primary_label = HERO.get("cta_primary_label", "Explore products")
+            hero.cta_primary_url = hero.cta_primary_url or ""
             hero.cta_secondary_label = HERO.get("cta_secondary_label", "Request a Demo")
             hero.cta_secondary_url = "#request-demo"
             hero.is_active = True
             hero.save()
 
-        page.meta_title = "Zreta — Enterprise software company"
+        page.meta_title = "Zreta — Modular enterprise software"
         page.meta_description = (
-            "Zreta builds modular enterprise software. ChurchHub is live today for faith communities. "
-            "Financial services, ERP, and business products are in development. "
-            "GHS pricing, Mobile Money, and enterprise security."
+            "Zreta is a modular enterprise software platform. Products for faith communities, "
+            "financial services, education, healthcare, ERP, and HR — with GHS pricing, "
+            "Mobile Money, and enterprise security."
         )
         page.save(update_fields=["meta_title", "meta_description", "updated_at"])
 
@@ -64,6 +65,8 @@ class Command(BaseCommand):
         self._sync_section(page, "statistics", STATISTICS, item_factory=self._stat_item)
         self._sync_section(page, "trust_signals", TRUST_SIGNALS, item_factory=self._trust_item)
 
+        self._sync_header(page, "featured_products", "Modular products on one platform", "Choose the Zreta products that fit your industry — each with shared billing, security, and customer portal access.", eyebrow="Products")
+        self._sync_header(page, "statistics", "Built for serious operations", "Shared standards across every Zreta product.", eyebrow="Platform")
         self._sync_header(page, "cta", CTA["title"], CTA["subtitle"])
         self._sync_header(
             page,
@@ -104,18 +107,53 @@ class Command(BaseCommand):
 
         NewsArticle.objects.filter(slug="enterprise-platform-expands-18-countries").update(is_published=False)
 
+        try:
+            from marketing.models import BlogPost
+
+            BlogPost.objects.filter(
+                slug__in=[
+                    "enterprise-platform-achieves-soc-2-type-ii",
+                    "enterprise-platform-expands-18-countries",
+                ]
+            ).update(is_published=False)
+        except Exception:
+            pass
+
+        self._sync_platform_branding()
+
         if options["products"]:
             self._sync_product_featured_flags()
 
         self.stdout.write(self.style.SUCCESS("Homepage CMS content synced."))
 
+    def _sync_platform_branding(self):
+        from control_room.models import PlatformSettings
+
+        settings_obj = PlatformSettings.load()
+        updated = []
+        if settings_obj.site_name in ("Enterprise Platform", ""):
+            settings_obj.site_name = "Zreta"
+            updated.append("site_name")
+        if "Enterprise Platform" in (settings_obj.footer_copyright or ""):
+            settings_obj.footer_copyright = "© Zreta. All rights reserved."
+            updated.append("footer_copyright")
+        if settings_obj.default_seo_title in ("Enterprise Platform", ""):
+            settings_obj.default_seo_title = "Zreta"
+            updated.append("default_seo_title")
+        if settings_obj.site_tagline in ("Classic software for modern enterprise teams", ""):
+            settings_obj.site_tagline = "Modular enterprise software for growing organizations"
+            updated.append("site_tagline")
+        if updated:
+            settings_obj.save(update_fields=[*updated, "updated_at"])
+            self.stdout.write(f"Platform settings updated: {', '.join(updated)}")
+
     def _sync_product_featured_flags(self):
-        for product in Product.objects.all():
-            featured = product.slug == "churchhub" and product.status == ProductStatus.GA
+        for product in Product.objects.filter(is_published=True):
+            featured = product.status in (ProductStatus.GA, ProductStatus.BETA)
             if product.is_featured != featured:
                 product.is_featured = featured
                 product.save(update_fields=["is_featured", "updated_at"])
-        self.stdout.write("Product featured flags normalized (ChurchHub-first).")
+        self.stdout.write("Product featured flags normalized for GA/BETA catalog items.")
 
     def _get_or_create_section(self, page, key, sort_order):
         section, _ = PageSection.objects.get_or_create(

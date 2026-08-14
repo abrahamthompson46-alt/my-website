@@ -9,6 +9,14 @@ FEATURED_PRODUCTS = [
         "description": "Manage members, giving, events, groups, and communications from a single dashboard.",
         "features": ["Member management", "Online giving", "Event planning"],
     },
+    {
+        "name": "Microfinance Core",
+        "slug": "microfinance-core",
+        "accent": "finance",
+        "tagline": "Core banking for microfinance institutions",
+        "description": "End-to-end loan lifecycle, savings, collections, and regulatory reporting built for scale.",
+        "features": ["Loan management", "Savings accounts", "Collections"],
+    },
 ]
 
 WHY_CHOOSE_US = [
@@ -20,7 +28,7 @@ WHY_CHOOSE_US = [
     {
         "icon": "layers",
         "title": "Modular by design",
-        "description": "Zreta ships focused products for different sectors — start with ChurchHub today as more solutions roll out.",
+        "description": "Deploy the products you need today — ChurchHub, Microfinance Core, ERP, school, and hospital solutions — on one shared platform.",
     },
     {
         "icon": "globe",
@@ -97,39 +105,43 @@ TRUST_STRIP = [
 ]
 
 HERO = {
-    "eyebrow": "Zreta · Enterprise software company",
+    "eyebrow": "Zreta · Modular enterprise software",
     "headline": "Enterprise software for organizations that need to scale",
     "headline_line1": "Enterprise software for",
     "headline_line2": "organizations that scale",
     "subheadline": (
-        "Zreta builds modular software products for growing organizations. "
-        "ChurchHub — our first live product — helps faith communities manage members, giving, "
-        "and events. Additional products for financial services, ERP, and business operations "
-        "are in development."
+        "Zreta is a modular software platform for growing organizations. "
+        "Choose from products for faith communities, financial services, education, "
+        "healthcare, ERP, and HR — each with shared billing, security, and support."
     ),
     "trust_text": "14-day free trial · GHS pricing · Mobile Money payments · Published security pages",
-    "product_pills": ["ChurchHub — live today", "Financial services", "ERP & operations", "Modular roadmap"],
-    "cta_primary_label": "Explore ChurchHub",
+    "product_pills": [
+        "ChurchHub",
+        "Microfinance Core",
+        "ERP & operations",
+        "School & hospital suites",
+    ],
+    "cta_primary_label": "Explore products",
     "cta_secondary_label": "Request a demo",
 }
 
 CTA = {
     "title": "Ready to modernize your operations?",
-    "subtitle": "Start a free trial or book a demo — no credit card required for trials.",
+    "subtitle": "Browse products, start a free trial, or book a demo — no credit card required for trials.",
 }
 
 REQUEST_DEMO = {
     "eyebrow": "Request a Demo",
     "title": "See Zreta products in action",
     "subtitle": (
-        "Schedule a walkthrough with our team. We'll demo ChurchHub — our live product — "
-        "and explain how upcoming Zreta solutions fit your organization."
+        "Schedule a walkthrough with our team. We'll demo the products relevant to your "
+        "industry and explain how the Zreta platform fits your organization."
     ),
 }
 
 NEWSLETTER = {
     "title": "Product updates from Zreta",
-    "subtitle": "Occasional notes on ChurchHub features, platform improvements, and rollout news.",
+    "subtitle": "Occasional notes on new products, platform improvements, and rollout news.",
 }
 
 
