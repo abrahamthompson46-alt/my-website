@@ -10,7 +10,7 @@ from django.contrib.auth.views import (
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
-from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.utils import timezone
 from django.views.generic import TemplateView, View
 
@@ -238,13 +238,13 @@ class MFAVerifyView(View):
         if not user:
             return redirect("accounts:login")
 
-        if request.GET.get("rescan"):
-            request.session["mfa_rescan_secret"] = generate_totp_secret()
-            messages.info(request, "Scan the QR code with your authenticator app, then enter the code below.")
-            return self._render(request, MFAChallengeForm(), user=user, rescan_mode=True)
-
-        if request.session.get("mfa_rescan_secret"):
-            return self._render(request, MFAChallengeForm(), user=user, rescan_mode=True)
+        if request.GET.get("rescan") or request.session.get("mfa_rescan_secret"):
+            request.session.pop("mfa_rescan_secret", None)
+            messages.warning(
+                request,
+                "Authenticator re-enrollment is not available during sign-in. "
+                "Enter your existing code, or sign in to Security settings after login.",
+            )
 
         return self._render(request, MFAChallengeForm())
 
@@ -258,13 +258,9 @@ class MFAVerifyView(View):
         if not user:
             return redirect("accounts:login")
 
-        form = MFAChallengeForm(request.POST)
-        rescan_secret = request.session.get("mfa_rescan_secret")
-        if form.is_valid() and rescan_secret and verify_totp(rescan_secret, form.cleaned_data["code"]):
-            plain_codes, hashed_codes = generate_backup_codes()
-            enable_totp(user, rescan_secret, hashed_codes, request=request)
-            return self._complete_login(request, user, backup_codes=plain_codes, rescan=True)
+        request.session.pop("mfa_rescan_secret", None)
 
+        form = MFAChallengeForm(request.POST)
         if form.is_valid():
             profile = get_or_create_security_profile(user)
             if verify_mfa_code(profile, form.cleaned_data["code"]):
@@ -273,8 +269,7 @@ class MFAVerifyView(View):
             record_failed_login(request, user.email)
             form.add_error("code", "Invalid authentication code.")
 
-        rescan_mode = bool(request.session.get("mfa_rescan_secret"))
-        return self._render(request, form, user=user if rescan_mode else None, rescan_mode=rescan_mode)
+        return self._render(request, form)
 
     def _get_pending_user(self, request):
         user_id = request.session.get("mfa_pending_user_id")
@@ -282,15 +277,10 @@ class MFAVerifyView(View):
             return None
         return User.objects.filter(pk=user_id, is_active=True).first()
 
-    def _render(self, request, form, *, user=None, rescan_mode=False):
-        context = {"form": form, "rescan_mode": rescan_mode}
-        secret = request.session.get("mfa_rescan_secret")
-        if rescan_mode and secret and user:
-            context["qr_data_uri"] = _totp_qr_data_uri(provisioning_uri(user, secret))
-            context["secret"] = secret
-        return render(request, self.template_name, context)
+    def _render(self, request, form):
+        return render(request, self.template_name, {"form": form})
 
-    def _complete_login(self, request, user, *, backup_codes=None, rescan=False):
+    def _complete_login(self, request, user, *, backup_codes=None):
         backend = request.session.get("mfa_auth_backend", settings.AUTHENTICATION_BACKENDS[0])
         auth_login(request, user, backend=backend)
         track_user_session(request, user)
@@ -305,17 +295,6 @@ class MFAVerifyView(View):
             require_https=request.is_secure(),
         ):
             next_url = _post_login_url(user)
-
-        if rescan and backup_codes:
-            request.session["mfa_backup_codes"] = backup_codes
-            log_audit_event(
-                AuditEventType.MFA_ENABLED,
-                request=request,
-                user=user,
-                message="Authenticator re-enrolled during login",
-            )
-            log_audit_event(AuditEventType.LOGIN_SUCCESS, request=request, user=user)
-            return redirect("accounts:mfa_backup_codes")
 
         log_audit_event(AuditEventType.MFA_CHALLENGE, request=request, user=user, message="MFA verified")
         log_audit_event(AuditEventType.LOGIN_SUCCESS, request=request, user=user)
@@ -557,11 +536,26 @@ class AcceptInvitationView(View):
 
         existing = User.objects.filter(email__iexact=invitation.email).first()
         if existing and request.POST.get("accept_existing"):
+            if (
+                request.user.is_authenticated
+                and request.user.pk == existing.pk
+                and request.user.email.lower() == invitation.email.lower()
+            ):
+                accept_invitation(invitation, user=existing)
+                messages.success(
+                    request,
+                    f"Your {invitation.role.name} access is now active.",
+                )
+                return redirect("control_room:dashboard" if existing.is_staff else "customer_portal:dashboard")
+
             accept_invitation(invitation, user=existing)
-            messages.success(request, f"Welcome back! Your {invitation.role.name} access is now active.")
-            auth_login(request, existing, backend="django.contrib.auth.backends.ModelBackend")
-            track_user_session(request, existing)
-            return redirect("control_room:dashboard" if existing.is_staff else "customer_portal:dashboard")
+            messages.success(
+                request,
+                f"Invitation accepted. Your {invitation.role.name} access is active — sign in with your password to continue.",
+            )
+            login_url = reverse("accounts:login")
+            next_url = reverse("control_room:dashboard" if existing.is_staff else "customer_portal:dashboard")
+            return redirect(f"{login_url}?{urlencode({'next': next_url})}")
 
         existing = User.objects.filter(email__iexact=invitation.email).first()
         if existing:

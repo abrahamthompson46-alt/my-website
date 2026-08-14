@@ -98,7 +98,7 @@ class MFAURLTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.context["secret"], first_secret)
 
-    def test_mfa_verify_rescan_shows_qr(self):
+    def test_mfa_verify_rescan_is_not_available_during_login_challenge(self):
         user = User.objects.create_user(
             username="verify-rescan",
             email="verify-rescan@example.com",
@@ -114,6 +114,32 @@ class MFAURLTests(TestCase):
 
         response = self.client.get(reverse("accounts:mfa_verify"), {"rescan": "1"})
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context["rescan_mode"])
-        self.assertIn("qr_data_uri", response.context)
-        self.assertIn("Scan again with a new QR code", response.content.decode())
+        self.assertNotIn("rescan_mode", response.context)
+        self.assertNotIn("qr_data_uri", response.context)
+        self.assertNotIn("mfa_rescan_secret", self.client.session)
+
+    def test_mfa_verify_rescan_cannot_replace_totp_during_post(self):
+        user = User.objects.create_user(
+            username="verify-post-rescan",
+            email="verify-post-rescan@example.com",
+            password="testpass123",
+        )
+        original_secret = generate_totp_secret()
+        _, hashed = generate_backup_codes(count=2)
+        enable_totp(user, original_secret, hashed)
+
+        session = self.client.session
+        session["mfa_pending_user_id"] = str(user.pk)
+        session["mfa_rescan_secret"] = generate_totp_secret()
+        session.save()
+
+        import pyotp
+
+        new_secret = session["mfa_rescan_secret"]
+        code = pyotp.TOTP(new_secret).now()
+        response = self.client.post(reverse("accounts:mfa_verify"), {"code": code})
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+        profile = get_or_create_security_profile(user)
+        self.assertEqual(profile.mfa_secret, original_secret)

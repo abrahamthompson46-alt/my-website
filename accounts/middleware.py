@@ -40,6 +40,7 @@ MFA_EXEMPT_PREFIXES = (
     "/accounts/logout",
     "/accounts/logged-out",
     "/accounts/mfa/",
+    "/accounts/invite/",
     "/accounts/password-reset",
     "/accounts/verify-email",
     "/static/",

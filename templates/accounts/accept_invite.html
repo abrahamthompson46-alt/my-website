@@ -18,7 +18,8 @@
     </header>
 
     {% if existing_user %}
-    <p class="auth-panel__subtitle">An account already exists for {{ invitation.email }}. Accept to add your new role.</p>
+    {% if user.is_authenticated and user.email|lower == invitation.email|lower %}
+    <p class="auth-panel__subtitle">You are signed in as {{ invitation.email }}. Accept to add your new role.</p>
     <form method="post" class="auth-form auth-form--invite">
         {% csrf_token %}
         <input type="hidden" name="accept_existing" value="1">
@@ -26,6 +27,19 @@
             {% ui_button label="Accept invitation" type="submit" variant="primary" size="md" full_width=True icon="check" %}
         </div>
     </form>
+    {% else %}
+    <p class="auth-panel__subtitle">
+        An account already exists for {{ invitation.email }}.
+        Accepting adds your new role, then you must <strong>sign in with your password</strong> (and MFA if enabled).
+    </p>
+    <form method="post" class="auth-form auth-form--invite">
+        {% csrf_token %}
+        <input type="hidden" name="accept_existing" value="1">
+        <div class="auth-form__actions">
+            {% ui_button label="Accept invitation" type="submit" variant="primary" size="md" full_width=True icon="check" %}
+        </div>
+    </form>
+    {% endif %}
     {% else %}
     <form method="post" class="auth-form auth-form--invite" novalidate>
         {% csrf_token %}

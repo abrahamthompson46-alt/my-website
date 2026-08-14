@@ -10,28 +10,11 @@
             <svg class="icon icon--md" data-icon="shield-check"></svg>
         </div>
         <p class="auth-panel__eyebrow">Two-factor authentication</p>
-        <h1 class="auth-panel__title">{% if rescan_mode %}Set up your authenticator{% else %}Verify it's you{% endif %}</h1>
+        <h1 class="auth-panel__title">Verify it's you</h1>
         <p class="auth-panel__subtitle">
-            {% if rescan_mode %}
-            Scan the QR code with Google Authenticator, Authy, or another TOTP app, then enter the 6-digit code below.
-            {% else %}
             Enter the 6-digit code from your authenticator app or use a backup code.
-            {% endif %}
         </p>
     </header>
-
-    {% if rescan_mode and qr_data_uri %}
-    <div class="security-mfa-setup auth-mfa-setup">
-        <img src="{{ qr_data_uri }}" alt="Authenticator QR code" width="200" height="200" class="security-mfa-setup__qr">
-        <div>
-            <p class="auth-panel__subtitle">Or enter this secret manually:</p>
-            <code class="security-mfa-setup__secret">{{ secret }}</code>
-            <p class="auth-panel__help">
-                <a href="{% url 'accounts:mfa_verify' %}?rescan=1">Scan again with a new QR code</a>
-            </p>
-        </div>
-    </div>
-    {% endif %}
 
     <form method="post" class="auth-form" novalidate>
         {% csrf_token %}
@@ -57,12 +40,9 @@
         </div>
     </form>
 
-    {% if not rescan_mode %}
     <p class="auth-panel__help">
-        Need to scan the QR code again?
-        <a href="{% url 'accounts:mfa_verify' %}?rescan=1">Set up your authenticator app</a>
+        To replace your authenticator device, sign in and visit Security settings after completing this step.
     </p>
-    {% endif %}
 </section>
 {% endblock %}
 
