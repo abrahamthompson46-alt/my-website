@@ -186,6 +186,10 @@ class CheckoutViewSecurityTests(TestCase):
             "transfer_reference": "TRX-123",
         }
         data.update(extra)
+        if "proof_document" not in data and data.get("manual_method"):
+            data["proof_document"] = SimpleUploadedFile(
+                "proof.pdf", b"%PDF-1.4 proof", content_type="application/pdf"
+            )
         return self.client.post(reverse("payments:checkout"), data)
 
     def test_normal_checkout_succeeds_with_server_price(self):

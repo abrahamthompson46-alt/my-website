@@ -1,5 +1,6 @@
 import uuid
 from decimal import Decimal
+import logging
 
 from django.db import transaction
 from django.utils import timezone
@@ -10,7 +11,6 @@ from payments.services.pricing import CheckoutPricingError, assert_payment_match
 from payments.models import (
     GatewayConfiguration,
     ManualPaymentDetail,
-    ManualPaymentMethod,
     Payment,
     PaymentAttempt,
     PaymentStatus,
@@ -18,6 +18,8 @@ from payments.models import (
     RecurringPayment,
     RecurringStatus,
 )
+
+logger = logging.getLogger(__name__)
 
 VALID_RECURRING_INTERVALS = frozenset({"daily", "weekly", "monthly", "yearly"})
 
@@ -123,6 +125,12 @@ def create_checkout(
         response_data=result.raw_response,
         error_message="" if result.success else result.message,
     )
+    try:
+        from common.services.owner_notifications import notify_owners_payment
+
+        notify_owners_payment(payment)
+    except Exception:
+        logger.exception("Failed to notify platform owners about payment %s", payment.reference)
     return payment, result
 
 

@@ -301,11 +301,18 @@ class NotificationListView(PortalMixin, UserQuerysetMixin, ListView):
 
 
 class NotificationMarkReadView(PortalMixin, View):
+    def get(self, request, pk):
+        return self._mark_read_and_redirect(request, pk)
+
     def post(self, request, pk):
+        return self._mark_read_and_redirect(request, pk)
+
+    def _mark_read_and_redirect(self, request, pk):
         notification = get_object_or_404(PortalNotification, pk=pk, user=request.user)
-        notification.is_read = True
-        notification.read_at = timezone.now()
-        notification.save(update_fields=["is_read", "read_at", "updated_at"])
+        if not notification.is_read:
+            notification.is_read = True
+            notification.read_at = timezone.now()
+            notification.save(update_fields=["is_read", "read_at", "updated_at"])
         if notification.link_url:
             return redirect(notification.link_url)
         return redirect("customer_portal:notifications")

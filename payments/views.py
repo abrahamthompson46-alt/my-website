@@ -118,7 +118,7 @@ class CheckoutView(PortalMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        form = CheckoutForm(request.POST)
+        form = CheckoutForm(request.POST, request.FILES)
         if not form.is_valid():
             return self.render_to_response(self.get_context_data(form=form))
 
@@ -163,6 +163,9 @@ class CheckoutView(PortalMixin, TemplateView):
                 "receipt_number": form.cleaned_data.get("receipt_number", ""),
                 "notes": form.cleaned_data.get("notes", ""),
             }
+        proof = form.cleaned_data.get("proof_document")
+        if manual_method and proof:
+            manual_detail["proof_document"] = proof
 
         description = form.cleaned_data.get("description", "")
         if pricing_plan and not description:

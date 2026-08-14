@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import timedelta
 
 from django.utils import timezone
@@ -10,6 +11,8 @@ from accounts.models import AuditEventType
 from accounts.services.audit import log_audit_event
 from accounts.services.rate_limit import check_auth_rate_limit, log_rate_limit_exceeded
 from products.models import ProductDemoRequest
+
+logger = logging.getLogger(__name__)
 
 
 DEMO_RATE_LIMIT = 5
@@ -50,3 +53,9 @@ def log_demo_submission(request, demo: ProductDemoRequest):
             "source": demo.source,
         },
     )
+    try:
+        from common.services.owner_notifications import notify_owners_demo_request
+
+        notify_owners_demo_request(demo)
+    except Exception:
+        logger.exception("Failed to notify platform owners about demo request %s", demo.pk)

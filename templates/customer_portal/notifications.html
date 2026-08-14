@@ -29,17 +29,23 @@
 
         <div class="notification-item{% if not notification.is_read %} is-unread{% endif %}">
 
-            <div style="flex:1;">
+            <div class="notification-item__content">
 
+                {% if notification.link_url %}
+                <a href="{% url 'customer_portal:notification_read' pk=notification.pk %}" class="notification-item__link">
+                    <p class="notification-item__title">{{ notification.title }}</p>
+                    <p class="notification-item__message">{{ notification.message }}</p>
+                </a>
+                {% else %}
                 <p class="notification-item__title">{{ notification.title }}</p>
-
                 <p class="notification-item__message">{{ notification.message }}</p>
+                {% endif %}
 
                 <p class="portal-list__meta">{{ notification.created_at|date:"M j, Y g:i A" }}</p>
 
             </div>
 
-            {% if not notification.is_read %}
+            {% if not notification.is_read and not notification.link_url %}
 
             <form method="post" action="{% url 'customer_portal:notification_read' pk=notification.pk %}">
 
@@ -63,5 +69,4 @@
 </div>
 
 {% endblock %}
-
 
