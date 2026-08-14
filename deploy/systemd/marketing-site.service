@@ -7,7 +7,7 @@ Wants=network-online.target postgresql.service redis-server.service
 [Service]
 Type=notify
 User=marketing
-Group=www-data
+Group=marketing-runtime
 WorkingDirectory=/var/www/marketing-site
 EnvironmentFile=/var/www/marketing-site/.env
 Environment=PYTHONPATH=/var/www/marketing-site

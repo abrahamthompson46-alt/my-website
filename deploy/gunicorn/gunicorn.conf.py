@@ -1,10 +1,9 @@
 """Gunicorn configuration for the marketing website (systemd)."""
 
-import multiprocessing
 import os
 
-bind = os.environ.get("GUNICORN_BIND", "unix:/run/zreta/gunicorn.sock")
-workers = int(os.environ.get("GUNICORN_WORKERS", max(2, multiprocessing.cpu_count() * 2 + 1)))
+bind = os.environ.get("GUNICORN_BIND", "127.0.0.1:8001")
+workers = int(os.environ.get("GUNICORN_WORKERS", 3))
 threads = int(os.environ.get("GUNICORN_THREADS", 1))
 worker_class = "sync"
 timeout = int(os.environ.get("GUNICORN_TIMEOUT", 60))
@@ -12,7 +11,7 @@ graceful_timeout = 30
 keepalive = 5
 umask = 0o007
 user = os.environ.get("GUNICORN_USER", "marketing")
-group = os.environ.get("GUNICORN_GROUP", "www-data")
+group = os.environ.get("GUNICORN_GROUP", "marketing-runtime")
 max_requests = 1000
 max_requests_jitter = 50
 accesslog = os.environ.get("GUNICORN_ACCESS_LOG", "/var/log/marketing-site/gunicorn-access.log")
