@@ -5,7 +5,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, TemplateView, UpdateView
 
 from control_room.forms import DocArticleForm, DocCategoryForm, DocDownloadForm, DocVideoForm
-from control_room.mixins import ControlRoomMixin
+from control_room.mixins import ControlRoomMixin, PlatformSettingsMixin
 from control_room.services import log_control_change
 from documentation.models import DocArticle, DocCategory, DocDownload, DocVideo
 
@@ -59,7 +59,7 @@ class DocCategoryListView(ControlRoomMixin, _DocBreadcrumbMixin, ListView):
         return context
 
 
-class DocCategoryCreateView(ControlRoomMixin, _DocBreadcrumbMixin, CreateView):
+class DocCategoryCreateView(PlatformSettingsMixin, _DocBreadcrumbMixin, CreateView):
     help_key = "doc_category_form"
     model = DocCategory
     form_class = DocCategoryForm
@@ -88,7 +88,7 @@ class DocCategoryCreateView(ControlRoomMixin, _DocBreadcrumbMixin, CreateView):
         return response
 
 
-class DocCategoryUpdateView(ControlRoomMixin, _DocBreadcrumbMixin, UpdateView):
+class DocCategoryUpdateView(PlatformSettingsMixin, _DocBreadcrumbMixin, UpdateView):
     help_key = "doc_category_form"
     model = DocCategory
     form_class = DocCategoryForm
@@ -118,7 +118,7 @@ class DocCategoryUpdateView(ControlRoomMixin, _DocBreadcrumbMixin, UpdateView):
         return response
 
 
-class DocCategoryDeleteView(ControlRoomMixin, DeleteView):
+class DocCategoryDeleteView(PlatformSettingsMixin, DeleteView):
     model = DocCategory
     success_url = reverse_lazy("control_room:doc_categories")
 
@@ -150,7 +150,7 @@ class DocArticleListView(ControlRoomMixin, _DocBreadcrumbMixin, ListView):
         return context
 
 
-class DocArticleCreateView(ControlRoomMixin, _DocBreadcrumbMixin, CreateView):
+class DocArticleCreateView(PlatformSettingsMixin, _DocBreadcrumbMixin, CreateView):
     help_key = "doc_article_form"
     model = DocArticle
     form_class = DocArticleForm
@@ -180,7 +180,7 @@ class DocArticleCreateView(ControlRoomMixin, _DocBreadcrumbMixin, CreateView):
         return response
 
 
-class DocArticleUpdateView(ControlRoomMixin, _DocBreadcrumbMixin, UpdateView):
+class DocArticleUpdateView(PlatformSettingsMixin, _DocBreadcrumbMixin, UpdateView):
     help_key = "doc_article_form"
     model = DocArticle
     form_class = DocArticleForm
@@ -212,7 +212,7 @@ class DocArticleUpdateView(ControlRoomMixin, _DocBreadcrumbMixin, UpdateView):
         return response
 
 
-class DocArticleDeleteView(ControlRoomMixin, DeleteView):
+class DocArticleDeleteView(PlatformSettingsMixin, DeleteView):
     model = DocArticle
     success_url = reverse_lazy("control_room:doc_articles")
 
@@ -244,7 +244,7 @@ class DocVideoListView(ControlRoomMixin, _DocBreadcrumbMixin, ListView):
         return context
 
 
-class DocVideoCreateView(ControlRoomMixin, _DocBreadcrumbMixin, CreateView):
+class DocVideoCreateView(PlatformSettingsMixin, _DocBreadcrumbMixin, CreateView):
     help_key = "doc_video_form"
     model = DocVideo
     form_class = DocVideoForm
@@ -273,7 +273,7 @@ class DocVideoCreateView(ControlRoomMixin, _DocBreadcrumbMixin, CreateView):
         return response
 
 
-class DocVideoUpdateView(ControlRoomMixin, _DocBreadcrumbMixin, UpdateView):
+class DocVideoUpdateView(PlatformSettingsMixin, _DocBreadcrumbMixin, UpdateView):
     help_key = "doc_video_form"
     model = DocVideo
     form_class = DocVideoForm
@@ -303,7 +303,7 @@ class DocVideoUpdateView(ControlRoomMixin, _DocBreadcrumbMixin, UpdateView):
         return response
 
 
-class DocVideoDeleteView(ControlRoomMixin, DeleteView):
+class DocVideoDeleteView(PlatformSettingsMixin, DeleteView):
     model = DocVideo
     success_url = reverse_lazy("control_room:doc_videos")
 
@@ -335,7 +335,7 @@ class DocDownloadListView(ControlRoomMixin, _DocBreadcrumbMixin, ListView):
         return context
 
 
-class DocDownloadCreateView(ControlRoomMixin, _DocBreadcrumbMixin, CreateView):
+class DocDownloadCreateView(PlatformSettingsMixin, _DocBreadcrumbMixin, CreateView):
     help_key = "doc_download_form"
     model = DocDownload
     form_class = DocDownloadForm
@@ -365,7 +365,7 @@ class DocDownloadCreateView(ControlRoomMixin, _DocBreadcrumbMixin, CreateView):
         return response
 
 
-class DocDownloadUpdateView(ControlRoomMixin, _DocBreadcrumbMixin, UpdateView):
+class DocDownloadUpdateView(PlatformSettingsMixin, _DocBreadcrumbMixin, UpdateView):
     help_key = "doc_download_form"
     model = DocDownload
     form_class = DocDownloadForm
@@ -396,7 +396,7 @@ class DocDownloadUpdateView(ControlRoomMixin, _DocBreadcrumbMixin, UpdateView):
         return response
 
 
-class DocDownloadDeleteView(ControlRoomMixin, DeleteView):
+class DocDownloadDeleteView(PlatformSettingsMixin, DeleteView):
     model = DocDownload
     success_url = reverse_lazy("control_room:doc_downloads")
 

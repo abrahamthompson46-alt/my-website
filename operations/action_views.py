@@ -7,13 +7,13 @@ from django.views import View
 from accounts.models import AuditEventType
 from accounts.services.audit import log_audit_event
 from customer_portal.models.ticket import SupportTicket, TicketStatus
-from operations.mixins import StaffRequiredMixin
+from operations.mixins import OpsActionsMixin
 from payments.models import Payment, PaymentStatus
 from payments.services.checkout import confirm_manual_payment
 from products.models.demo import DemoRequestStatus, ProductDemoRequest
 
 
-class DemoRequestUpdateView(StaffRequiredMixin, View):
+class DemoRequestUpdateView(OpsActionsMixin, View):
     def post(self, request, pk):
         demo = get_object_or_404(ProductDemoRequest, pk=pk)
         status = request.POST.get("status", "")
@@ -41,7 +41,7 @@ class DemoRequestUpdateView(StaffRequiredMixin, View):
         return redirect("operations:demo_requests")
 
 
-class SupportTicketUpdateView(StaffRequiredMixin, View):
+class SupportTicketUpdateView(OpsActionsMixin, View):
     def post(self, request, pk):
         ticket = get_object_or_404(SupportTicket, pk=pk)
         status = request.POST.get("status", "")
@@ -56,7 +56,7 @@ class SupportTicketUpdateView(StaffRequiredMixin, View):
         return redirect("operations:support")
 
 
-class ManualPaymentConfirmView(StaffRequiredMixin, View):
+class ManualPaymentConfirmView(OpsActionsMixin, View):
     def post(self, request, pk):
         payment = get_object_or_404(Payment, pk=pk)
         if payment.status != PaymentStatus.PENDING_CONFIRMATION:

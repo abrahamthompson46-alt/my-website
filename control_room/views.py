@@ -11,7 +11,7 @@ from control_room.forms import (
     RedirectRuleForm,
     SiteAnnouncementForm,
 )
-from control_room.mixins import ControlRoomMixin
+from control_room.mixins import ControlRoomMixin, PlatformOwnerMixin, PlatformSettingsMixin
 from control_room.models import (
     ControlChangeLog,
     FeatureFlag,
@@ -92,7 +92,7 @@ class DashboardView(ControlRoomMixin, TemplateView):
         return groups
 
 
-class SettingsView(ControlRoomMixin, UpdateView):
+class SettingsView(PlatformSettingsMixin, UpdateView):
     help_key = "settings"
     model = PlatformSettings
     form_class = PlatformSettingsForm
@@ -131,7 +131,7 @@ class SettingsView(ControlRoomMixin, UpdateView):
         return response
 
 
-class NavigationListView(ControlRoomMixin, ListView):
+class NavigationListView(PlatformSettingsMixin, ListView):
     help_key = "navigation"
     model = NavigationMenu
     template_name = "control_room/navigation_list.html"
@@ -146,7 +146,7 @@ class NavigationListView(ControlRoomMixin, ListView):
         return context
 
 
-class NavigationEditView(ControlRoomMixin, UpdateView):
+class NavigationEditView(PlatformSettingsMixin, UpdateView):
     help_key = "navigation_edit"
     model = NavigationMenu
     form_class = NavigationMenuForm
@@ -178,7 +178,7 @@ class NavigationEditView(ControlRoomMixin, UpdateView):
         return response
 
 
-class RedirectListView(ControlRoomMixin, ListView):
+class RedirectListView(PlatformSettingsMixin, ListView):
     help_key = "redirects"
     model = RedirectRule
     template_name = "control_room/redirects.html"
@@ -195,7 +195,7 @@ class RedirectListView(ControlRoomMixin, ListView):
         return context
 
 
-class RedirectCreateView(ControlRoomMixin, CreateView):
+class RedirectCreateView(PlatformSettingsMixin, CreateView):
     help_key = "redirect_form"
     model = RedirectRule
     form_class = RedirectRuleForm
@@ -216,7 +216,7 @@ class RedirectCreateView(ControlRoomMixin, CreateView):
         return response
 
 
-class RedirectUpdateView(ControlRoomMixin, UpdateView):
+class RedirectUpdateView(PlatformSettingsMixin, UpdateView):
     help_key = "redirect_form"
     model = RedirectRule
     form_class = RedirectRuleForm
@@ -237,7 +237,7 @@ class RedirectUpdateView(ControlRoomMixin, UpdateView):
         return response
 
 
-class RedirectDeleteView(ControlRoomMixin, DeleteView):
+class RedirectDeleteView(PlatformSettingsMixin, DeleteView):
     model = RedirectRule
 
     def get_success_url(self):
@@ -255,7 +255,7 @@ class RedirectDeleteView(ControlRoomMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class AnnouncementListView(ControlRoomMixin, ListView):
+class AnnouncementListView(PlatformSettingsMixin, ListView):
     help_key = "announcements"
     model = SiteAnnouncement
     template_name = "control_room/announcements.html"
@@ -272,7 +272,7 @@ class AnnouncementListView(ControlRoomMixin, ListView):
         return context
 
 
-class AnnouncementCreateView(ControlRoomMixin, CreateView):
+class AnnouncementCreateView(PlatformSettingsMixin, CreateView):
     help_key = "announcement_form"
     model = SiteAnnouncement
     form_class = SiteAnnouncementForm
@@ -293,7 +293,7 @@ class AnnouncementCreateView(ControlRoomMixin, CreateView):
         return response
 
 
-class AnnouncementUpdateView(ControlRoomMixin, UpdateView):
+class AnnouncementUpdateView(PlatformSettingsMixin, UpdateView):
     help_key = "announcement_form"
     model = SiteAnnouncement
     form_class = SiteAnnouncementForm
@@ -314,7 +314,7 @@ class AnnouncementUpdateView(ControlRoomMixin, UpdateView):
         return response
 
 
-class AnnouncementDeleteView(ControlRoomMixin, DeleteView):
+class AnnouncementDeleteView(PlatformSettingsMixin, DeleteView):
     model = SiteAnnouncement
 
     def get_success_url(self):
@@ -332,7 +332,7 @@ class AnnouncementDeleteView(ControlRoomMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class FeatureFlagListView(ControlRoomMixin, ListView):
+class FeatureFlagListView(PlatformSettingsMixin, ListView):
     help_key = "flags"
     model = FeatureFlag
     template_name = "control_room/flags.html"
@@ -348,7 +348,7 @@ class FeatureFlagListView(ControlRoomMixin, ListView):
         return context
 
 
-class FeatureFlagCreateView(ControlRoomMixin, CreateView):
+class FeatureFlagCreateView(PlatformSettingsMixin, CreateView):
     help_key = "flag_form"
     model = FeatureFlag
     form_class = FeatureFlagForm
@@ -369,7 +369,7 @@ class FeatureFlagCreateView(ControlRoomMixin, CreateView):
         return response
 
 
-class FeatureFlagUpdateView(ControlRoomMixin, UpdateView):
+class FeatureFlagUpdateView(PlatformSettingsMixin, UpdateView):
     help_key = "flag_form"
     model = FeatureFlag
     form_class = FeatureFlagForm
@@ -390,7 +390,7 @@ class FeatureFlagUpdateView(ControlRoomMixin, UpdateView):
         return response
 
 
-class FeatureFlagToggleView(ControlRoomMixin, TemplateView):
+class FeatureFlagToggleView(PlatformSettingsMixin, TemplateView):
     def post(self, request, pk):
         flag = get_object_or_404(FeatureFlag, pk=pk)
         flag.is_enabled = not flag.is_enabled
@@ -452,7 +452,7 @@ class SetupView(ControlRoomMixin, TemplateView):
         return context
 
 
-class SeedRunView(ControlRoomMixin, TemplateView):
+class SeedRunView(PlatformOwnerMixin, TemplateView):
     def post(self, request, key):
         result = run_seed_by_key(key)
         self._persist_results(request, [result], key)
@@ -475,7 +475,7 @@ class SeedRunView(ControlRoomMixin, TemplateView):
             messages.error(request, f"Seed failed: {failed.get('error') or failed.get('title', key)}")
 
 
-class SeedRunAllView(ControlRoomMixin, TemplateView):
+class SeedRunAllView(PlatformOwnerMixin, TemplateView):
     def post(self, request):
         results = run_all_seeds()
         request.session["last_seed_results"] = results
@@ -538,7 +538,7 @@ class BrandKitDownloadView(ControlRoomMixin, View):
         )
 
 
-class BrandKitZipView(ControlRoomMixin, View):
+class BrandKitZipView(PlatformSettingsMixin, View):
     def get(self, request):
         import io
         import zipfile

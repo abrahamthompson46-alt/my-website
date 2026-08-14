@@ -2,7 +2,11 @@
 
 from django.core.exceptions import PermissionDenied
 
-from accounts.services.rbac import user_can_manage_team, user_can_manage_platform_ops
+from accounts.services.rbac import (
+    user_can_manage_platform_ops,
+    user_can_manage_platform_settings,
+    user_can_manage_team,
+)
 from control_room.help import get_page_help
 from operations.mixins import StaffRequiredMixin
 
@@ -37,6 +41,16 @@ class PlatformOwnerMixin(ControlRoomMixin):
             if not user_can_manage_platform_ops(request.user):
                 raise PermissionDenied("Platform owner access required for this area.")
         return super().dispatch(request, *args, **kwargs)
+
+
+class PlatformSettingsMixin(ControlRoomMixin):
+    """Restrict configuration and destructive content changes to platform owners/admins."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_staff:
+            if not user_can_manage_platform_settings(request.user):
+                raise PermissionDenied("Platform owner or admin access required for this area.")
+        return super(ControlRoomMixin, self).dispatch(request, *args, **kwargs)
 
 
 class TeamManagementMixin(ControlRoomMixin):

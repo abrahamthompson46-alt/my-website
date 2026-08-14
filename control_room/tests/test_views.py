@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from accounts.models import User
+from accounts.models import Role, User
 from accounts.services.email import get_or_create_security_profile
+from accounts.services.rbac import assign_role
 from common.navigation import CONTROL_ROOM_NAV
 from products.models import Product, ProductCategory
 
@@ -15,6 +16,8 @@ class ControlRoomViewTests(TestCase):
             password="testpass123",
             is_staff=True,
         )
+        admin_role = Role.objects.create(name="Platform Admin", slug="platform-admin")
+        assign_role(self.user, admin_role)
         profile = get_or_create_security_profile(self.user)
         profile.email_verified = True
         profile.mfa_enabled = True

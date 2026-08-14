@@ -10,7 +10,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, U
 from accounts.models import AuditEventType
 from accounts.services.audit import log_audit_event
 from control_room.forms import PlanFeatureForm, PricingPlanForm, PricingTierForm, ProductForm
-from control_room.mixins import ControlRoomMixin
+from control_room.mixins import ControlRoomMixin, PlatformSettingsMixin
 from control_room.services import log_control_change
 from customer_portal.models import Subscription
 from products.models import PlanFeature, PricingPlan, PricingTier, Product, ProductDemoRequest
@@ -58,7 +58,7 @@ class ProductListView(ControlRoomMixin, ListView):
         return context
 
 
-class ProductCreateView(ControlRoomMixin, CreateView):
+class ProductCreateView(PlatformSettingsMixin, CreateView):
     help_key = "product_form"
     model = Product
     form_class = ProductForm
@@ -96,7 +96,7 @@ class ProductCreateView(ControlRoomMixin, CreateView):
         return response
 
 
-class ProductUpdateView(ControlRoomMixin, UpdateView):
+class ProductUpdateView(PlatformSettingsMixin, UpdateView):
     help_key = "product_form"
     model = Product
     form_class = ProductForm
@@ -211,7 +211,7 @@ class ProductPricingListView(ControlRoomMixin, DetailView):
         return context
 
 
-class ProductPricingPlanCreateView(ControlRoomMixin, CreateView):
+class ProductPricingPlanCreateView(PlatformSettingsMixin, CreateView):
     help_key = "product_pricing_form"
     model = PricingPlan
     form_class = PricingPlanForm
@@ -267,7 +267,7 @@ class ProductPricingPlanCreateView(ControlRoomMixin, CreateView):
         return reverse("control_room:product_pricing", kwargs={"pk": self.product.pk})
 
 
-class ProductPricingPlanUpdateView(ControlRoomMixin, UpdateView):
+class ProductPricingPlanUpdateView(PlatformSettingsMixin, UpdateView):
     help_key = "product_pricing_form"
     model = PricingPlan
     form_class = PricingPlanForm
@@ -324,7 +324,7 @@ class ProductPricingPlanUpdateView(ControlRoomMixin, UpdateView):
         return reverse("control_room:product_pricing", kwargs={"pk": self.product.pk})
 
 
-class ProductPricingPlanDeleteView(ControlRoomMixin, DeleteView):
+class ProductPricingPlanDeleteView(PlatformSettingsMixin, DeleteView):
     model = PricingPlan
 
     def dispatch(self, request, *args, **kwargs):

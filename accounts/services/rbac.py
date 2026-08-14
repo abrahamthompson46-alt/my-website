@@ -15,6 +15,20 @@ def user_has_role(user, role_slug):
     return get_user_roles(user).filter(slug=role_slug).exists()
 
 
+def user_can_manage_platform_settings(user):
+    """Platform owners/admins may change site configuration and destructive content."""
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    return user_has_role(user, "platform-owner") or user_has_role(user, "platform-admin")
+
+
+def user_can_manage_operations_actions(user):
+    """Sensitive operations workflows (payments, ticket status changes)."""
+    return user_can_manage_platform_settings(user)
+
+
 def user_can_manage_team(user):
     """Platform owners/admins and superusers can invite users and manage roles."""
     if not user.is_authenticated:
