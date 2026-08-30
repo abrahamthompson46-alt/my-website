@@ -160,6 +160,13 @@ class HomeView(TemplateView):
             return self.render_to_response(context)
 
         if "newsletter_submit" in request.POST:
+            from common.services.public_rate_limit import is_newsletter_rate_limited, log_newsletter_rate_limit
+
+            if is_newsletter_rate_limited(request):
+                log_newsletter_rate_limit(request)
+                messages.error(request, "Too many subscription attempts. Please try again later.")
+                return redirect(reverse("website:home") + "#newsletter")
+
             form = NewsletterSubscribeForm(request.POST)
             if form.is_valid():
                 form.save(source="homepage")

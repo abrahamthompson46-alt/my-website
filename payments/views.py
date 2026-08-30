@@ -118,6 +118,13 @@ class CheckoutView(PortalMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        from common.services.public_rate_limit import is_checkout_rate_limited, log_checkout_rate_limit
+
+        if is_checkout_rate_limited(request):
+            log_checkout_rate_limit(request)
+            messages.error(request, "Too many checkout attempts. Please try again later.")
+            return self.render_to_response(self.get_context_data(form=CheckoutForm(request.POST, request.FILES)))
+
         form = CheckoutForm(request.POST, request.FILES)
         if not form.is_valid():
             return self.render_to_response(self.get_context_data(form=form))
@@ -249,6 +256,12 @@ class GatewayWebhookView(View):
     """Provider-agnostic webhook endpoint: /payments/webhooks/<gateway_code>/"""
 
     def post(self, request, gateway_code):
+        from common.services.public_rate_limit import is_webhook_rate_limited, log_webhook_rate_limit
+
+        if is_webhook_rate_limited(request, gateway_code):
+            log_webhook_rate_limit(request, gateway_code)
+            return JsonResponse({"status": "error", "message": "Rate limit exceeded."}, status=429)
+
         gateway_config = get_object_or_404(GatewayConfiguration, code=gateway_code, is_active=True)
         try:
             payload = json.loads(request.body.decode("utf-8"))

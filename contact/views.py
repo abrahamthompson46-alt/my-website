@@ -3,11 +3,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from common.services.demo_requests import (
-    is_demo_rate_limited,
-    log_demo_rate_limit,
-    log_demo_submission,
-)
+from common.services.demo_requests import log_demo_submission
+from common.services.public_rate_limit import is_contact_rate_limited, log_contact_rate_limit
 from contact.forms import INTENT_CHOICES, ContactLeadForm
 from core.seo.mixins import SEOContextMixin
 from products.models import Product, ProductDemoRequest
@@ -45,8 +42,10 @@ class ContactView(SEOContextMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if is_demo_rate_limited(request):
-            log_demo_rate_limit(request)
+        from common.services.public_rate_limit import is_contact_rate_limited, log_contact_rate_limit
+
+        if is_contact_rate_limited(request):
+            log_contact_rate_limit(request)
             messages.error(request, "Too many requests. Please try again in an hour.")
             return redirect(request.path)
 

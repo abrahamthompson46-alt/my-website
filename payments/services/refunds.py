@@ -54,6 +54,21 @@ def create_refund(payment, amount: Decimal, reason="", initiated_by=None):
     if result.success:
         _update_payment_refund_status(payment)
         sync_refund(payment, refund)
+        try:
+            from payments.services.payment_audit import log_payment_refunded
+
+            log_payment_refunded(
+                payment,
+                actor=initiated_by,
+                refund_reference=refund.reference,
+                metadata={"source": "refund_service"},
+            )
+        except Exception:
+            import logging
+
+            logging.getLogger(__name__).exception(
+                "Failed to audit refund for payment %s", payment.reference
+            )
 
     return refund, result
 

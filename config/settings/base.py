@@ -444,6 +444,10 @@ CMS_PAGE_CACHE_TIMEOUT = 300
 PRODUCTS_ITEMS_PER_PAGE = 12
 BLOG_POSTS_PER_PAGE = 10
 
+# Backup monitoring (used by check_backup_freshness management command)
+BACKUP_ROOT = env("BACKUP_ROOT", default="/var/backups/zreta")
+BACKUP_MAX_AGE_HOURS = env.int("BACKUP_MAX_AGE_HOURS", default=26)
+
 # ---------------------------------------------------------------------------
 # SEO & social
 # ---------------------------------------------------------------------------

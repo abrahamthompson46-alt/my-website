@@ -50,3 +50,22 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
         run: python manage.py test --settings=config.settings.test --verbosity=2
+
+      - name: Production readiness command
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.production
+          DJANGO_SECRET_KEY: test-production-secret-key-with-fifty-characters-minimum
+          DJANGO_ALLOWED_HOSTS: example.com
+          CSRF_TRUSTED_ORIGINS: https://example.com
+          DB_NAME: test_db
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
+          REDIS_URL: redis://localhost:6379/0
+          EMAIL_HOST: smtp.example.com
+          EMAIL_PORT: 587
+          EMAIL_HOST_USER: user@example.com
+          EMAIL_HOST_PASSWORD: secret
+          EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+        run: python manage.py check_production --settings=config.settings.production

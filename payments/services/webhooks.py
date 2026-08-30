@@ -1,5 +1,6 @@
 """Payment webhook processing with validation."""
 
+import logging
 from decimal import Decimal
 
 from django.db import transaction
@@ -9,6 +10,8 @@ from common.money import MONEY_QUANT
 from payments.gateways.registry import get_gateway_from_model
 from payments.models import Payment, PaymentAttempt, PaymentStatus, WebhookEvent
 from payments.services.billing_sync import sync_payment_failure, sync_payment_success
+
+logger = logging.getLogger(__name__)
 
 _MINOR_UNIT_GATEWAYS = {"paystack", "flutterwave", "hubtel"}
 _TERMINAL_SUCCESS = {PaymentStatus.SUCCEEDED, PaymentStatus.REFUNDED}
@@ -118,6 +121,12 @@ def _apply_webhook_status(payment, status, raw_payload):
             response_data=raw_payload,
         )
         sync_payment_success(payment)
+        try:
+            from payments.services.payment_audit import log_payment_succeeded
+
+            log_payment_succeeded(payment, source="webhook")
+        except Exception:
+            logger.exception("Failed to audit webhook payment success for %s", payment.reference)
     elif status in {"failed", "failure", "cancelled", "canceled"}:
         if payment.status in _TERMINAL_FAILURE:
             return payment
@@ -134,6 +143,12 @@ def _apply_webhook_status(payment, status, raw_payload):
     elif status == "refunded":
         payment.status = PaymentStatus.REFUNDED
         payment.save()
+        try:
+            from payments.services.payment_audit import log_payment_refunded
+
+            log_payment_refunded(payment, metadata={"source": "webhook"})
+        except Exception:
+            logger.exception("Failed to audit webhook refund for %s", payment.reference)
     return payment
 
 

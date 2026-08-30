@@ -322,6 +322,14 @@ class ResourceListView(SEOContextMixin, ListView):
 
 class NewsletterSubscribeView(View):
     def post(self, request):
+        from common.services.public_rate_limit import is_newsletter_rate_limited, log_newsletter_rate_limit
+
+        if is_newsletter_rate_limited(request):
+            log_newsletter_rate_limit(request)
+            messages.error(request, "Too many subscription attempts. Please try again later.")
+            next_url = request.POST.get("next") or reverse("website:home")
+            return redirect(next_url)
+
         form = NewsletterSubscribeForm(request.POST)
         next_url = request.POST.get("next") or reverse("website:home")
         if form.is_valid():

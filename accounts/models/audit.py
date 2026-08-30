@@ -25,6 +25,10 @@ class AuditEventType(models.TextChoices):
     DEMO_REQUEST_UPDATED = "demo_request_updated", "Demo Request Updated"
     PRODUCT_CREATED = "product_created", "Product Created"
     PRODUCT_UPDATED = "product_updated", "Product Updated"
+    PAYMENT_CREATED = "payment_created", "Payment Created"
+    PAYMENT_SUCCEEDED = "payment_succeeded", "Payment Succeeded"
+    PAYMENT_REFUNDED = "payment_refunded", "Payment Refunded"
+    PAYMENT_MANUAL_CONFIRMED = "payment_manual_confirmed", "Payment Manual Confirmed"
 
 
 class AuditLog(BaseModel):

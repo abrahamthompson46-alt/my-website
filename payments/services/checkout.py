@@ -131,6 +131,12 @@ def create_checkout(
         notify_owners_payment(payment)
     except Exception:
         logger.exception("Failed to notify platform owners about payment %s", payment.reference)
+    try:
+        from payments.services.payment_audit import log_payment_created
+
+        log_payment_created(payment)
+    except Exception:
+        logger.exception("Failed to audit payment creation for %s", payment.reference)
     return payment, result
 
 
@@ -240,4 +246,10 @@ def confirm_manual_payment(payment, confirmed_by, notes=""):
         response_data=result.raw_response,
     )
     sync_payment_success(payment)
+    try:
+        from payments.services.payment_audit import log_payment_manual_confirmed
+
+        log_payment_manual_confirmed(payment, actor=confirmed_by)
+    except Exception:
+        logger.exception("Failed to audit manual payment confirmation for %s", payment.reference)
     return payment

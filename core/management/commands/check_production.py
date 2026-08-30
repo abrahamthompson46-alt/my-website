@@ -37,6 +37,17 @@ class Command(BaseCommand):
         if not getattr(settings, "ALLOWED_HOSTS", []) or set(settings.ALLOWED_HOSTS) <= {"localhost", "127.0.0.1"}:
             issues.append("ALLOWED_HOSTS must include your production domain(s).")
 
+        if not getattr(settings, "SENTRY_DSN", None):
+            warnings.append("SENTRY_DSN is not configured — error tracking is disabled.")
+
+        backup_root = getattr(settings, "BACKUP_ROOT", "")
+        if backup_root:
+            warnings.append(
+                f"Run `python manage.py check_backup_freshness` via cron to alert on stale backups ({backup_root})."
+            )
+        else:
+            warnings.append("BACKUP_ROOT is not configured — backup freshness monitoring is disabled.")
+
         try:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT 1")
