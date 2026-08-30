@@ -133,7 +133,7 @@ class HomeView(TemplateView):
             if is_demo_rate_limited(request):
                 log_demo_rate_limit(request)
                 messages.error(request, "Too many demo requests. Please try again later.")
-                return redirect(reverse("website:home") + "#request-demo")
+                return redirect(reverse("website:home") + "#start-trial")
 
             form = DemoRequestForm(request.POST)
             if form.is_valid():
@@ -155,7 +155,7 @@ class HomeView(TemplateView):
                     request,
                     "Thank you! Our team will contact you within one business day to schedule your demo.",
                 )
-                return redirect(reverse("website:home") + "#request-demo")
+                return redirect(reverse("website:home") + "#start-trial")
             context = self.get_context_data(demo_form=form)
             return self.render_to_response(context)
 

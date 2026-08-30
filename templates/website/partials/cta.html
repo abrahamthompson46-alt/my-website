@@ -10,12 +10,12 @@
                 <p class="home-cta__text">
                     {% if cta_section.subtitle %}{{ cta_section.subtitle }}
                     {% elif cta_section.body %}{{ cta_section.body }}
-                    {% else %}Start a free trial or book a demo — no credit card required for trials.{% endif %}
+                    {% else %}Browse products and start a 30-day free trial — no credit card required.{% endif %}
                 </p>
             </div>
             <div class="home-cta__actions cluster">
                 {% ui_button label="Explore products" url_name="products:list" variant="primary" size="lg" type="link" %}
-                <a href="#request-demo" class="btn btn--secondary btn--lg">Request a demo</a>
+                <a href="#start-trial" class="btn btn--secondary btn--lg">Start free trial</a>
             </div>
         </div>
     </div>

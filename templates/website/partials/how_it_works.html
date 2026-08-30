@@ -1,0 +1,17 @@
+<section class="section home-steps" aria-labelledby="steps-heading">
+    <div class="container">
+        {% include "cms/partials/section_header.html" with eyebrow="How it works" title="From signup to launch in minutes" subtitle="Self-serve trials on every published product — guided onboarding when you need it." %}
+
+        <ol class="home-steps__grid">
+            {% for step in how_it_works %}
+            <li class="home-steps__item">
+                <span class="home-steps__number" aria-hidden="true">{{ forloop.counter }}</span>
+                <div class="home-steps__body">
+                    <h3 class="home-steps__title">{{ step.title }}</h3>
+                    <p class="home-steps__text">{{ step.description }}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>

@@ -1,0 +1,35 @@
+{% load ui_tags %}
+
+<section class="section home-trial" id="start-trial" aria-labelledby="trial-heading">
+    <div class="container">
+        <div class="home-trial__card">
+            <div class="home-trial__content">
+                {% include "cms/partials/section_header.html" with section=start_trial_section eyebrow="Get started" title="Start your 30-day free trial" subtitle="Pick a product, create your account, and launch from the customer portal — no demo request or sales call required." %}
+
+                <ul class="home-trial__benefits">
+                    {% if trial_benefits %}
+                        {% for benefit in trial_benefits %}
+                        <li>
+                            <svg class="icon icon--sm" aria-hidden="true" data-icon="{% if benefit.icon %}{{ benefit.icon }}{% else %}check{% endif %}"></svg>
+                            {{ benefit.title }}
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>Full product access for 30 days</li>
+                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>No credit card required</li>
+                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>Upgrade or cancel anytime from your portal</li>
+                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>GHS pricing and Mobile Money checkout</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="home-trial__actions">
+                {% ui_button label="Browse products" url_name="products:list" variant="primary" size="lg" extra_class="btn--full" %}
+                {% ui_button label="Create account" url_name="accounts:register" variant="secondary" size="lg" extra_class="btn--full" %}
+                {% if not user.is_authenticated %}
+                <p class="home-trial__hint">Already have an account? <a href="{% url 'accounts:login' %}?next={% url 'products:list' %}">Sign in</a> to activate a trial.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>

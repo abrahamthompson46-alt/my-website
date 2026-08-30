@@ -48,8 +48,8 @@ class Command(BaseCommand):
             subheadline=HERO["subheadline"],
             trust_text=HERO["trust_text"],
             cta_primary_label=HERO.get("cta_primary_label", "Explore products"),
-            cta_secondary_label=HERO.get("cta_secondary_label", "Request a demo"),
-            cta_secondary_url="#request-demo",
+            cta_secondary_label=HERO.get("cta_secondary_label", "Start free trial"),
+            cta_secondary_url=HERO.get("cta_secondary_url", "#start-trial"),
             is_active=True,
         )
 
@@ -130,10 +130,10 @@ class Command(BaseCommand):
             )
 
         demo_benefits = [
-            ("30-minute tailored demo", "check-circle"),
-            ("Q&A with product specialists", "check-circle"),
-            ("GHS pricing overview", "check-circle"),
-            ("No commitment required", "check-circle"),
+            ("Full product access for 30 days", "check"),
+            ("No credit card required", "check"),
+            ("Upgrade or cancel anytime from your portal", "check"),
+            ("GHS pricing and Mobile Money checkout", "check"),
         ]
         for i, (title, icon) in enumerate(demo_benefits):
             SectionItem.objects.create(

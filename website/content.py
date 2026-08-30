@@ -123,6 +123,7 @@ HERO = {
     ],
     "cta_primary_label": "Explore products",
     "cta_secondary_label": "Start free trial",
+    "cta_secondary_url": "#start-trial",
 }
 
 CTA = {
@@ -131,13 +132,28 @@ CTA = {
 }
 
 REQUEST_DEMO = {
-    "eyebrow": "Request a Demo",
-    "title": "See Zreta products in action",
+    "eyebrow": "Get started",
+    "title": "Start your 30-day free trial",
     "subtitle": (
-        "Schedule a walkthrough with our team. We'll demo the products relevant to your "
-        "industry and explain how the Zreta platform fits your organization."
+        "Pick a product, create your account, and launch from the customer portal — "
+        "no demo request or sales call required."
     ),
 }
+
+HOW_IT_WORKS = [
+    {
+        "title": "Choose a product",
+        "description": "Browse modular solutions for faith, finance, education, healthcare, and operations.",
+    },
+    {
+        "title": "Start your trial",
+        "description": "Create an account and activate a 30-day trial from any product page — no credit card required.",
+    },
+    {
+        "title": "Launch from your portal",
+        "description": "Configure settings, invite your team, and upgrade when you're ready.",
+    },
+]
 
 NEWSLETTER = {
     "title": "Product updates from Zreta",
@@ -156,7 +172,9 @@ def get_homepage_context():
         "trust_signals": TRUST_SIGNALS,
         "trust_strip": TRUST_STRIP,
         "cta_section": CTA,
+        "start_trial_section": REQUEST_DEMO,
         "request_demo_section": REQUEST_DEMO,
+        "how_it_works": HOW_IT_WORKS,
         "newsletter_section": NEWSLETTER,
         "show_testimonials": False,
         "show_latest_news": False,
