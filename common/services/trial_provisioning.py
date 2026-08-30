@@ -17,7 +17,7 @@ from products.models.pricing import BillingInterval as PlanBillingInterval
 
 User = get_user_model()
 
-DEFAULT_TRIAL_DAYS = 14
+DEFAULT_TRIAL_DAYS = 30
 
 
 def _generate_license_key() -> str:

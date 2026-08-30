@@ -1,0 +1,37 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% url 'control_room:product_video_create' product_pk=product.pk as create_url %}
+{% url 'control_room:product_detail' pk=product.pk as product_url %}
+{% include "control_room/partials/page_header.html" with title="Product videos" subtitle="Walkthroughs and promo clips shown on the public product page." action_label="New video" action_url=create_url secondary_action_label="Back to product" secondary_action_url=product_url %}
+
+<div class="control-toolbar control-toolbar--compact" aria-label="Media type">
+    <a href="{% url 'control_room:product_screenshots' product_pk=product.pk %}?kind=screenshot" class="btn btn--ghost btn--sm">Screenshots</a>
+    <a href="{% url 'control_room:product_screenshots' product_pk=product.pk %}?kind=template" class="btn btn--ghost btn--sm">Templates</a>
+    <a href="{% url 'control_room:product_videos' product_pk=product.pk %}" class="btn btn--primary btn--sm">Videos</a>
+</div>
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Title</th><th>Type</th><th>Order</th><th></th></tr></thead>
+            <tbody>
+                {% for video in videos %}
+                <tr>
+                    <td><strong>{{ video.title }}</strong>{% if video.video_url %}<br><span class="text-muted">{{ video.video_url|truncatechars:50 }}</span>{% endif %}</td>
+                    <td>{{ video.get_video_type_display }}</td>
+                    <td>{{ video.sort_order }}</td>
+                    <td><a href="{% url 'control_room:product_video_edit' product_pk=product.pk pk=video.pk %}" class="btn btn--ghost btn--sm">Edit</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No videos yet. <a href="{{ create_url }}">Add a video</a>.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
+{% endblock %}

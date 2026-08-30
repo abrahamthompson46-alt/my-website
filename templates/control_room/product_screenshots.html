@@ -1,0 +1,37 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% url 'control_room:product_detail' pk=product.pk as product_url %}
+{% include "control_room/partials/page_header.html" with title=media_kind_label subtitle="Upload and organize product landing page media." action_label="Add item" action_url=create_url secondary_action_label="Back to product" secondary_action_url=product_url %}
+
+<div class="control-toolbar control-toolbar--compact" aria-label="Media type">
+    <a href="{% url 'control_room:product_screenshots' product_pk=product.pk %}?kind=screenshot" class="btn btn--{% if media_kind == 'screenshot' %}primary{% else %}ghost{% endif %} btn--sm">Screenshots</a>
+    <a href="{% url 'control_room:product_screenshots' product_pk=product.pk %}?kind=template" class="btn btn--{% if media_kind == 'template' %}primary{% else %}ghost{% endif %} btn--sm">Templates</a>
+    <a href="{% url 'control_room:product_videos' product_pk=product.pk %}" class="btn btn--ghost btn--sm">Videos</a>
+</div>
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-table-wrap">
+        <table class="ops-table">
+            <thead><tr><th>Preview</th><th>Title</th><th>Kind</th><th>Order</th><th></th></tr></thead>
+            <tbody>
+                {% for screenshot in screenshots %}
+                <tr>
+                    <td>{% if screenshot.image %}<img src="{{ screenshot.image.url }}" alt="" width="72" height="48" style="object-fit:cover;border-radius:6px;">{% else %}—{% endif %}</td>
+                    <td><strong>{{ screenshot.title|default:screenshot.alt_text }}</strong><br><span class="text-muted">{{ screenshot.alt_text }}</span></td>
+                    <td>{{ screenshot.get_kind_display }}</td>
+                    <td>{{ screenshot.sort_order }}</td>
+                    <td><a href="{% url 'control_room:product_screenshot_edit' product_pk=product.pk pk=screenshot.pk %}" class="btn btn--ghost btn--sm">Edit</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No {{ media_kind_label|lower }} yet. <a href="{{ create_url }}">Add one</a>.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if page_obj %}{% include "components/pagination.html" with page_obj=page_obj %}{% endif %}
+{% endblock %}

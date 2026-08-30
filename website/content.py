@@ -43,7 +43,7 @@ WHY_CHOOSE_US = [
     {
         "icon": "zap",
         "title": "Fast time to value",
-        "description": "Start a 14-day trial from pricing pages and access your customer portal after verification.",
+        "description": "Start a 30-day trial from any product page and access your customer portal after verification.",
     },
     {
         "icon": "bar-chart",
@@ -84,7 +84,7 @@ TESTIMONIALS = []
 LATEST_NEWS = []
 
 STATISTICS = [
-    {"value": "14 days", "label": "Free trial on every plan"},
+    {"value": "30 days", "label": "Free trial on every plan"},
     {"value": "GHS", "label": "Local pricing available"},
     {"value": "24h", "label": "Support response target"},
     {"value": "3+", "label": "Payment gateway options"},
@@ -114,7 +114,7 @@ HERO = {
         "Choose from products for faith communities, financial services, education, "
         "healthcare, ERP, and HR — each with shared billing, security, and support."
     ),
-    "trust_text": "14-day free trial · GHS pricing · Mobile Money payments · Published security pages",
+    "trust_text": "30-day free trial · GHS pricing · Mobile Money payments · Published security pages",
     "product_pills": [
         "ChurchHub",
         "Microfinance Core",
@@ -122,12 +122,12 @@ HERO = {
         "School & hospital suites",
     ],
     "cta_primary_label": "Explore products",
-    "cta_secondary_label": "Request a demo",
+    "cta_secondary_label": "Start free trial",
 }
 
 CTA = {
     "title": "Ready to modernize your operations?",
-    "subtitle": "Browse products, start a free trial, or book a demo — no credit card required for trials.",
+    "subtitle": "Browse products and start a 30-day free trial — no credit card required.",
 }
 
 REQUEST_DEMO = {

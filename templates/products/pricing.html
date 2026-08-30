@@ -14,7 +14,7 @@
 {% block content %}
 <section class="section products-pricing">
     <div class="container">
-        {% include "components/layout/page_header.html" with title=product.name|add:" Pricing" subtitle="Transparent plans with monthly and annual billing. Start a 14-day free trial or purchase instantly." %}
+        {% include "components/layout/page_header.html" with title=product.name|add:" Pricing" subtitle="Transparent plans with monthly and annual billing. Start a 30-day free trial or purchase instantly." %}
 
         {% if monthly_plans or annual_plans or plans %}
         {% if monthly_plans %}
@@ -45,13 +45,13 @@
 
         <div class="pricing-footnotes">
             <p>All paid plans include email support. Prices shown in USD; GHS tiers available where listed. Taxes may apply.</p>
-            <p>Questions? <a href="#demo">Request a demo</a> or see our <a href="{% url 'website:refund' %}">refund policy</a>.</p>
+            <p>Need help choosing a plan? <a href="{% url 'contact:demo' %}">Contact sales</a> or see our <a href="{% url 'website:refund' %}">refund policy</a>.</p>
         </div>
         {% else %}
-        {% ui_empty_state illustration="billing" title="Pricing unavailable" message="Pricing is not yet available for this product." action_label="Contact Sales" action_url="#demo" %}
+        {% ui_empty_state illustration="billing" title="Pricing unavailable" message="Pricing is not yet available for this product." action_label="Contact Sales" action_url_name="contact:demo" %}
         {% endif %}
 
-        {% include "products/partials/demo_request.html" with product=product form=demo_form heading="Questions about pricing?" form_action=request.path %}
+        {% include "products/partials/trial_cta.html" with product=product trial_url=trial_url %}
     </div>
 </section>
 {% endblock %}

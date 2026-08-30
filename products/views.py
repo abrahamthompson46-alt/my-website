@@ -12,7 +12,7 @@ from cms.services import get_product_hero, get_published_downloads, get_publishe
 from core.seo.helpers import seo_for_page
 from core.seo.mixins import SEOContextMixin
 from core.seo.schema import build_faq_schema
-from products.forms import ProductCompareSelectForm, ProductDemoRequestForm
+from products.forms import ProductCompareSelectForm
 from products.models import (
     ComparisonAttribute,
     PricingPlan,
@@ -90,7 +90,9 @@ class ProductDetailView(SEOContextMixin, PublishedProductMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.object
-        context["demo_form"] = kwargs.get("demo_form", ProductDemoRequestForm(product=product))
+        from products.services.trial_links import get_product_trial_url
+
+        context["trial_url"] = get_product_trial_url(product)
         context["related_products"] = (
             Product.objects.filter(is_published=True, category=product.category)
             .exclude(pk=product.pk)
@@ -122,31 +124,6 @@ class ProductDetailView(SEOContextMixin, PublishedProductMixin, DetailView):
             build_faq_schema([{"question": f.question, "answer": f.answer} for f in faqs])
         ]
 
-    def post(self, request, *args, **kwargs):
-        from common.services.demo_requests import (
-            is_demo_rate_limited,
-            log_demo_rate_limit,
-            log_demo_submission,
-        )
-
-        if is_demo_rate_limited(request):
-            log_demo_rate_limit(request)
-            messages.error(request, "Too many demo requests. Please try again later.")
-            return redirect(reverse("products:detail", kwargs={"slug": self.kwargs["slug"]}) + "#demo")
-
-        self.object = self.get_object()
-        form = ProductDemoRequestForm(request.POST, product=self.object)
-        if form.is_valid():
-            demo = form.save()
-            log_demo_submission(request, demo)
-            messages.success(
-                request,
-                f"Thank you! We'll contact you shortly about {self.object.name}.",
-            )
-            return redirect(reverse("products:detail", kwargs={"slug": self.object.slug}) + "#demo")
-        context = self.get_context_data(demo_form=form)
-        return self.render_to_response(context)
-
 
 class ProductPricingView(PublishedProductMixin, DetailView):
     template_name = "products/pricing.html"
@@ -157,6 +134,9 @@ class ProductPricingView(PublishedProductMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.object
+        from products.services.trial_links import get_product_trial_url
+
+        context["trial_url"] = get_product_trial_url(product)
         context["plans"] = product.plans.filter(is_published=True).prefetch_related("tiers", "plan_features")
         context["annual_plans"] = product.plans.filter(
             is_published=True, billing_interval="annual"
@@ -164,7 +144,6 @@ class ProductPricingView(PublishedProductMixin, DetailView):
         context["monthly_plans"] = product.plans.filter(
             is_published=True, billing_interval="monthly"
         ).prefetch_related("tiers", "plan_features")
-        context["demo_form"] = ProductDemoRequestForm(product=product)
         context["breadcrumb_items"] = [
             {"label": "Home", "url_name": "website:home"},
             {"label": "Products", "url_name": "products:list"},
@@ -172,28 +151,6 @@ class ProductPricingView(PublishedProductMixin, DetailView):
             {"label": "Pricing"},
         ]
         return context
-
-    def post(self, request, *args, **kwargs):
-        from common.services.demo_requests import (
-            is_demo_rate_limited,
-            log_demo_rate_limit,
-            log_demo_submission,
-        )
-
-        self.object = self.get_object()
-        if is_demo_rate_limited(request):
-            log_demo_rate_limit(request)
-            messages.error(request, "Too many demo requests. Please try again later.")
-            return redirect(reverse("products:pricing", kwargs={"slug": self.object.slug}) + "#demo")
-
-        form = ProductDemoRequestForm(request.POST, product=self.object)
-        if form.is_valid():
-            demo = form.save()
-            log_demo_submission(request, demo)
-            messages.success(request, "Thanks! We'll follow up about pricing and demos shortly.")
-            return redirect(reverse("products:pricing", kwargs={"slug": self.object.slug}) + "#demo")
-        context = self.get_context_data(demo_form=form)
-        return self.render_to_response(context)
 
 
 class ProductCompareView(TemplateView):

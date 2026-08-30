@@ -19,6 +19,16 @@ from control_room.doc_views import (
     DocVideoUpdateView,
     DocumentationHubView,
 )
+from control_room.media_views import (
+    ProductScreenshotCreateView,
+    ProductScreenshotDeleteView,
+    ProductScreenshotListView,
+    ProductScreenshotUpdateView,
+    ProductVideoCreateView,
+    ProductVideoDeleteView,
+    ProductVideoListView,
+    ProductVideoUpdateView,
+)
 from control_room.product_views import (
     ProductCreateView,
     ProductDetailView,
@@ -125,6 +135,46 @@ urlpatterns = [
         "products/<uuid:product_pk>/pricing/<uuid:pk>/delete/",
         ProductPricingPlanDeleteView.as_view(),
         name="product_pricing_delete",
+    ),
+    path(
+        "products/<uuid:product_pk>/screenshots/",
+        ProductScreenshotListView.as_view(),
+        name="product_screenshots",
+    ),
+    path(
+        "products/<uuid:product_pk>/screenshots/new/",
+        ProductScreenshotCreateView.as_view(),
+        name="product_screenshot_create",
+    ),
+    path(
+        "products/<uuid:product_pk>/screenshots/<uuid:pk>/edit/",
+        ProductScreenshotUpdateView.as_view(),
+        name="product_screenshot_edit",
+    ),
+    path(
+        "products/<uuid:product_pk>/screenshots/<uuid:pk>/delete/",
+        ProductScreenshotDeleteView.as_view(),
+        name="product_screenshot_delete",
+    ),
+    path(
+        "products/<uuid:product_pk>/videos/",
+        ProductVideoListView.as_view(),
+        name="product_videos",
+    ),
+    path(
+        "products/<uuid:product_pk>/videos/new/",
+        ProductVideoCreateView.as_view(),
+        name="product_video_create",
+    ),
+    path(
+        "products/<uuid:product_pk>/videos/<uuid:pk>/edit/",
+        ProductVideoUpdateView.as_view(),
+        name="product_video_edit",
+    ),
+    path(
+        "products/<uuid:product_pk>/videos/<uuid:pk>/delete/",
+        ProductVideoDeleteView.as_view(),
+        name="product_video_delete",
     ),
     path("setup/", SetupView.as_view(), name="setup"),
     path("setup/run/<slug:key>/", SeedRunView.as_view(), name="seed_run"),

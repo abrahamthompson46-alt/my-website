@@ -47,7 +47,10 @@
 .product-hero {
   padding-block: var(--space-16);
   border-bottom: 1px solid var(--border-default);
-  background: var(--surface-section);
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgb(59 130 246 / 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 20%, rgb(14 165 233 / 0.06), transparent 55%),
+    var(--surface-section);
 }
 
 .product-hero--churchhub { border-top: 4px solid var(--product-churchhub); }
@@ -93,6 +96,31 @@
   font-size: var(--text-body-md);
   color: var(--text-secondary);
   margin-bottom: var(--space-6);
+  max-width: 42rem;
+  line-height: 1.7;
+}
+
+.product-hero__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-hero__trust li {
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  background: var(--surface-card);
+}
+
+.product-hero__actions {
+  gap: var(--space-3);
 }
 
 .product-hero__image {
@@ -310,6 +338,13 @@
   border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast), box-shadow var(--duration-fast), border-color var(--duration-fast);
+}
+
+.pricing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-200);
 }
 
 .pricing-card--popular {
@@ -535,4 +570,74 @@
   font-size: var(--text-xl);
   font-weight: var(--font-semibold);
   margin: 0;
+}
+
+/* Trial CTA */
+.product-trial-cta__card {
+  display: grid;
+  gap: var(--space-8);
+  padding: var(--space-10);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-primary-200);
+  background:
+    linear-gradient(135deg, rgb(59 130 246 / 0.08), rgb(14 165 233 / 0.04)),
+    var(--surface-card);
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 900px) {
+  .product-trial-cta__card {
+    grid-template-columns: 1.4fr 0.8fr;
+    align-items: center;
+  }
+}
+
+.product-trial-cta__eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-overline);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+  color: var(--color-primary-600);
+  font-weight: var(--font-semibold);
+}
+
+.product-trial-cta__title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-display-sm);
+}
+
+.product-trial-cta__subtitle {
+  margin: 0 0 var(--space-5);
+  color: var(--text-secondary);
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+  max-width: 38rem;
+}
+
+.product-trial-cta__benefits {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-trial-cta__benefits li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--text-body-sm);
+}
+
+.product-trial-cta__actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.product-trial-cta__hint {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  color: var(--text-tertiary);
+  text-align: center;
 }

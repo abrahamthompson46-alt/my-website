@@ -1,0 +1,30 @@
+{% extends "base_control_room.html" %}
+{% load ui_tags %}
+
+{% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
+
+{% block content %}
+{% include "control_room/partials/page_header.html" with title=page_title subtitle=page_subtitle %}
+
+<form method="post" class="control-form"{% if multipart %} enctype="multipart/form-data"{% endif %}>
+    {% csrf_token %}
+    <section class="ops-panel">
+        <div class="ops-panel__body control-form__grid">
+            {% for field in form %}
+            {% ui_field field=field %}
+            {% endfor %}
+        </div>
+    </section>
+    <div class="control-form__actions">
+        {% if cancel_url_kwargs %}
+        <a href="{% url cancel_url_name product_pk=cancel_url_kwargs.product_pk %}" class="btn btn--ghost btn--sm">Cancel</a>
+        {% else %}
+        {% ui_button label="Cancel" url_name=cancel_url_name variant="ghost" %}
+        {% endif %}
+        {% ui_button label="Save" type="submit" variant="primary" %}
+        {% if object and delete_url_name %}
+        <button formaction="{% url delete_url_name product_pk=delete_url_kwargs.product_pk pk=delete_url_kwargs.pk %}" formmethod="post" class="btn btn--destructive-outline btn--sm" onclick="return confirm('Delete this item?');">Delete</button>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

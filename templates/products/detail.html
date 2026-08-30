@@ -26,6 +26,11 @@
             <div class="cluster product-hero__actions">
                 {% include "products/partials/product_hero_actions.html" %}
             </div>
+            <ul class="product-hero__trust" aria-label="Trial highlights">
+                <li>30-day free trial</li>
+                <li>No credit card required</li>
+                <li>Instant account setup</li>
+            </ul>
         </div>
         {% include "products/partials/product_hero_media.html" %}
     </div>
@@ -43,6 +48,11 @@
             <div class="cluster product-hero__actions">
                 {% include "products/partials/product_hero_actions.html" %}
             </div>
+            <ul class="product-hero__trust" aria-label="Trial highlights">
+                <li>30-day free trial</li>
+                <li>No credit card required</li>
+                <li>Instant account setup</li>
+            </ul>
         </div>
         {% include "products/partials/product_hero_media.html" %}
     </div>
@@ -228,7 +238,7 @@
 </section>
 {% endif %}
 
-{% include "products/partials/demo_request.html" with product=product form=demo_form %}
+{% include "products/partials/trial_cta.html" with product=product trial_url=trial_url %}
 
 {% if related_products %}
 <section class="section section--alt">

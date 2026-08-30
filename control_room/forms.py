@@ -5,6 +5,7 @@ from control_room.models import FeatureFlag, NavigationMenu, PlatformSettings, R
 from control_room.services.theme import HEX_PATTERN, THEME_PRESETS, get_preset_choices, normalize_hex
 from control_room.validators import BRAND_FILE_EXTENSIONS, validate_brand_file_size
 from products.models import Product, ProductCategory
+from products.models.media import ProductScreenshot, ProductVideo
 from products.models.pricing import PlanFeature, PricingPlan, PricingTier
 
 
@@ -244,6 +245,33 @@ class PlanFeatureForm(BaseModelForm):
     class Meta:
         model = PlanFeature
         fields = ["text", "is_included", "sort_order"]
+
+
+class ProductScreenshotForm(BaseModelForm):
+    class Meta:
+        model = ProductScreenshot
+        fields = ["title", "alt_text", "image", "caption", "kind", "sort_order", "is_featured"]
+        widgets = {
+            "caption": forms.Textarea(attrs={"rows": 2}),
+        }
+
+
+class ProductVideoForm(BaseModelForm):
+    class Meta:
+        model = ProductVideo
+        fields = [
+            "title",
+            "description",
+            "video_type",
+            "video_url",
+            "embed_code",
+            "thumbnail",
+            "sort_order",
+        ]
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 3}),
+            "embed_code": forms.Textarea(attrs={"rows": 4}),
+        }
 
 
 class DocCategoryForm(BaseModelForm):

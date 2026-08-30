@@ -31,9 +31,9 @@
     {% endif %}
     <div class="pricing-card__action">
         {% if plan.is_contact_sales %}
-        <a href="#demo" class="btn btn--secondary btn--md btn--full">Contact Sales</a>
+        <a href="{% url 'contact:demo' %}" class="btn btn--secondary btn--md btn--full">Contact Sales</a>
         {% else %}
-        <a href="{% url 'products:plan_start' slug=product.slug %}?plan={{ plan.slug }}&action=trial" class="btn btn--primary btn--md btn--full">Start Free Trial</a>
+        <a href="{% url 'products:plan_start' slug=product.slug %}?plan={{ plan.slug }}&action=trial" class="btn btn--primary btn--md btn--full">Start 30-day free trial</a>
         <a href="{% url 'products:plan_start' slug=product.slug %}?plan={{ plan.slug }}&action=buy" class="btn btn--secondary btn--md btn--full">Buy now</a>
         {% endif %}
     </div>
