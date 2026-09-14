@@ -359,11 +359,14 @@ SECURITY_CSP = {
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
     "img-src": ["'self'", "data:", "https:"],
-    "script-src": ["'self'", "'unsafe-inline'"],
-    "style-src": ["'self'", "'unsafe-inline'"],
-    "font-src": ["'self'", "data:"],
+    # No 'unsafe-inline' scripts — XSS payloads cannot execute inline JS.
+    "script-src": ["'self'"],
+    # Style attributes still used in a few templates; keep unsafe-inline for styles only.
+    "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+    "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
     "connect-src": ["'self'", "https://api.paystack.co", "https://api.flutterwave.com", "https://api.hubtel.com"],
     "object-src": ["'none'"],
+    "upgrade-insecure-requests": [],
 }
 
 # ---------------------------------------------------------------------------

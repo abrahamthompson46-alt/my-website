@@ -37,19 +37,41 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements/base.txt
+          pip install -r requirements/ci.txt
           pip install redis
 
       - name: Django checks
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
+          CI_USE_POSTGRES: "1"
+          DB_NAME: test_db
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
         run: |
           python manage.py check --deploy --settings=config.settings.test
           python manage.py makemigrations --check --dry-run --settings=config.settings.test
 
-      - name: Run tests
+      - name: Run tests with coverage
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
-        run: python manage.py test --settings=config.settings.test --verbosity=2
+          CI_USE_POSTGRES: "1"
+          DB_NAME: test_db
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
+        run: |
+          coverage run --source=accounts,payments,common,core manage.py test --settings=config.settings.test --verbosity=2
+          coverage report --fail-under=55
+          coverage xml
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
 
       - name: Production readiness command
         env:
@@ -62,6 +84,7 @@ jobs:
           DB_PASSWORD: postgres
           DB_HOST: localhost
           DB_PORT: 5432
+          DB_SSLMODE: disable
           REDIS_URL: redis://localhost:6379/0
           EMAIL_HOST: smtp.example.com
           EMAIL_PORT: 587

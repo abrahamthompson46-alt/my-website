@@ -12,22 +12,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'tokens.css' %}">
     {% include "includes/brand_theme.html" %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_css %}{% endblock %}
-    <script>
-        (function () {
-            var stored = localStorage.getItem("theme");
-            var theme = stored || "light";
-            if (theme === "system") {
-                theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-            }
-            document.documentElement.setAttribute("data-theme", theme);
-        })();
-    </script>
+    <script src="{% static 'js/theme-boot.js' %}"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
     <a href="#main-content" class="skip-link">Skip to main content</a>

@@ -1,0 +1,15 @@
+[run]
+source = accounts,payments,common,core
+branch = True
+omit =
+    */migrations/*
+    */tests/*
+    */management/commands/*
+
+[report]
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError

@@ -31,6 +31,19 @@ class AuditEventType(models.TextChoices):
     PAYMENT_MANUAL_CONFIRMED = "payment_manual_confirmed", "Payment Manual Confirmed"
 
 
+class AppendOnlyQuerySet(models.QuerySet):
+    def update(self, **kwargs):
+        raise PermissionError("AuditLog is append-only and cannot be updated.")
+
+    def delete(self):
+        raise PermissionError("AuditLog is append-only and cannot be deleted.")
+
+
+class AppendOnlyManager(models.Manager):
+    def get_queryset(self):
+        return AppendOnlyQuerySet(self.model, using=self._db)
+
+
 class AuditLog(BaseModel):
     """Immutable security and authentication audit trail."""
 
@@ -57,6 +70,8 @@ class AuditLog(BaseModel):
     message = models.CharField(max_length=255, blank=True)
     metadata = models.JSONField(default=dict, blank=True)
 
+    objects = AppendOnlyManager()
+
     class Meta:
         ordering = ["-created_at"]
         indexes = [
@@ -66,3 +81,11 @@ class AuditLog(BaseModel):
 
     def __str__(self):
         return f"{self.event_type} @ {self.created_at:%Y-%m-%d %H:%M}"
+
+    def save(self, *args, **kwargs):
+        if not self._state.adding:
+            raise PermissionError("AuditLog is append-only and cannot be modified.")
+        return super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise PermissionError("AuditLog is append-only and cannot be deleted.")

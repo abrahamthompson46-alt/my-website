@@ -1,15 +1,32 @@
-"""Test settings — fast, isolated, no debug toolbar."""
+"""Test settings — fast, isolated, no debug toolbar.
+
+Set CI_USE_POSTGRES=1 to run against PostgreSQL (used in GitHub Actions).
+"""
+
+import os
 
 from config.settings.base import *  # noqa: F401, F403
 
 DEBUG = False
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
+if os.environ.get("CI_USE_POSTGRES") == "1":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("DB_NAME", "test_db"),
+            "USER": os.environ.get("DB_USER", "postgres"),
+            "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
+            "HOST": os.environ.get("DB_HOST", "localhost"),
+            "PORT": os.environ.get("DB_PORT", "5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
+    }
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",

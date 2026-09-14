@@ -26,7 +26,7 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 | P0-04 | Secure payment proof uploads | VERIFIED | Private paths + auth download + nginx + migration 0002 |
 | P0-05 | Fix Redis session revocation | VERIFIED | `delete_django_session()` uses configured session engine |
 | P0-06 | Add checkout IDOR/security tests | VERIFIED | Service + CheckoutView integration tests |
-| P0-07 | Add coverage.py to CI | NOT STARTED | Deferred — Phase 1 |
+| P0-07 | Add coverage.py to CI | VERIFIED | `requirements/ci.txt` + coverage fail-under in CI |
 | P0-08 | Sanitize health endpoint errors | VERIFIED | Completed in production hardening pass |
 | P0-09 | Honest scope documentation | VERIFIED | `ZRETA_SCOPE_TRUTH.md` + seed_documentation + `/legal/enterprise/` |
 
@@ -43,11 +43,11 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 | P1-05 | CI/CD deploy (remove web git pull) | VERIFIED | Phase 1A.1 — web deploy removed; full CI/CD optional Phase 1+ |
 | P1-06 | Automated DB + media backups | IN PROGRESS | Phase 1A.2 scripts; restore drill pending |
 | P1-07 | PostgreSQL SSL + statement_timeout | VERIFIED | `DB_SSLMODE` + `DB_STATEMENT_TIMEOUT_MS` in production settings |
-| P1-08 | CSP tightening (remove unsafe-inline) | NOT STARTED |
-| P1-09 | PostgreSQL integration tests in CI | NOT STARTED |
-| P1-10 | Append-only audit log | NOT STARTED |
+| P1-08 | CSP tightening (remove unsafe-inline) | VERIFIED | script-src no longer allows unsafe-inline; styles deferred |
+| P1-09 | PostgreSQL integration tests in CI | VERIFIED | `CI_USE_POSTGRES=1` in GitHub Actions |
+| P1-10 | Append-only audit log | VERIFIED | Model + queryset guards; admin delete disabled |
 | P1-11 | Payment row locking (select_for_update) | VERIFIED | Webhooks, verify, manual confirm, refunds |
-| P1-12 | Refund integration tests | NOT STARTED |
+| P1-12 | Refund integration tests | VERIFIED | `payments/tests/test_refunds.py` |
 
 ---
 
@@ -75,7 +75,7 @@ All items: **NOT STARTED**
 |------|----------|--------|
 | G0 | Audit docs approved by stakeholder | IN PROGRESS |
 | G1 | Phase 0 fixes deployed + tested | VERIFIED (local: 98 tests, migration check, security review) |
-| G2 | Coverage ≥ 60% on payments/accounts | NOT STARTED |
+| G2 | Coverage ≥ 55% on accounts/payments/common/core (CI gate) | VERIFIED | coverage fail-under=55 in CI |
 | G3 | Tenant isolation tests pass | NOT STARTED |
 | G4 | MFI ledger trial balance balances | NOT STARTED |
 

@@ -10,7 +10,10 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
         csp_parts = []
         for directive, sources in getattr(settings, "SECURITY_CSP", {}).items():
-            csp_parts.append(f"{directive} {' '.join(sources)}")
+            if sources:
+                csp_parts.append(f"{directive} {' '.join(sources)}")
+            else:
+                csp_parts.append(directive)
 
         if csp_parts:
             response["Content-Security-Policy"] = "; ".join(csp_parts)
@@ -20,7 +23,8 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
         response.setdefault("Cross-Origin-Opener-Policy", "same-origin")
         response.setdefault("Cross-Origin-Resource-Policy", "same-origin")
         response.setdefault("X-Content-Type-Options", "nosniff")
-        response.setdefault("X-Frame-Options", getattr(settings, "X_FRAME_OPTIONS", "DENY"))
+        # Always force DENY — do not allow setdefault to keep a weaker upstream value.
+        response["X-Frame-Options"] = getattr(settings, "X_FRAME_OPTIONS", "DENY")
         return response
 
 
