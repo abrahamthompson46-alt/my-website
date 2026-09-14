@@ -1,3 +1,6 @@
+from importlib import import_module
+
+from django.conf import settings
 from django.utils import timezone
 
 from accounts.models import UserSession
@@ -9,6 +12,20 @@ def _client_ip(request):
     if forwarded:
         return forwarded.split(",")[0].strip()
     return request.META.get("REMOTE_ADDR")
+
+
+def delete_django_session(session_key):
+    """
+    Delete a Django session for the configured session backend.
+
+    Works for db, cache, and cached_db engines so Redis-backed sessions
+    are actually invalidated on revoke.
+    """
+    if not session_key:
+        return
+    engine = import_module(settings.SESSION_ENGINE)
+    store = engine.SessionStore(session_key=session_key)
+    store.delete()
 
 
 def track_user_session(request, user):
@@ -57,9 +74,7 @@ def revoke_session(user, session_id, current_session_key=None):
     session.is_current = False
     session.save(update_fields=["revoked_at", "is_current", "updated_at"])
     if current_session_key and session.session_key != current_session_key:
-        from django.contrib.sessions.models import Session
-
-        Session.objects.filter(session_key=session.session_key).delete()
+        delete_django_session(session.session_key)
     return session
 
 
@@ -69,7 +84,6 @@ def revoke_other_sessions(user, current_session_key):
     )
     keys = list(others.values_list("session_key", flat=True))
     if keys:
-        from django.contrib.sessions.models import Session
-
-        Session.objects.filter(session_key__in=keys).delete()
+        for key in keys:
+            delete_django_session(key)
         others.update(revoked_at=timezone.now(), is_current=False)

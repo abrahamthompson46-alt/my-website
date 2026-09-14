@@ -119,3 +119,14 @@ class HomepageViewTests(TestCase):
         )
         response = self.client.get(reverse("website:home"))
         self.assertNotContains(response, "home-testimonials")
+
+
+class EnterpriseReadinessViewTests(TestCase):
+    def test_enterprise_readiness_page_is_honest(self):
+        response = self.client.get(reverse("website:enterprise"))
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode()
+        self.assertIn("Live today", content)
+        self.assertIn("On the roadmap", content)
+        self.assertIn("multi-tenancy", content)
+        self.assertNotIn("SOC 2 Type II", content)

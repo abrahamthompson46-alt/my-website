@@ -55,9 +55,17 @@ def process_webhook(gateway_config, payload: dict, raw_body: bytes, headers: dic
         webhook_event.save(update_fields=["processed", "processed_at", "updated_at"])
         return webhook_event, True
 
-    payment = Payment.objects.filter(reference=parsed.reference).first()
+    payment = (
+        Payment.objects.select_for_update()
+        .filter(reference=parsed.reference)
+        .first()
+    )
     if not payment and parsed.gateway_reference:
-        payment = Payment.objects.filter(gateway_reference=parsed.gateway_reference).first()
+        payment = (
+            Payment.objects.select_for_update()
+            .filter(gateway_reference=parsed.gateway_reference)
+            .first()
+        )
 
     if payment:
         webhook_event.payment = payment
@@ -154,6 +162,12 @@ def _apply_webhook_status(payment, status, raw_payload):
 
 @transaction.atomic
 def verify_payment(payment):
+    payment = Payment.objects.select_for_update().get(pk=payment.pk)
+    if payment.status in _TERMINAL_SUCCESS:
+        adapter = get_gateway_from_model(payment.gateway)
+        result = adapter.verify_payment(payment.reference)
+        return payment, result
+
     adapter = get_gateway_from_model(payment.gateway)
     result = adapter.verify_payment(payment.reference)
     if result.success:
@@ -169,9 +183,10 @@ def verify_payment(payment):
         )
         sync_payment_success(payment)
     elif result.status in {"failed", "cancelled"}:
-        payment.status = PaymentStatus.FAILED
-        payment.failed_at = timezone.now()
-        payment.failure_reason = result.message
-        payment.save()
-        sync_payment_failure(payment)
+        if payment.status not in _TERMINAL_FAILURE:
+            payment.status = PaymentStatus.FAILED
+            payment.failed_at = timezone.now()
+            payment.failure_reason = result.message
+            payment.save()
+            sync_payment_failure(payment)
     return payment, result

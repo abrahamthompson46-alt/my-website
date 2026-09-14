@@ -16,6 +16,9 @@ def generate_refund_reference():
 
 @transaction.atomic
 def create_refund(payment, amount: Decimal, reason="", initiated_by=None):
+    from payments.models import Payment
+
+    payment = Payment.objects.select_for_update().get(pk=payment.pk)
     if payment.status not in {PaymentStatus.SUCCEEDED, PaymentStatus.PARTIALLY_REFUNDED}:
         raise ValueError("Only successful payments can be refunded.")
     if amount <= 0 or amount > payment.refundable_amount:

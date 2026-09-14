@@ -29,6 +29,20 @@ if not CSRF_TRUSTED_ORIGINS:  # noqa: F405
 if DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":  # noqa: F405
     raise ImproperlyConfigured("Use PostgreSQL in production — SQLite is not supported.")
 
+# PostgreSQL connection hardening
+_db = DATABASES["default"]  # noqa: F405
+_db_options = _db.setdefault("OPTIONS", {})
+_db_options.setdefault("connect_timeout", 10)
+_db_sslmode = env("DB_SSLMODE", default="prefer")  # noqa: F405
+_db_options["sslmode"] = _db_sslmode
+_statement_timeout_ms = env.int("DB_STATEMENT_TIMEOUT_MS", default=30000)  # noqa: F405
+_timeout_flag = f"-c statement_timeout={_statement_timeout_ms}"
+_existing_options = (_db_options.get("options") or "").strip()
+if "statement_timeout" not in _existing_options:
+    _db_options["options"] = (
+        f"{_existing_options} {_timeout_flag}".strip() if _existing_options else _timeout_flag
+    )
+
 if EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend":  # noqa: F405
     raise ImproperlyConfigured(
         "Configure SMTP email in production (EMAIL_BACKEND, EMAIL_HOST, etc.)."

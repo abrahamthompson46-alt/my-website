@@ -24,11 +24,11 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 | P0-02 | Run full test suite | VERIFIED | 72 baseline → 98 after Phase 0 corrections |
 | P0-03 | Fix checkout amount manipulation | VERIFIED | `payments/services/pricing.py` + 18 checkout tests |
 | P0-04 | Secure payment proof uploads | VERIFIED | Private paths + auth download + nginx + migration 0002 |
-| P0-05 | Fix Redis session revocation | NOT STARTED | Deferred — Phase 1 |
+| P0-05 | Fix Redis session revocation | VERIFIED | `delete_django_session()` uses configured session engine |
 | P0-06 | Add checkout IDOR/security tests | VERIFIED | Service + CheckoutView integration tests |
 | P0-07 | Add coverage.py to CI | NOT STARTED | Deferred — Phase 1 |
-| P0-08 | Sanitize health endpoint errors | NOT STARTED | Deferred — Phase 1 |
-| P0-09 | Honest scope documentation | VERIFIED | `ZRETA_SCOPE_TRUTH.md` + seed_documentation |
+| P0-08 | Sanitize health endpoint errors | VERIFIED | Completed in production hardening pass |
+| P0-09 | Honest scope documentation | VERIFIED | `ZRETA_SCOPE_TRUTH.md` + seed_documentation + `/legal/enterprise/` |
 
 ---
 
@@ -38,15 +38,15 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 |----|------|--------|
 | P1-01 | Server-side pricing enforcement | VERIFIED | Completed in Phase 0 |
 | P1-02 | Private media / signed URLs | PARTIALLY IMPLEMENTED | Phase 0 (local FS + auth views); S3 signed URLs Phase 1+ |
-| P1-03 | Payment audit events | NOT STARTED |
-| P1-04 | Universal POST rate limiting | NOT STARTED |
+| P1-03 | Payment audit events | VERIFIED | `payments/services/payment_audit.py` |
+| P1-04 | Universal POST rate limiting | VERIFIED | Public rate limits for checkout/contact/newsletter/webhooks |
 | P1-05 | CI/CD deploy (remove web git pull) | VERIFIED | Phase 1A.1 — web deploy removed; full CI/CD optional Phase 1+ |
 | P1-06 | Automated DB + media backups | IN PROGRESS | Phase 1A.2 scripts; restore drill pending |
-| P1-07 | PostgreSQL SSL + statement_timeout | NOT STARTED |
+| P1-07 | PostgreSQL SSL + statement_timeout | VERIFIED | `DB_SSLMODE` + `DB_STATEMENT_TIMEOUT_MS` in production settings |
 | P1-08 | CSP tightening (remove unsafe-inline) | NOT STARTED |
 | P1-09 | PostgreSQL integration tests in CI | NOT STARTED |
 | P1-10 | Append-only audit log | NOT STARTED |
-| P1-11 | Payment row locking (select_for_update) | NOT STARTED |
+| P1-11 | Payment row locking (select_for_update) | VERIFIED | Webhooks, verify, manual confirm, refunds |
 | P1-12 | Refund integration tests | NOT STARTED |
 
 ---

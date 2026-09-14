@@ -216,10 +216,10 @@ def create_recurring_checkout(
 
 @transaction.atomic
 def confirm_manual_payment(payment, confirmed_by, notes=""):
+    payment = Payment.objects.select_for_update().get(pk=payment.pk)
     if payment.status != PaymentStatus.PENDING_CONFIRMATION:
         raise ValueError("Payment is not awaiting manual confirmation.")
 
-    from payments.constants import MANUAL
     from payments.gateways.manual import ManualGateway
     from payments.services.billing_sync import sync_payment_success
 

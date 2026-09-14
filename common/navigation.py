@@ -124,6 +124,7 @@ PUBLIC_FOOTER_COLUMNS = [
             {"label": "Privacy", "url_name": "website:privacy"},
             {"label": "Terms", "url_name": "website:terms"},
             {"label": "Security", "url_name": "website:security"},
+            {"label": "Enterprise readiness", "url_name": "website:enterprise"},
             {"label": "Refund Policy", "url_name": "website:refund"},
             {"label": "System Status", "url_name": "website:status"},
         ],

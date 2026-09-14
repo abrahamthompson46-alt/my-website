@@ -55,6 +55,15 @@ class SecurityOverviewView(LegalPageMixin):
     seo_description = "Security controls, data protection practices, and responsible disclosure."
 
 
+class EnterpriseReadinessView(LegalPageMixin):
+    template_name = "website/legal/enterprise.html"
+    page_title = "Enterprise readiness"
+    seo_title = "Enterprise Readiness"
+    seo_description = (
+        "What Zreta delivers today for enterprise buyers — live controls versus roadmap capabilities."
+    )
+
+
 class RefundPolicyView(LegalPageMixin):
     template_name = "website/legal/refund.html"
     page_title = "Refund Policy"

@@ -1,6 +1,7 @@
 from django.urls import path
 
 from website.views import (
+    EnterpriseReadinessView,
     HomeView,
     PrivacyPolicyView,
     RefundPolicyView,
@@ -16,6 +17,7 @@ urlpatterns = [
     path("legal/privacy/", PrivacyPolicyView.as_view(), name="privacy"),
     path("legal/terms/", TermsOfServiceView.as_view(), name="terms"),
     path("legal/security/", SecurityOverviewView.as_view(), name="security"),
+    path("legal/enterprise/", EnterpriseReadinessView.as_view(), name="enterprise"),
     path("legal/refund/", RefundPolicyView.as_view(), name="refund"),
     path("status/", StatusPageView.as_view(), name="status"),
 ]

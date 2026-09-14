@@ -18,6 +18,8 @@ Use this checklist before and after every production release.
 - [ ] `DJANGO_ALLOWED_HOSTS` includes production domains
 - [ ] `CSRF_TRUSTED_ORIGINS` includes HTTPS origins
 - [ ] PostgreSQL configured (`DB_*`)
+- [ ] `DB_SSLMODE` set appropriately for your Postgres topology
+- [ ] `DB_STATEMENT_TIMEOUT_MS` set (default 30000)
 - [ ] Redis running (`REDIS_URL`)
 - [ ] SMTP configured (`EMAIL_*`)
 - [ ] `SENTRY_DSN` configured (recommended)

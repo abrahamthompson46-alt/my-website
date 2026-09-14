@@ -48,6 +48,21 @@ class Command(BaseCommand):
         else:
             warnings.append("BACKUP_ROOT is not configured — backup freshness monitoring is disabled.")
 
+        if "postgresql" in settings.DATABASES["default"]["ENGINE"]:
+            db_options = settings.DATABASES["default"].get("OPTIONS") or {}
+            if not db_options.get("sslmode"):
+                warnings.append("DB OPTIONS.sslmode is unset — set DB_SSLMODE in production.")
+            options_flags = db_options.get("options") or ""
+            if "statement_timeout" not in options_flags:
+                warnings.append(
+                    "PostgreSQL statement_timeout is unset — set DB_STATEMENT_TIMEOUT_MS in production."
+                )
+
+        session_engine = getattr(settings, "SESSION_ENGINE", "")
+        if session_engine.endswith(".cache") or "cached_db" in session_engine:
+            if not settings.CACHES.get("default", {}).get("LOCATION"):
+                issues.append("Cache-backed sessions require a configured Redis/cache LOCATION.")
+
         try:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT 1")

@@ -7,7 +7,7 @@
 <ul>
     <li>Email verification required for customer portal access.</li>
     <li>Staff accounts require two-factor authentication (TOTP + backup codes).</li>
-    <li>Login rate limiting, account lockout, and session tracking/revocation.</li>
+    <li>Login rate limiting, account lockout, and session tracking/revocation (including Redis-backed sessions).</li>
     <li>Role-based access control for staff and operations areas.</li>
 </ul>
 
@@ -15,16 +15,21 @@
 <ul>
     <li>CSRF protection on authenticated and public forms.</li>
     <li>Security headers including CSP, HSTS (production), and secure cookies.</li>
-    <li>Audit logging for authentication events, demo submissions, and admin changes.</li>
+    <li>Audit logging for authentication events, payments, demo submissions, and admin changes.</li>
+    <li>Public endpoint rate limits for checkout, contact, newsletter, and webhooks.</li>
     <li>Demo forms protected with honeypot and per-IP rate limits.</li>
 </ul>
 
 <h2>Data protection</h2>
 <ul>
     <li>Passwords stored using Django's secure hashing framework.</li>
-    <li>Production deployments should use PostgreSQL, Redis, TLS, and restricted server access.</li>
+    <li>Production deployments use PostgreSQL (with SSL mode and statement timeout settings), Redis, TLS, and restricted server access.</li>
     <li>Payment card data is handled by configured payment gateways — not stored on this marketing platform.</li>
+    <li>Payment proof uploads are served through authenticated downloads, not public media URLs.</li>
 </ul>
+
+<h2>Buyer summary</h2>
+<p>See our <a href="{% url 'website:enterprise' %}">Enterprise readiness</a> page for live capabilities versus roadmap items.</p>
 
 <h2>Responsible disclosure</h2>
 <p>Report suspected vulnerabilities to <a href="mailto:{{ SUPPORT_EMAIL|default:'security@zreta.com' }}">{{ SUPPORT_EMAIL|default:"security@zreta.com" }}</a>. Include steps to reproduce and impact assessment.</p>
