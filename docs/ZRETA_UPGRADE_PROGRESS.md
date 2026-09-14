@@ -57,7 +57,7 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 |----|------|--------|-------|
 | P2-01 | Tenant model (Organization, Membership) | VERIFIED | `organizations` app + backfill migration |
 | P2-02 | Tenant resolution middleware | VERIFIED | `ActiveOrganizationMiddleware` + session switch |
-| P2-03 | Tenant-scoped querysets | PARTIALLY IMPLEMENTED | Org FK on subscriptions/licenses/invoices/payments; portal mixin filters by org |
+| P2-03 | Tenant-scoped querysets | VERIFIED | Org FK + scoping on subscriptions/licenses/invoices/payments/tickets/downloads/notifications |
 | P2-04 | DRF API v1 | NOT STARTED |
 | P2-05 | Celery/async jobs | NOT STARTED |
 ---

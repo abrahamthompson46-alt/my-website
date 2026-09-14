@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 
 from accounts.mixins import EmailVerifiedRequiredMixin
 
@@ -23,14 +24,26 @@ class UserQuerysetMixin:
     """
     Scope querysets to the active organization when the model is tenant-aware.
     Falls back to the authenticated user for legacy / non-tenant models.
+
+    Notifications also include personal (organization=null) rows for the user,
+    so platform-owner alerts remain visible in the portal.
     """
 
     user_field = "user"
     organization_field = "organization"
+    include_personal_null_org = False
 
     def get_queryset(self):
         qs = super().get_queryset()
+        model = qs.model
         org = getattr(self.request, "organization", None)
-        if org is not None and hasattr(qs.model, self.organization_field):
+        if org is not None and hasattr(model, self.organization_field):
+            if self.include_personal_null_org:
+                return qs.filter(
+                    **{self.user_field: self.request.user}
+                ).filter(
+                    Q(**{self.organization_field: org})
+                    | Q(**{f"{self.organization_field}__isnull": True})
+                )
             return qs.filter(**{self.organization_field: org})
         return qs.filter(**{self.user_field: self.request.user})

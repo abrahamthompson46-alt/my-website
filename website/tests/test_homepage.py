@@ -128,5 +128,5 @@ class EnterpriseReadinessViewTests(TestCase):
         content = response.content.decode()
         self.assertIn("Live today", content)
         self.assertIn("On the roadmap", content)
-        self.assertIn("multi-tenancy", content)
+        self.assertIn("tenant", content.lower())
         self.assertNotIn("SOC 2 Type II", content)

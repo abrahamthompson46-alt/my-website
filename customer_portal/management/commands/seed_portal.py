@@ -28,6 +28,7 @@ from customer_portal.models import (
     SupportTicket,
     TicketMessage,
 )
+from organizations.services import ensure_default_organization
 from products.models import Product
 
 User = get_user_model()
@@ -78,6 +79,8 @@ class Command(BaseCommand):
             },
         )
 
+        organization = ensure_default_organization(user, company="Acme Industries")
+
         products = list(Product.objects.filter(is_published=True).order_by("sort_order")[:4])
         if not products:
             self.stdout.write(self.style.ERROR("No products found. Run seed_products first."))
@@ -96,6 +99,7 @@ class Command(BaseCommand):
                 amount=Decimal("499.00") + i * 200,
                 started_at=today - timedelta(days=90 + i * 10),
                 renews_at=today + timedelta(days=275 - i * 10),
+                organization=organization,
             )
             subscriptions.append(sub)
 
@@ -108,6 +112,7 @@ class Command(BaseCommand):
                 seats=sub.seats,
                 activated_at=today - timedelta(days=90),
                 expires_at=sub.renews_at,
+                organization=organization,
             )
 
             Invoice.objects.create(
@@ -120,6 +125,7 @@ class Command(BaseCommand):
                 issued_at=today - timedelta(days=30),
                 due_at=today + timedelta(days=15),
                 paid_at=today - timedelta(days=25) if i < 2 else None,
+                organization=organization,
             )
 
             ProductUpdate.objects.create(
@@ -139,6 +145,7 @@ class Command(BaseCommand):
                 category="installer",
                 version=f"2.{i + 1}.0",
                 file=ContentFile(b"Demo installer placeholder", name=f"{product.slug}-installer.txt"),
+                organization=organization,
             )
 
         ticket = SupportTicket.objects.create(
@@ -149,6 +156,7 @@ class Command(BaseCommand):
             status="in_progress",
             priority="high",
             reference="TKT-" + "".join(random.choices(string.digits, k=6)),
+            organization=organization,
         )
         TicketMessage.objects.create(
             ticket=ticket,
@@ -175,6 +183,7 @@ class Command(BaseCommand):
                 message=message,
                 notification_type=ntype,
                 link_url=link,
+                organization=organization,
             )
 
         self.stdout.write(self.style.SUCCESS("Customer portal demo data seeded."))

@@ -137,3 +137,55 @@ class OrganizationIsolationTests(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertNotEqual(self.client.session.get(ACTIVE_ORG_SESSION_KEY), str(self.org_b.pk))
+
+    def test_tickets_and_notifications_are_org_isolated(self):
+        from customer_portal.models import PortalNotification, SupportTicket
+
+        ticket_a = SupportTicket.objects.create(
+            user=self.owner_a,
+            product=self.product,
+            subject="Alpha issue",
+            description="Problem in Alpha",
+            reference="TKT-100001",
+            organization=self.org_a,
+        )
+        SupportTicket.objects.create(
+            user=self.owner_b,
+            product=self.product,
+            subject="Beta issue",
+            description="Problem in Beta",
+            reference="TKT-100002",
+            organization=self.org_b,
+        )
+        PortalNotification.objects.create(
+            user=self.owner_a,
+            title="Alpha billing",
+            message="Invoice ready",
+            organization=self.org_a,
+        )
+        PortalNotification.objects.create(
+            user=self.owner_a,
+            title="Beta billing leak check",
+            message="Should not appear in Alpha",
+            organization=self.org_b,
+        )
+        PortalNotification.objects.create(
+            user=self.owner_a,
+            title="Personal alert",
+            message="No org",
+            organization=None,
+        )
+
+        self.client.force_login(self.owner_a)
+        session = self.client.session
+        session[ACTIVE_ORG_SESSION_KEY] = str(self.org_a.pk)
+        session.save()
+
+        tickets = self.client.get(reverse("customer_portal:tickets"))
+        self.assertEqual(list(tickets.context["object_list"]), [ticket_a])
+
+        notes = self.client.get(reverse("customer_portal:notifications"))
+        titles = [n.title for n in notes.context["object_list"]]
+        self.assertIn("Alpha billing", titles)
+        self.assertIn("Personal alert", titles)
+        self.assertNotIn("Beta billing leak check", titles)

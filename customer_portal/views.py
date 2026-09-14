@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -53,7 +54,11 @@ class DashboardView(PortalMixin, TemplateView):
         else:
             context["subscriptions"] = subs.filter(user=user)[:4]
             context["recent_invoices"] = invoices.filter(user=user)[:5]
-        context["recent_tickets"] = SupportTicket.objects.filter(user=user).order_by("-created_at")[:5]
+        context["recent_tickets"] = (
+            SupportTicket.objects.filter(organization=org).order_by("-created_at")[:5]
+            if org is not None
+            else SupportTicket.objects.filter(user=user).order_by("-created_at")[:5]
+        )
         context["recent_updates"] = get_product_updates_for_user(user, organization=org, limit=4)
         context["notifications"] = get_recent_notifications(user, limit=5)
         context["breadcrumb_items"] = [{"label": "Dashboard"}]
@@ -175,6 +180,11 @@ class TicketCreateView(PortalMixin, TemplateView):
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.user = request.user
+            ticket.organization = getattr(request, "organization", None)
+            if ticket.organization is None:
+                from organizations.services import ensure_default_organization
+
+                ticket.organization = ensure_default_organization(request.user)
             ticket.reference = self._generate_reference()
             ticket.save()
             TicketMessage.objects.create(
@@ -303,6 +313,7 @@ class NotificationListView(PortalMixin, UserQuerysetMixin, ListView):
     template_name = "customer_portal/notifications.html"
     context_object_name = "notifications"
     paginate_by = 20
+    include_personal_null_org = True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -321,7 +332,11 @@ class NotificationMarkReadView(PortalMixin, View):
         return self._mark_read_and_redirect(request, pk)
 
     def _mark_read_and_redirect(self, request, pk):
-        notification = get_object_or_404(PortalNotification, pk=pk, user=request.user)
+        org = getattr(request, "organization", None)
+        qs = PortalNotification.objects.filter(user=request.user)
+        if org is not None:
+            qs = qs.filter(Q(organization=org) | Q(organization__isnull=True))
+        notification = get_object_or_404(qs, pk=pk)
         if not notification.is_read:
             notification.is_read = True
             notification.read_at = timezone.now()
@@ -333,9 +348,11 @@ class NotificationMarkReadView(PortalMixin, View):
 
 class NotificationMarkAllReadView(PortalMixin, View):
     def post(self, request):
-        PortalNotification.objects.filter(user=request.user, is_read=False).update(
-            is_read=True, read_at=timezone.now()
-        )
+        org = getattr(request, "organization", None)
+        qs = PortalNotification.objects.filter(user=request.user, is_read=False)
+        if org is not None:
+            qs = qs.filter(Q(organization=org) | Q(organization__isnull=True))
+        qs.update(is_read=True, read_at=timezone.now())
         messages.success(request, "All notifications marked as read.")
         return redirect("customer_portal:notifications")
 

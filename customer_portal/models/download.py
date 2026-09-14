@@ -34,9 +34,18 @@ class CustomerDownload(BaseModel):
     )
     version = models.CharField(max_length=40, blank=True)
     is_active = models.BooleanField(default=True)
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="portal_downloads",
+    )
 
     class Meta:
         ordering = ["-created_at"]
-
+        indexes = [
+            models.Index(fields=["organization", "is_active"]),
+        ]
     def __str__(self):
         return self.title

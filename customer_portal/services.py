@@ -1,5 +1,7 @@
 """Customer portal data helpers."""
 
+from django.db.models import Q
+
 from customer_portal.models import (
     Invoice,
     License,
@@ -22,25 +24,33 @@ def get_dashboard_stats(user, organization=None):
         subscriptions = Subscription.objects.filter(organization=organization)
         licenses = License.objects.filter(organization=organization)
         invoices = Invoice.objects.filter(organization=organization)
+        tickets = SupportTicket.objects.filter(organization=organization)
+        unread_notifications = PortalNotification.objects.filter(user=user).filter(
+            Q(organization=organization) | Q(organization__isnull=True),
+            is_read=False,
+        )
     else:
         subscriptions = Subscription.objects.filter(user=user)
         licenses = License.objects.filter(user=user)
         invoices = Invoice.objects.filter(user=user)
+        tickets = SupportTicket.objects.filter(user=user)
+        unread_notifications = PortalNotification.objects.filter(user=user, is_read=False)
     return {
         "active_subscriptions": subscriptions.filter(
             status__in=["active", "trial"]
         ).count(),
         "active_licenses": licenses.filter(status="active").count(),
         "open_invoices": invoices.filter(status__in=["open", "overdue"]).count(),
-        "open_tickets": SupportTicket.objects.filter(
-            user=user, status__in=["open", "in_progress", "waiting"]
-        ).count(),
-        "unread_notifications": PortalNotification.objects.filter(user=user, is_read=False).count(),
+        "open_tickets": tickets.filter(status__in=["open", "in_progress", "waiting"]).count(),
+        "unread_notifications": unread_notifications.count(),
     }
 
 
-def get_recent_notifications(user, limit=5):
-    return PortalNotification.objects.filter(user=user).order_by("-created_at")[:limit]
+def get_recent_notifications(user, organization=None, limit=5):
+    qs = PortalNotification.objects.filter(user=user)
+    if organization is not None:
+        qs = qs.filter(Q(organization=organization) | Q(organization__isnull=True))
+    return qs.order_by("-created_at")[:limit]
 
 
 def get_product_updates_for_user(user, organization=None, limit=5):

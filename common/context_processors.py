@@ -116,11 +116,15 @@ def navigation(request):
 
     unread_notifications = 0
     if portal_type == "customer" and request.user.is_authenticated:
+        from django.db.models import Q
+
         from customer_portal.models import PortalNotification
 
-        unread_notifications = PortalNotification.objects.filter(
-            user=request.user, is_read=False
-        ).count()
+        qs = PortalNotification.objects.filter(user=request.user, is_read=False)
+        org = getattr(request, "organization", None)
+        if org is not None:
+            qs = qs.filter(Q(organization=org) | Q(organization__isnull=True))
+        unread_notifications = qs.count()
 
     return {
         "PUBLIC_HEADER_NAV": public_header,

@@ -44,10 +44,19 @@ class SupportTicket(BaseModel):
         default=TicketPriority.NORMAL,
     )
     reference = models.CharField(max_length=20, unique=True)
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="support_tickets",
+    )
 
     class Meta:
         ordering = ["-created_at"]
-
+        indexes = [
+            models.Index(fields=["organization", "status"]),
+        ]
     def __str__(self):
         return f"{self.reference} — {self.subject}"
 

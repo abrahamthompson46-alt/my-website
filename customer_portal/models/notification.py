@@ -28,9 +28,19 @@ class PortalNotification(BaseModel):
     link_url = models.CharField(max_length=500, blank=True)
     is_read = models.BooleanField(default=False)
     read_at = models.DateTimeField(null=True, blank=True)
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="portal_notifications",
+    )
 
     class Meta:
         ordering = ["-created_at"]
-
+        indexes = [
+            models.Index(fields=["organization", "is_read"]),
+            models.Index(fields=["user", "is_read"]),
+        ]
     def __str__(self):
         return self.title
