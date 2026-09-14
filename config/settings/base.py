@@ -44,6 +44,9 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "django_extensions",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "corsheaders",
 ]
 
 LOCAL_APPS = [
@@ -66,6 +69,7 @@ LOCAL_APPS = [
     "control_room.apps.ControlRoomConfig",
     "partners",
     "organizations.apps.OrganizationsConfig",
+    "api.apps.ApiConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -77,6 +81,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.gzip.GZipMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -371,6 +376,51 @@ SECURITY_CSP = {
     "object-src": ["'none'"],
     "upgrade-insecure-requests": [],
 }
+
+# ---------------------------------------------------------------------------
+# REST API
+# ---------------------------------------------------------------------------
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon_burst": "20/min",
+        "user_sustained": "120/min",
+        "user": "120/min",
+    },
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+    ],
+}
+
+# Browser CORS — empty by default (server-to-server Token clients need no CORS).
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = list(
+    {
+        "accept",
+        "authorization",
+        "content-type",
+        "origin",
+        "user-agent",
+        "x-csrftoken",
+        "x-requested-with",
+        "x-organization-id",
+        "x-organization-slug",
+    }
+)
 
 # ---------------------------------------------------------------------------
 # Session

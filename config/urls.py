@@ -80,6 +80,8 @@ urlpatterns = _local_media_urlpatterns() + [
     path("partners/", include("partners.urls")),
     # Payment webhooks (public, CSRF-exempt)
     path("payments/webhooks/", include("payments.webhook_urls")),
+    # Public API
+    path("api/v1/", include("api.urls")),
     # CMS & marketing utilities
     path("cms/", include("cms.urls")),
     path("marketing/", include("marketing.urls")),

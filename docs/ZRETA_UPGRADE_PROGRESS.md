@@ -58,8 +58,10 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 | P2-01 | Tenant model (Organization, Membership) | VERIFIED | `organizations` app + backfill migration |
 | P2-02 | Tenant resolution middleware | VERIFIED | `ActiveOrganizationMiddleware` + session switch |
 | P2-03 | Tenant-scoped querysets | VERIFIED | Org FK + scoping on subscriptions/licenses/invoices/payments/tickets/downloads/notifications |
-| P2-04 | DRF API v1 | NOT STARTED |
-| P2-05 | Celery/async jobs | NOT STARTED |
+| P2-04 | DRF API v1 | VERIFIED | `/api/v1/` token auth + org header scoping |
+| P2-05 | API authentication | VERIFIED | DRF Token (+ session) authentication |
+| P2-06 | Celery/async jobs | NOT STARTED |
+| P2-10 | API rate limiting and versioning | VERIFIED | DRF throttles + `/api/v1` namespace |
 ---
 
 ## Phase 3 — Financial core (MFI)
