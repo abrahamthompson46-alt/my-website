@@ -74,16 +74,26 @@ class Command(BaseCommand):
                 ],
             },
             {
-                "name": "Microfinance Core",
+                "name": "CoreTrust",
                 "slug": "microfinance-core",
                 "accent": ProductAccent.MICROFINANCE,
                 "category": categories["vertical"],
                 "tagline": "Core banking for microfinance institutions",
-                "short_description": "End-to-end loan lifecycle, savings, collections, and regulatory reporting built for scale.",
-                "long_description": "Microfinance Core delivers a complete banking platform for MFIs, SACCOs, and cooperatives with loan origination, disbursement, collections, and compliance reporting.",
+                "short_description": (
+                    "Live MFI platform for loans, savings, collections, and operations — "
+                    "marketed and billed through Zreta."
+                ),
+                "long_description": (
+                    "CoreTrust is Zreta's microfinance product for MFIs, SACCOs, and cooperatives. "
+                    "It runs as its own deployed application. This site markets CoreTrust, sells "
+                    "subscriptions, and links customers to the live app."
+                ),
                 "status": ProductStatus.GA,
-                "is_featured": False,
+                "is_featured": True,
                 "sort_order": 2,
+                "demo_url": "https://micro.zreta.com/",
+                "register_url": "https://micro.zreta.com/",
+                "external_app_url": "https://micro.zreta.com/",
                 "modules": ["Clients", "Loans", "Savings", "Reporting"],
                 "features": [
                     ("Loan management", "Full lifecycle from application to closure."),

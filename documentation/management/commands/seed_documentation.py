@@ -152,13 +152,14 @@ class Command(BaseCommand):
 
         DocArticle.objects.create(
             category=roadmap,
-            title="Microfinance Core banking modules (planned)",
+            title="CoreTrust — live MFI product (external)",
             slug="roadmap-microfinance-core",
             article_type="roadmap",
-            excerpt="Loans, savings, ledger, and core banking workflows are product roadmap items.",
+            excerpt="CoreTrust is Zreta's microfinance product. It runs as a separate live app; this site markets and bills it.",
             body=(
-                "Microfinance Core is positioned as a future modular product.\n\n"
-                "The current repository implements marketing pages, subscription billing, and payment collection only."
+                "CoreTrust (formerly catalogued as Microfinance Core) is a deployed microfinance platform.\n\n"
+                "This repository implements marketing pages, subscription billing, and payment collection.\n"
+                "Launch the live CoreTrust application from the product page when an external app URL is configured."
             ),
             is_published=True,
             published_at=now,

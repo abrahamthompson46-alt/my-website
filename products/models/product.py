@@ -15,7 +15,7 @@ class ProductStatus(models.TextChoices):
 
 class ProductAccent(models.TextChoices):
     CHURCHHUB = "churchhub", "ChurchHub (Indigo)"
-    MICROFINANCE = "microfinance", "Microfinance (Teal)"
+    MICROFINANCE = "microfinance", "CoreTrust / Microfinance (Teal)"
     ERP = "erp", "ERP (Blue)"
     SCHOOL = "school", "School (Purple)"
     HOSPITAL = "hospital", "Hospital (Cyan)"

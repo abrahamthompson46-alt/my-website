@@ -10,11 +10,11 @@ FEATURED_PRODUCTS = [
         "features": ["Member management", "Online giving", "Event planning"],
     },
     {
-        "name": "Microfinance Core",
+        "name": "CoreTrust",
         "slug": "microfinance-core",
         "accent": "finance",
         "tagline": "Core banking for microfinance institutions",
-        "description": "End-to-end loan lifecycle, savings, collections, and regulatory reporting built for scale.",
+        "description": "Live MFI platform for loans, savings, and collections — marketed here, running as its own product.",
         "features": ["Loan management", "Savings accounts", "Collections"],
     },
 ]
@@ -28,7 +28,7 @@ WHY_CHOOSE_US = [
     {
         "icon": "layers",
         "title": "Modular by design",
-        "description": "Deploy the products you need today — ChurchHub, Microfinance Core, ERP, school, and hospital solutions — on one shared platform.",
+        "description": "Choose the products you need — ChurchHub, CoreTrust, and more — each with shared billing, portal, and support on Zreta.",
     },
     {
         "icon": "globe",
@@ -62,8 +62,8 @@ INDUSTRIES = [
     {
         "name": "Financial Services",
         "icon": "landmark",
-        "description": "Microfinance institutions, SACCOs, and cooperatives running core banking operations.",
-        "products": ["Microfinance Core"],
+        "description": "Microfinance institutions, SACCOs, and cooperatives running core banking with CoreTrust.",
+        "products": ["CoreTrust"],
     },
     {
         "name": "Education",
@@ -110,14 +110,14 @@ HERO = {
     "headline_line1": "Enterprise software for",
     "headline_line2": "organizations that scale",
     "subheadline": (
-        "Zreta is a modular software platform for growing organizations. "
-        "Choose from products for faith communities, financial services, education, "
-        "healthcare, ERP, and HR — each with shared billing, security, and support."
+        "Zreta markets and sells modular products for growing organizations — "
+        "ChurchHub, CoreTrust, and more — with shared billing, security, and support. "
+        "Each live product runs as its own application."
     ),
     "trust_text": "30-day free trial · GHS pricing · Mobile Money payments · Published security pages",
     "product_pills": [
         "ChurchHub",
-        "Microfinance Core",
+        "CoreTrust",
         "ERP & operations",
         "School & hospital suites",
     ],

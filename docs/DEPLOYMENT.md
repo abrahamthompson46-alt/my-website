@@ -1,6 +1,6 @@
 # Deploy the marketing website (VPS)
 
-This guide deploys **only the public marketing site** in this repository — the Django app that showcases ChurchHub, Microfinance Core, and ERP Suite. It does **not** deploy those product applications themselves.
+This guide deploys **only the public marketing site** in this repository — the Django app that showcases ChurchHub, CoreTrust, and other catalog products. It does **not** deploy those product applications themselves.
 
 **Stack:** Ubuntu 24.04 · Nginx · Gunicorn · PostgreSQL · Redis · Cloudflare
 
@@ -135,7 +135,7 @@ Ensure origin certificate paths in `/etc/nginx/sites-available/marketing-site` m
 sudo bash deploy/scripts/bootstrap-marketing.sh
 ```
 
-Seeds roles, platform settings, **product catalog** (ChurchHub, Microfinance Core, ERP), CMS homepage, and blog content. Safe to re-run — existing data is skipped.
+Seeds roles, platform settings, **product catalog** (ChurchHub, CoreTrust, ERP, …), CMS homepage, and blog content. Safe to re-run — existing data is skipped.
 
 Create your staff account:
 
@@ -161,7 +161,7 @@ sudo systemctl status redis-server
 **Browser checks:**
 
 - [ ] Homepage loads over HTTPS
-- [ ] `/products/` shows ChurchHub, Microfinance Core, ERP Suite
+- [ ] `/products/` shows ChurchHub, CoreTrust, ERP Suite
 - [ ] `/contact/` form works (email goes to `logs/mail/` until SMTP is set)
 - [ ] `/control/` — staff login + MFA for admin
 - [ ] Static assets load (CSS, images)

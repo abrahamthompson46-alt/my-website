@@ -13,7 +13,7 @@ PUBLIC_HEADER_NAV = [
                 "title": "By Product",
                 "links": [
                     {"label": "ChurchHub", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}, "accent": "churchhub"},
-                    {"label": "Microfinance Core", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}, "accent": "microfinance"},
+                    {"label": "CoreTrust", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}, "accent": "microfinance"},
                     {"label": "ERP Suite", "url_name": "products:detail", "url_kwargs": {"slug": "erp-suite"}, "accent": "erp"},
                     {"label": "School Management", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}, "accent": "school"},
                     {"label": "Hospital Management", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}, "accent": "hospital"},
@@ -49,7 +49,7 @@ PUBLIC_HEADER_NAV = [
                     {"label": "Education", "url_name": "pages:list"},
                     {"label": "Healthcare", "url_name": "pages:list"},
                     {"label": "Faith Organizations", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
-                    {"label": "Financial Services", "url_name": "pages:list"},
+                    {"label": "Financial Services", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
                 ],
             },
         ],
@@ -81,7 +81,7 @@ PUBLIC_FOOTER_COLUMNS = [
         "title": "Products",
         "links": [
             {"label": "ChurchHub", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
-            {"label": "Microfinance Core", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
+            {"label": "CoreTrust", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
             {"label": "ERP Suite", "url_name": "products:detail", "url_kwargs": {"slug": "erp-suite"}},
             {"label": "School Management", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}},
             {"label": "Hospital Management", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}},

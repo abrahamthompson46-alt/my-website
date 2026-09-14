@@ -1,12 +1,15 @@
 # Zreta Platform — Scope Truth Matrix
 
-**Last updated:** 2026-09-14 (Phase 3.4 borrower clients)  
+**Last updated:** 2026-09-14 (storefront + external CoreTrust model)  
 **Purpose:** Authoritative statement of what the repository implements today vs. what is planned.
+
+**Product model:** See `docs/ZRETA_PRODUCT_MODEL.md`. This repo is the **marketing + billing platform**. Live vertical products (ChurchHub, CoreTrust) run as **separate applications**.
 
 Legend:
 - **IMPLEMENTED** — Exists in production code and is testable
 - **PARTIALLY IMPLEMENTED** — Some capability exists with known gaps
 - **PLANNED** — Roadmap item; not in application code
+- **EXTERNAL** — Delivered by a separate product app, not this repo
 - **NOT IMPLEMENTED** — Does not exist; marketing may reference as future product
 
 ---
@@ -24,14 +27,11 @@ Legend:
 | Staff operations dashboard | IMPLEMENTED | `operations/` |
 | Platform control room | IMPLEMENTED | `control_room/` |
 | REST API (`/api/v1/*`) | IMPLEMENTED | `api/` + `docs/API_V1.md` |
-| Background job queue (Celery/RQ) | IMPLEMENTED | Celery + Redis; `docs/CELERY.md` |
+| Background job queue (Celery) | IMPLEMENTED | Celery + Redis; `docs/CELERY.md` |
 | Structured logging | IMPLEMENTED | JSON formatter + request_id; `docs/OBSERVABILITY.md` |
 | Prometheus metrics | IMPLEMENTED | Token-gated `/metrics/` |
 | Multi-tenant organizations | IMPLEMENTED | `organizations/` app |
-| General ledger (chart of accounts) | PARTIALLY IMPLEMENTED | `ledger.Account` org-scoped; no period close |
-| Double-entry journal posting | PARTIALLY IMPLEMENTED | `ledger.services.post_journal_entry` + trial balance; no API/UI yet |
-| Business date + EOD | PARTIALLY IMPLEMENTED | Org calendar + day close/advance; no holiday calendar or month close |
-| MFI client / borrower registry | PARTIALLY IMPLEMENTED | `clients` app (org-scoped); no KYC docs/portal UI/API yet |
+| In-repo MFI ledger / borrower engine | NOT IMPLEMENTED | Removed; CoreTrust is external |
 | SAML/OAuth SSO | NOT IMPLEMENTED | Seed/demo copy only |
 
 ---
@@ -67,36 +67,28 @@ Legend:
 
 ---
 
-## Core banking / Microfinance Core
+## Core banking / CoreTrust
 
 | Capability | Status | Notes |
 |------------|--------|-------|
-| Loan origination | NOT IMPLEMENTED | Product marketing only |
-| Client / borrower management | PARTIALLY IMPLEMENTED | Org-scoped `clients.Client`; no loans linked yet |
-| Loan disbursement | NOT IMPLEMENTED | — |
-| Repayment allocation | NOT IMPLEMENTED | — |
-| Savings accounts | NOT IMPLEMENTED | — |
-| Interest accrual | NOT IMPLEMENTED | — |
-| General ledger / chart of accounts | PARTIALLY IMPLEMENTED | Org-scoped `Account` in `ledger` |
-| Journal entries (double-entry) | PARTIALLY IMPLEMENTED | Service-layer post + append-only posted rows; no reversals |
-| Trial balance | PARTIALLY IMPLEMENTED | Posted activity sums; gate G4 covered by unit tests |
-| Business date / period close | PARTIALLY IMPLEMENTED | EOD closes/advances business day; period/month close is Phase 3.13 |
-| Regulatory reporting | NOT IMPLEMENTED | — |
+| CoreTrust live MFI product | EXTERNAL | Deployed separately (e.g. `micro.zreta.com`); not this repo |
+| Catalog + portal billing for CoreTrust | IMPLEMENTED | Product slug `microfinance-core`, external app URLs |
+| Loan / savings / GL inside this repo | NOT IMPLEMENTED | By design — belongs in CoreTrust |
 
-**Microfinance Core** on the public site remains **product positioning / roadmap**. This repo has **GL/journal + business-date/EOD + borrower registry** slices — not a live lending product.
+**Do not claim that this repository is a core-banking system.** Banking capability is CoreTrust’s.
 
 ---
 
 ## Modular products (marketing catalog)
 
-| Product | Site status (seed) | Live backend in repo |
-|---------|-------------------|----------------------|
-| ChurchHub | Generally Available | External app URLs; portal billing |
-| Microfinance Core | Catalog entry | PARTIAL (`ledger` + `clients`); lending/origination not implemented |
-| ERP Suite | Catalog entry | NOT IMPLEMENTED |
-| School Management | Catalog entry | NOT IMPLEMENTED |
-| Hospital Management | Catalog entry | NOT IMPLEMENTED |
-| HR & Payroll | Catalog entry | NOT IMPLEMENTED |
+| Product | Site status (seed) | Live backend |
+|---------|-------------------|--------------|
+| ChurchHub | Generally Available | EXTERNAL (`mychurch.zreta.com`); portal billing here |
+| CoreTrust | Generally Available | EXTERNAL (`micro.zreta.com`); portal billing here |
+| ERP Suite | Catalog entry | NOT IMPLEMENTED in this repo |
+| School Management | Catalog entry | NOT IMPLEMENTED in this repo |
+| Hospital Management | Catalog entry | NOT IMPLEMENTED in this repo |
+| HR & Payroll | Catalog entry | NOT IMPLEMENTED in this repo |
 | Retail Commerce | Coming Soon | NOT IMPLEMENTED |
 
 ---
@@ -109,7 +101,7 @@ Legend:
 | Fake live API endpoint catalog | REMOVED (Phase 0 seed) | Was misleading; replaced with Roadmap articles |
 | Architecture/multi-tenant claims in seed | CORRECTED (Phase 0) | Fresh seeds use honest copy |
 
-**Existing databases** seeded before Phase 0 may still contain old documentation records until manually updated or re-seeded.
+**Existing databases** seeded before this realignment may still contain old “Microfinance Core / planned” copy until migrated or re-seeded.
 
 ---
 
@@ -121,14 +113,14 @@ Legend:
 | Docker Compose (dev) | IMPLEMENTED |
 | GitHub Actions CI (tests + checks) | IMPLEMENTED |
 | CI/CD auto-deploy to production | NOT IMPLEMENTED |
-| Automated DB backups in repo | NOT IMPLEMENTED |
+| Automated DB backups in repo | PARTIALLY IMPLEMENTED | Scripts exist; restore drill pending |
 
 ---
 
 ## How to use this document
 
-- **Sales/marketing:** Only claim IMPLEMENTED items as live today.
-- **Engineering:** Use PLANNED/NOT IMPLEMENTED to prioritize roadmap work.
-- **Security/compliance:** Do not represent this repo as a core banking system.
+- **Sales/marketing:** Claim IMPLEMENTED platform features and EXTERNAL live products (ChurchHub, CoreTrust) accurately.
+- **Engineering:** Build storefront/portal/billing here; build domain engines in each product’s own codebase.
+- **Security/compliance:** This repo is not CoreTrust and is not a core banking system.
 
-See also: `docs/ZRETA_UPGRADE_ROADMAP.md`, `docs/PHASE_0_COMPLETION_REPORT.md`.
+See also: `docs/ZRETA_PRODUCT_MODEL.md`, `docs/ZRETA_UPGRADE_ROADMAP.md`.

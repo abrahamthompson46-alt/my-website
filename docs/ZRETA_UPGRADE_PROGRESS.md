@@ -1,8 +1,8 @@
 # Zreta Platform — Upgrade Progress Tracker
 
-**Last updated:** 2026-09-14 (Phase 3.4 borrower clients)
+**Last updated:** 2026-09-14 (storefront + external CoreTrust realignment)
 
-Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED` | `PARTIAL`
+Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED` | `PARTIAL` | `CANCELLED`
 
 ---
 
@@ -68,34 +68,27 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED` | `PAR
 
 ---
 
-## Phase 3 — Financial core (MFI)
+## Phase 3 — In-repo MFI financial core
+
+**CANCELLED (2026-09-14).** CoreTrust is already built and deployed as a separate product. This website markets and bills it; it does not re-implement banking.
+
+Brief experimental `ledger` / `clients` apps were removed. See `docs/ZRETA_PRODUCT_MODEL.md`.
 
 | ID | Task | Status | Notes |
 |----|------|--------|-------|
-| P3-01 | Chart of accounts + GL structure | IMPLEMENTED | `ledger` app: org-scoped `Account` hierarchy |
-| P3-02 | Double-entry journal engine | PARTIAL | Balanced `post_journal_entry` + trial balance; no reversals/period close yet |
-| P3-03 | Business date + EOD processing | IMPLEMENTED | `BusinessCalendar`/`BusinessDay`; `run_end_of_day`; Celery + `run_ledger_eod` |
-| P3-04 | Client/customer (borrower) management | IMPLEMENTED | `clients` app: org-scoped borrower registry + services/admin |
-| P3-05 | Loan product configuration | NOT STARTED | — |
-| P3-06 | Loan origination + approval workflow | NOT STARTED | — |
-| P3-07 | Disbursement posting | NOT STARTED | — |
-| P3-08 | Repayment allocation | NOT STARTED | — |
-| P3-09 | Savings accounts + deposits/withdrawals | NOT STARTED | — |
-| P3-10 | Interest accrual engine | NOT STARTED | — |
-| P3-11 | Penalties and fees | NOT STARTED | — |
-| P3-12 | Reversals and adjustments | NOT STARTED | — |
-| P3-13 | Period close + immutable periods | NOT STARTED | — |
-| P3-14 | Bank reconciliation | NOT STARTED | — |
-| P3-15 | Regulatory reporting exports | NOT STARTED | — |
-| P3-16 | Idempotent posting API | NOT STARTED | — |
-| P3-17 | Financial audit trail | NOT STARTED | — |
-| P3-18 | Property-based money tests | NOT STARTED | — |
+| P3-01…P3-18 | In-repo GL, EOD, borrowers, loans, savings, etc. | CANCELLED | Belongs in CoreTrust, not this repo |
 
 ---
 
-## Phase 4 — Product integration
+## Phase 4 — External product integration
 
-All items: **NOT STARTED**
+| ID | Task | Status | Notes |
+|----|------|--------|-------|
+| P4-01 | CoreTrust catalog + external app links | IMPLEMENTED | Product rename + `micro.zreta.com` URLs |
+| P4-02 | ChurchHub portal ↔ app provisioning | NOT STARTED | — |
+| P4-03 | CoreTrust portal ↔ app deeper sync | NOT STARTED | License/launch polish |
+| P4-04 | Unified identity across product apps | NOT STARTED | — |
+| P4-05 | Cross-product billing refinements | NOT STARTED | — |
 
 ---
 
@@ -107,7 +100,7 @@ All items: **NOT STARTED**
 | G1 | Phase 0 fixes deployed + tested | VERIFIED (local: 98 tests, migration check, security review) |
 | G2 | Coverage ≥ 55% on accounts/payments/common/core (CI gate) | VERIFIED | coverage fail-under=55 in CI |
 | G3 | Tenant isolation tests pass | VERIFIED | `organizations/tests/test_tenancy.py` |
-| G4 | MFI ledger trial balance balances | VERIFIED | `ledger/tests/test_double_entry.py` |
+| G4 | In-repo MFI ledger trial balance | CANCELLED | CoreTrust is external; gate retired |
 
 ---
 
@@ -123,6 +116,5 @@ All items: **NOT STARTED**
 | 2026-08-13 | Phase 1A.2 started: backup/restore scripts and DR documentation |
 | 2026-09-14 | Phase 2.6–2.7: Celery workers, async email + webhook enqueue |
 | 2026-09-14 | Phase 2.8–2.9: JSON structured logging + Prometheus `/metrics/` |
-| 2026-09-14 | Phase 3.1–3.2 slice: org-scoped chart of accounts + double-entry posting + trial balance |
-| 2026-09-14 | Phase 3.3: business calendar, EOD close/advance, posting gated to current open day |
-| 2026-09-14 | Phase 3.4: org-scoped MFI client/borrower registry (`clients` app) |
+| 2026-09-14 | Phase 3.1–3.4 briefly added in-repo ledger/clients (later reversed) |
+| 2026-09-14 | Product model realigned: storefront + external CoreTrust; Phase 3 cancelled; `ledger`/`clients` removed |

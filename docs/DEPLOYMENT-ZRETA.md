@@ -157,7 +157,7 @@ curl -sS -o /dev/null -w "%{http_code}\n" https://www.zreta.com/products/
 
 - [ ] https://zreta.com loads
 - [ ] https://www.zreta.com loads
-- [ ] `/products/` shows ChurchHub, Microfinance Core, ERP Suite
+- [ ] `/products/` shows ChurchHub, CoreTrust, ERP Suite
 - [ ] `/control/` staff login works
 - [ ] HTTPS padlock valid (Cloudflare + origin cert)
 

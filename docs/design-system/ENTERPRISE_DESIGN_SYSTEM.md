@@ -41,7 +41,7 @@ Company Master Brand
 | Product | Token | Hex | Usage |
 |---------|-------|-----|-------|
 | ChurchHub | `--product-churchhub` | `#6366F1` | Product badge, hero accent, portal product card |
-| Microfinance Core | `--product-microfinance` | `#0D9488` | Same pattern |
+| CoreTrust | `--product-microfinance` | `#0D9488` | Same pattern |
 | ERP Suite | `--product-erp` | `#2563EB` | Same pattern |
 | School Management | `--product-school` | `#7C3AED` | Same pattern |
 | Hospital Management | `--product-hospital` | `#0891B2` | Same pattern |
