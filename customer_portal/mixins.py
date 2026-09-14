@@ -20,9 +20,17 @@ class PortalMixin(EmailVerifiedRequiredMixin, LoginRequiredMixin):
 
 
 class UserQuerysetMixin:
-    """Scope querysets to the authenticated user."""
+    """
+    Scope querysets to the active organization when the model is tenant-aware.
+    Falls back to the authenticated user for legacy / non-tenant models.
+    """
 
     user_field = "user"
+    organization_field = "organization"
 
     def get_queryset(self):
-        return super().get_queryset().filter(**{self.user_field: self.request.user})
+        qs = super().get_queryset()
+        org = getattr(self.request, "organization", None)
+        if org is not None and hasattr(qs.model, self.organization_field):
+            return qs.filter(**{self.organization_field: org})
+        return qs.filter(**{self.user_field: self.request.user})

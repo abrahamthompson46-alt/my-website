@@ -41,8 +41,11 @@ def provision_trial(
     trial_days: int = DEFAULT_TRIAL_DAYS,
 ):
     """Create or refresh a trial subscription and portal license."""
+    from organizations.services import ensure_default_organization
+
     today = timezone.now().date()
     trial_end = today + timedelta(days=trial_days)
+    organization = ensure_default_organization(user, company=company)
 
     existing = Subscription.objects.filter(
         user=user,
@@ -54,7 +57,11 @@ def provision_trial(
             existing.trial_ends_at = trial_end
             existing.plan_name = plan.name
             existing.pricing_plan = plan
-            existing.save(update_fields=["trial_ends_at", "plan_name", "pricing_plan", "updated_at"])
+            if not existing.organization_id:
+                existing.organization = organization
+            existing.save(
+                update_fields=["trial_ends_at", "plan_name", "pricing_plan", "organization", "updated_at"]
+            )
             return existing
         return existing
 
@@ -78,6 +85,7 @@ def provision_trial(
         started_at=today,
         trial_ends_at=trial_end,
         renews_at=trial_end,
+        organization=organization,
     )
 
     License.objects.create(
@@ -89,6 +97,7 @@ def provision_trial(
         seats=1,
         activated_at=today,
         expires_at=trial_end,
+        organization=organization,
     )
 
     if company:

@@ -423,3 +423,30 @@
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
 }
+
+.portal-header__org {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 16rem;
+}
+
+.portal-header__org-label {
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.portal-header__org-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.portal-header__org-switch .form-control {
+  min-width: 10rem;
+  max-width: 14rem;
+}

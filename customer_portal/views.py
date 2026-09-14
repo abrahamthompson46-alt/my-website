@@ -43,11 +43,18 @@ class DashboardView(PortalMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context["stats"] = get_dashboard_stats(user)
-        context["subscriptions"] = Subscription.objects.filter(user=user).select_related("product")[:4]
-        context["recent_invoices"] = Invoice.objects.filter(user=user).order_by("-issued_at")[:5]
+        org = getattr(self.request, "organization", None)
+        context["stats"] = get_dashboard_stats(user, organization=org)
+        subs = Subscription.objects.select_related("product")
+        invoices = Invoice.objects.order_by("-issued_at")
+        if org is not None:
+            context["subscriptions"] = subs.filter(organization=org)[:4]
+            context["recent_invoices"] = invoices.filter(organization=org)[:5]
+        else:
+            context["subscriptions"] = subs.filter(user=user)[:4]
+            context["recent_invoices"] = invoices.filter(user=user)[:5]
         context["recent_tickets"] = SupportTicket.objects.filter(user=user).order_by("-created_at")[:5]
-        context["recent_updates"] = get_product_updates_for_user(user, limit=4)
+        context["recent_updates"] = get_product_updates_for_user(user, organization=org, limit=4)
         context["notifications"] = get_recent_notifications(user, limit=5)
         context["breadcrumb_items"] = [{"label": "Dashboard"}]
         return context
@@ -232,9 +239,12 @@ class ProductUpdateListView(PortalMixin, ListView):
     context_object_name = "updates"
 
     def get_queryset(self):
-        product_ids = Subscription.objects.filter(
-            user=self.request.user, status__in=["active", "trial"]
-        ).values_list("product_id", flat=True)
+        org = getattr(self.request, "organization", None)
+        subs = Subscription.objects.filter(status__in=["active", "trial"])
+        if org is not None:
+            product_ids = subs.filter(organization=org).values_list("product_id", flat=True)
+        else:
+            product_ids = subs.filter(user=self.request.user).values_list("product_id", flat=True)
         return ProductUpdate.objects.filter(
             product_id__in=product_ids, is_published=True
         ).select_related("product")
@@ -253,7 +263,10 @@ class DocumentationView(PortalMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        subscriptions = get_subscribed_products(self.request.user)
+        subscriptions = get_subscribed_products(
+            self.request.user,
+            organization=getattr(self.request, "organization", None),
+        )
         products = []
         for sub in subscriptions:
             product = sub.product

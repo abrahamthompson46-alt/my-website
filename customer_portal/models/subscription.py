@@ -52,10 +52,19 @@ class Subscription(BaseModel):
     renews_at = models.DateField(null=True, blank=True)
     trial_ends_at = models.DateField(null=True, blank=True)
     cancelled_at = models.DateField(null=True, blank=True)
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="subscriptions",
+    )
 
     class Meta:
         ordering = ["-started_at"]
-
+        indexes = [
+            models.Index(fields=["organization", "status"]),
+        ]
     def __str__(self):
         return f"{self.user.email} — {self.product.name} ({self.plan_name})"
 

@@ -53,8 +53,13 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 
 ## Phase 2 — Platform architecture
 
-All items: **NOT STARTED**
-
+| ID | Task | Status | Notes |
+|----|------|--------|-------|
+| P2-01 | Tenant model (Organization, Membership) | VERIFIED | `organizations` app + backfill migration |
+| P2-02 | Tenant resolution middleware | VERIFIED | `ActiveOrganizationMiddleware` + session switch |
+| P2-03 | Tenant-scoped querysets | PARTIALLY IMPLEMENTED | Org FK on subscriptions/licenses/invoices/payments; portal mixin filters by org |
+| P2-04 | DRF API v1 | NOT STARTED |
+| P2-05 | Celery/async jobs | NOT STARTED |
 ---
 
 ## Phase 3 — Financial core (MFI)
@@ -76,7 +81,7 @@ All items: **NOT STARTED**
 | G0 | Audit docs approved by stakeholder | IN PROGRESS |
 | G1 | Phase 0 fixes deployed + tested | VERIFIED (local: 98 tests, migration check, security review) |
 | G2 | Coverage ≥ 55% on accounts/payments/common/core (CI gate) | VERIFIED | coverage fail-under=55 in CI |
-| G3 | Tenant isolation tests pass | NOT STARTED |
+| G3 | Tenant isolation tests pass | VERIFIED | `organizations/tests/test_tenancy.py` |
 | G4 | MFI ledger trial balance balances | NOT STARTED |
 
 ---

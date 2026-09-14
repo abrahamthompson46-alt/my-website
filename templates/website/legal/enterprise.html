@@ -13,6 +13,7 @@
     <li>Customer portal for subscriptions, invoices, licenses, and support tickets.</li>
     <li>Checkout with server-side pricing, gateway webhooks, manual payment confirmation, and payment audit events.</li>
     <li>Private payment-proof downloads and row-locked payment status transitions.</li>
+    <li>Organization workspaces with membership roles and portal org switching (shared-schema tenancy foundation).</li>
     <li>Append-only audit logs (application-enforced; no admin delete/edit).</li>
     <li>CSP that blocks inline scripts; framing denied at app and nginx layers.</li>
     <li>Public rate limits on checkout, contact, newsletter, and webhook endpoints.</li>
@@ -23,7 +24,7 @@
 
 <h2>On the roadmap</h2>
 <ul>
-    <li>Organization-level multi-tenancy and tenant-scoped data isolation.</li>
+    <li>Organization-level multi-tenancy expansion (tickets/downloads fully tenant-scoped; schema-per-tenant option for regulated customers).</li>
     <li>Public REST API (<code>/api/v1</code>) with authenticated access.</li>
     <li>SAML / OAuth SSO for enterprise identity providers.</li>
     <li>Background job workers for async email and webhook processing.</li>

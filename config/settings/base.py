@@ -65,6 +65,7 @@ LOCAL_APPS = [
     "operations.apps.OperationsConfig",
     "control_room.apps.ControlRoomConfig",
     "partners",
+    "organizations.apps.OrganizationsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -88,6 +89,7 @@ MIDDLEWARE = [
     "accounts.middleware.SecurityHeadersMiddleware",
     "accounts.middleware.SessionActivityMiddleware",
     "accounts.middleware.StaffMFARequiredMiddleware",
+    "organizations.middleware.ActiveOrganizationMiddleware",
     "core.middleware.CacheControlMiddleware",
     "core.middleware.RequestIDMiddleware",
     "control_room.middleware.PlatformRedirectMiddleware",
@@ -115,6 +117,7 @@ TEMPLATES = [
                 "common.context_processors.site_settings",
                 "common.context_processors.navigation",
                 "common.context_processors.platform_extras",
+                "organizations.context_processors.organization_context",
             ],
         },
     },

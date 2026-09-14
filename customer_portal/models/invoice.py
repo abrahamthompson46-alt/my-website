@@ -36,9 +36,18 @@ class Invoice(BaseModel):
     issued_at = models.DateField()
     due_at = models.DateField()
     paid_at = models.DateField(null=True, blank=True)
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="invoices",
+    )
 
     class Meta:
         ordering = ["-issued_at"]
-
+        indexes = [
+            models.Index(fields=["organization", "status"]),
+        ]
     def __str__(self):
         return self.invoice_number

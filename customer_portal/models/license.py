@@ -37,9 +37,18 @@ class License(BaseModel):
     seats = models.PositiveIntegerField(default=1)
     activated_at = models.DateField(null=True, blank=True)
     expires_at = models.DateField(null=True, blank=True)
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="licenses",
+    )
 
     class Meta:
         ordering = ["-created_at"]
-
+        indexes = [
+            models.Index(fields=["organization", "status"]),
+        ]
     def __str__(self):
         return f"{self.product.name} — {self.license_key[:8]}…"

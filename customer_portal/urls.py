@@ -18,6 +18,7 @@ from customer_portal.views import (
     TicketDetailView,
     TicketListView,
 )
+from organizations.views import OrganizationSwitchView
 
 app_name = "customer_portal"
 
@@ -38,4 +39,9 @@ urlpatterns = [
     path("notifications/read-all/", NotificationMarkAllReadView.as_view(), name="notifications_read_all"),
     path("profile/", ProfileView.as_view(), name="profile"),
     path("security/", SecuritySettingsView.as_view(), name="security"),
+    path(
+        "organizations/switch/",
+        OrganizationSwitchView.as_view(),
+        name="organization_switch",
+    ),
 ]

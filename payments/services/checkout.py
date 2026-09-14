@@ -24,6 +24,14 @@ logger = logging.getLogger(__name__)
 VALID_RECURRING_INTERVALS = frozenset({"daily", "weekly", "monthly", "yearly"})
 
 
+def _resolve_payment_organization(user, *, invoice=None):
+    if invoice is not None and getattr(invoice, "organization_id", None):
+        return invoice.organization
+    from organizations.services import ensure_default_organization
+
+    return ensure_default_organization(user)
+
+
 def generate_reference(prefix="PAY"):
     return f"{prefix}-{uuid.uuid4().hex[:16].upper()}"
 
@@ -88,6 +96,7 @@ def create_checkout(
         pricing_plan=pricing_plan,
         pricing_tier=pricing_tier,
         metadata=metadata or {},
+        organization=_resolve_payment_organization(user, invoice=invoice),
     )
 
     if manual_method and manual_detail:

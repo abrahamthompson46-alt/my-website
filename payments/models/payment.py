@@ -96,14 +96,21 @@ class Payment(BaseModel):
     paid_at = models.DateTimeField(null=True, blank=True)
     failed_at = models.DateTimeField(null=True, blank=True)
     failure_reason = models.CharField(max_length=255, blank=True)
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="payments",
+    )
 
     class Meta:
         ordering = ["-created_at"]
         indexes = [
             models.Index(fields=["status", "created_at"]),
             models.Index(fields=["gateway_reference"]),
+            models.Index(fields=["organization", "status"]),
         ]
-
     def __str__(self):
         return f"{self.reference} ({self.amount} {self.currency})"
 

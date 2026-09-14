@@ -31,7 +31,11 @@ class PaymentListView(PortalMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return Payment.objects.filter(user=self.request.user).select_related("gateway").order_by("-created_at")
+        org = getattr(self.request, "organization", None)
+        qs = Payment.objects.select_related("gateway").order_by("-created_at")
+        if org is not None:
+            return qs.filter(organization=org)
+        return qs.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -48,7 +52,11 @@ class PaymentDetailView(PortalMixin, DetailView):
     context_object_name = "payment"
 
     def get_queryset(self):
-        return Payment.objects.filter(user=self.request.user).select_related("gateway", "invoice")
+        org = getattr(self.request, "organization", None)
+        qs = Payment.objects.select_related("gateway", "invoice")
+        if org is not None:
+            return qs.filter(organization=org)
+        return qs.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -10,6 +10,29 @@
         {% block portal_breadcrumbs %}{% endblock %}
     </div>
     <div class="portal-header__actions">
+        {% if current_organization %}
+        <div class="portal-header__org">
+            {% if user_organization_memberships|length > 1 %}
+            <form method="post" action="{% url 'customer_portal:organization_switch' %}" class="portal-header__org-switch">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <label class="visually-hidden" for="org-switch">Organization</label>
+                <select id="org-switch" name="organization_id" class="form-control form-control--sm">
+                    {% for membership in user_organization_memberships %}
+                    <option
+                        value="{{ membership.organization_id }}"
+                        {% if current_organization and membership.organization_id == current_organization.id %}selected{% endif %}>
+                        {{ membership.organization.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn--ghost btn--sm">Switch</button>
+            </form>
+            {% else %}
+            <span class="portal-header__org-label" title="{{ current_organization.name }}">{{ current_organization.name }}</span>
+            {% endif %}
+        </div>
+        {% endif %}
         {% ui_search variant="compact" placeholder="Search portal…" %}
         <a href="{% url 'customer_portal:notifications' %}"
            class="btn btn--ghost btn--sm btn--icon-only portal-header__notify"
