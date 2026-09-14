@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
+from ledger.calendar import ensure_business_calendar, run_end_of_day
 from ledger.exceptions import (
     PostedEntryImmutableError,
     TenantMismatchError,
@@ -33,6 +34,7 @@ class LedgerDoubleEntryTests(TestCase):
             password="SecurePass123!",
         )
         self.org = create_organization(name="MFI Alpha", created_by=self.user)
+        ensure_business_calendar(self.org, initial_date=date(2026, 9, 1))
         self.cash = create_account(
             organization=self.org,
             code="1000",
@@ -120,7 +122,7 @@ class LedgerDoubleEntryTests(TestCase):
         entry = post_journal_entry(
             organization=self.org,
             reference="JE-002",
-            business_date=date(2026, 9, 2),
+            business_date=date(2026, 9, 1),
             created_by=self.user,
             lines=[
                 JournalLineInput(account=self.expense, debit_amount=Decimal("25.00")),
@@ -147,6 +149,8 @@ class LedgerDoubleEntryTests(TestCase):
                 JournalLineInput(account=self.capital, credit_amount=Decimal("500.00")),
             ],
         )
+        run_end_of_day(self.org)  # -> 2026-09-02
+        run_end_of_day(self.org)  # -> 2026-09-03
         post_journal_entry(
             organization=self.org,
             reference="JE-TB-2",
@@ -180,6 +184,7 @@ class LedgerDoubleEntryTests(TestCase):
             password="SecurePass123!",
         )
         other_org = create_organization(name="Isolated Org", created_by=other_user)
+        ensure_business_calendar(other_org, initial_date=date(2026, 9, 1))
         other_cash = create_account(
             organization=other_org,
             code="1000",

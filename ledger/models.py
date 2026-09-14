@@ -27,6 +27,89 @@ class JournalEntryStatus(models.TextChoices):
     POSTED = "posted", "Posted"
 
 
+class BusinessDayStatus(models.TextChoices):
+    OPEN = "open", "Open"
+    CLOSED = "closed", "Closed"
+
+
+class BusinessCalendar(BaseModel):
+    """Per-organization ledger calendar tracking the current open business date."""
+
+    organization = models.OneToOneField(
+        "organizations.Organization",
+        on_delete=models.CASCADE,
+        related_name="ledger_calendar",
+    )
+    current_business_date = models.DateField()
+    timezone_name = models.CharField(max_length=64, default="Africa/Accra")
+
+    class Meta:
+        ordering = ["organization__name"]
+        indexes = [
+            models.Index(fields=["current_business_date"]),
+        ]
+
+    def __str__(self):
+        return f"{self.organization} @ {self.current_business_date}"
+
+
+class BusinessDay(BaseModel):
+    """One business day for an organization; closed days reject new postings."""
+
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.CASCADE,
+        related_name="ledger_business_days",
+    )
+    business_date = models.DateField()
+    status = models.CharField(
+        max_length=20,
+        choices=BusinessDayStatus.choices,
+        default=BusinessDayStatus.OPEN,
+    )
+    opened_at = models.DateTimeField()
+    closed_at = models.DateTimeField(null=True, blank=True)
+    closed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="closed_ledger_business_days",
+    )
+    notes = models.CharField(max_length=255, blank=True)
+    trial_balance_debit = models.DecimalField(
+        max_digits=14, decimal_places=2, null=True, blank=True
+    )
+    trial_balance_credit = models.DecimalField(
+        max_digits=14, decimal_places=2, null=True, blank=True
+    )
+
+    class Meta:
+        ordering = ["-business_date", "organization"]
+        verbose_name_plural = "business days"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["organization", "business_date"],
+                name="uniq_ledger_business_day_org_date",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["organization", "status"]),
+            models.Index(fields=["organization", "business_date", "status"]),
+        ]
+
+    def __str__(self):
+        return f"{self.organization} {self.business_date} ({self.status})"
+
+    @property
+    def is_open(self) -> bool:
+        return self.status == BusinessDayStatus.OPEN
+
+    @property
+    def is_closed(self) -> bool:
+        return self.status == BusinessDayStatus.CLOSED
+
+
 class Account(BaseModel):
     """Chart-of-accounts node scoped to a single organization."""
 

@@ -1,6 +1,6 @@
 # Zreta Platform — Upgrade Progress Tracker
 
-**Last updated:** 2026-09-14 (Phase 3.1–3.2 ledger slice)
+**Last updated:** 2026-09-14 (Phase 3.3 business date / EOD)
 
 Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED` | `PARTIAL`
 
@@ -74,7 +74,7 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED` | `PAR
 |----|------|--------|-------|
 | P3-01 | Chart of accounts + GL structure | IMPLEMENTED | `ledger` app: org-scoped `Account` hierarchy |
 | P3-02 | Double-entry journal engine | PARTIAL | Balanced `post_journal_entry` + trial balance; no reversals/period close yet |
-| P3-03 | Business date + EOD processing | NOT STARTED | `business_date` field exists; EOD jobs not built |
+| P3-03 | Business date + EOD processing | IMPLEMENTED | `BusinessCalendar`/`BusinessDay`; `run_end_of_day`; Celery + `run_ledger_eod` |
 | P3-04 | Client/customer (borrower) management | NOT STARTED | — |
 | P3-05 | Loan product configuration | NOT STARTED | — |
 | P3-06 | Loan origination + approval workflow | NOT STARTED | — |
@@ -124,3 +124,4 @@ All items: **NOT STARTED**
 | 2026-09-14 | Phase 2.6–2.7: Celery workers, async email + webhook enqueue |
 | 2026-09-14 | Phase 2.8–2.9: JSON structured logging + Prometheus `/metrics/` |
 | 2026-09-14 | Phase 3.1–3.2 slice: org-scoped chart of accounts + double-entry posting + trial balance |
+| 2026-09-14 | Phase 3.3: business calendar, EOD close/advance, posting gated to current open day |

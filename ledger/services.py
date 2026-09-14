@@ -168,6 +168,10 @@ def post_journal_entry(
     _assert_accounts_in_org(organization, [line.account for line in normalized])
     assert_balanced(normalized)
 
+    from ledger.calendar import assert_posting_allowed
+
+    assert_posting_allowed(organization, business_date)
+
     entry = JournalEntry.objects.create(
         organization=organization,
         reference=reference.strip(),

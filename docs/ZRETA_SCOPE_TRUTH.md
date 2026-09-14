@@ -1,6 +1,6 @@
 # Zreta Platform — Scope Truth Matrix
 
-**Last updated:** 2026-09-14 (Phase 3.1–3.2 ledger slice)  
+**Last updated:** 2026-09-14 (Phase 3.3 business date / EOD)  
 **Purpose:** Authoritative statement of what the repository implements today vs. what is planned.
 
 Legend:
@@ -30,6 +30,7 @@ Legend:
 | Multi-tenant organizations | IMPLEMENTED | `organizations/` app |
 | General ledger (chart of accounts) | PARTIALLY IMPLEMENTED | `ledger.Account` org-scoped; no period close |
 | Double-entry journal posting | PARTIALLY IMPLEMENTED | `ledger.services.post_journal_entry` + trial balance; no API/UI yet |
+| Business date + EOD | PARTIALLY IMPLEMENTED | Org calendar + day close/advance; no holiday calendar or month close |
 | SAML/OAuth SSO | NOT IMPLEMENTED | Seed/demo copy only |
 
 ---
@@ -77,10 +78,10 @@ Legend:
 | General ledger / chart of accounts | PARTIALLY IMPLEMENTED | Org-scoped `Account` in `ledger` |
 | Journal entries (double-entry) | PARTIALLY IMPLEMENTED | Service-layer post + append-only posted rows; no reversals |
 | Trial balance | PARTIALLY IMPLEMENTED | Posted activity sums; gate G4 covered by unit tests |
-| Business date / period close | PARTIALLY IMPLEMENTED | `business_date` on entries; EOD/period close not built |
+| Business date / period close | PARTIALLY IMPLEMENTED | EOD closes/advances business day; period/month close is Phase 3.13 |
 | Regulatory reporting | NOT IMPLEMENTED | — |
 
-**Microfinance Core** on the public site remains **product positioning / roadmap**. This repo now has a **first GL/journal slice** only — not a live lending product.
+**Microfinance Core** on the public site remains **product positioning / roadmap**. This repo has a **GL/journal + business-date/EOD slice** only — not a live lending product.
 
 ---
 

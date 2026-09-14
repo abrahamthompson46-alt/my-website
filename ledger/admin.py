@@ -1,6 +1,52 @@
 from django.contrib import admin
 
-from ledger.models import Account, JournalEntry, JournalLine
+from ledger.models import Account, BusinessCalendar, BusinessDay, JournalEntry, JournalLine
+
+
+@admin.register(BusinessCalendar)
+class BusinessCalendarAdmin(admin.ModelAdmin):
+    list_display = ("organization", "current_business_date", "timezone_name", "updated_at")
+    search_fields = ("organization__name", "organization__slug")
+    autocomplete_fields = ("organization",)
+    readonly_fields = ("created_at", "updated_at")
+
+
+@admin.register(BusinessDay)
+class BusinessDayAdmin(admin.ModelAdmin):
+    list_display = (
+        "organization",
+        "business_date",
+        "status",
+        "opened_at",
+        "closed_at",
+        "trial_balance_debit",
+        "trial_balance_credit",
+    )
+    list_filter = ("status",)
+    search_fields = ("organization__name", "organization__slug", "notes")
+    autocomplete_fields = ("organization", "closed_by")
+    readonly_fields = (
+        "organization",
+        "business_date",
+        "status",
+        "opened_at",
+        "closed_at",
+        "closed_by",
+        "notes",
+        "trial_balance_debit",
+        "trial_balance_credit",
+        "created_at",
+        "updated_at",
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class JournalLineInline(admin.TabularInline):

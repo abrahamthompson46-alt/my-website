@@ -23,3 +23,15 @@ class PostedEntryImmutableError(LedgerError):
 
 class InvalidLineError(LedgerError):
     """A journal line fails debit/credit validation rules."""
+
+
+class ClosedBusinessDayError(LedgerError):
+    """Posting is not allowed on a closed business day."""
+
+
+class InvalidBusinessDateError(LedgerError):
+    """Business date is outside the allowed open window."""
+
+
+class EodProcessingError(LedgerError):
+    """End-of-day processing cannot complete."""
