@@ -41,11 +41,16 @@ def enqueue_process_webhook(gateway_config, payload: dict, raw_body: bytes, head
         base64.b64encode(raw_body).decode("ascii"),
         safe_headers,
     )
+    from core.metrics import observe_webhook
+
+    observe_webhook(gateway=gateway_config.code, result="queued")
     return None, True
 
 
 @transaction.atomic
 def process_webhook(gateway_config, payload: dict, raw_body: bytes, headers: dict):
+    from core.metrics import observe_webhook
+
     adapter = get_gateway_from_model(gateway_config)
     signature_valid = adapter.verify_webhook(raw_body, headers) if adapter.supports_webhooks else True
 
@@ -68,17 +73,20 @@ def process_webhook(gateway_config, payload: dict, raw_body: bytes, headers: dic
         },
     )
     if not created:
+        observe_webhook(gateway=gateway_config.code, result="duplicate")
         return webhook_event, False
 
     if not signature_valid:
         webhook_event.error_message = "Invalid webhook signature."
         webhook_event.save(update_fields=["error_message", "updated_at"])
+        observe_webhook(gateway=gateway_config.code, result="invalid_signature")
         return webhook_event, False
 
     if not parsed.handled or not parsed.reference:
         webhook_event.processed = True
         webhook_event.processed_at = timezone.now()
         webhook_event.save(update_fields=["processed", "processed_at", "updated_at"])
+        observe_webhook(gateway=gateway_config.code, result="ignored")
         return webhook_event, True
 
     payment = (
@@ -99,15 +107,18 @@ def process_webhook(gateway_config, payload: dict, raw_body: bytes, headers: dic
         if not ok:
             webhook_event.error_message = reason
             webhook_event.save(update_fields=["payment", "error_message", "updated_at"])
+            observe_webhook(gateway=gateway_config.code, result="rejected")
             return webhook_event, False
 
         _apply_webhook_status(payment, parsed.status, parsed.raw_payload)
         webhook_event.processed = True
         webhook_event.processed_at = timezone.now()
         webhook_event.save()
+        observe_webhook(gateway=gateway_config.code, result="processed")
     else:
         webhook_event.error_message = f"Payment not found for reference {parsed.reference}"
         webhook_event.save(update_fields=["error_message", "updated_at"])
+        observe_webhook(gateway=gateway_config.code, result="payment_not_found")
 
     return webhook_event, True
 

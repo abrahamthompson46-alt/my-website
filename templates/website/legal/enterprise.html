@@ -16,6 +16,7 @@
     <li>Organization workspaces with membership roles and portal org switching (shared-schema tenancy foundation).</li>
     <li>Versioned REST API (<code>/api/v1</code>) with token auth, org-header scoping, and rate limits.</li>
     <li>Celery workers for async email delivery and payment webhook processing (Redis broker).</li>
+    <li>JSON structured logs with request IDs, plus token-gated Prometheus metrics at <code>/metrics/</code>.</li>
     <li>Append-only audit logs (application-enforced; no admin delete/edit).</li>
     <li>CSP that blocks inline scripts; framing denied at app and nginx layers.</li>
     <li>Public rate limits on checkout, contact, newsletter, and webhook endpoints.</li>

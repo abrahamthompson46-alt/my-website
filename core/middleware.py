@@ -2,6 +2,9 @@ import uuid
 
 from django.utils.cache import patch_response_headers
 
+from core.logging import reset_request_id, set_request_id
+from core.metrics import Timer, observe_http_request, should_skip_path
+
 
 class RequestIDMiddleware:
     """Attach a unique request ID to each incoming request for tracing."""
@@ -16,9 +19,32 @@ class RequestIDMiddleware:
         if not request_id:
             request_id = str(uuid.uuid4())
         request.request_id = request_id
-
-        response = self.get_response(request)
+        token = set_request_id(request_id)
+        try:
+            response = self.get_response(request)
+        finally:
+            reset_request_id(token)
         response["X-Request-ID"] = request_id
+        return response
+
+
+class MetricsMiddleware:
+    """Record Prometheus HTTP request counters and latency histograms."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if should_skip_path(request.path):
+            return self.get_response(request)
+
+        timer = Timer()
+        response = self.get_response(request)
+        observe_http_request(
+            method=request.method,
+            status_code=getattr(response, "status_code", 500),
+            duration_seconds=timer.seconds(),
+        )
         return response
 
 

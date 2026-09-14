@@ -145,7 +145,17 @@ def send_platform_mail(
     )
     if html_message:
         mail.attach_alternative(html_message, "text/html")
-    return mail.send(fail_silently=fail_silently)
+    try:
+        sent = mail.send(fail_silently=fail_silently)
+        from core.metrics import observe_email
+
+        observe_email(result="sent" if sent else "skipped")
+        return sent
+    except Exception:
+        from core.metrics import observe_email
+
+        observe_email(result="error")
+        raise
 
 
 def queue_platform_mail(

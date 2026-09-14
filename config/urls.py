@@ -16,7 +16,7 @@ from django.views.static import serve
 from core.media_paths import is_private_media_path
 
 from core.sitemaps import BlogPostSitemap, CMSPageSitemap, ProductSitemap, StaticViewSitemap
-from core.views import health_check, robots_txt
+from core.views import health_check, metrics_view, robots_txt
 
 sitemaps = {
     "static": StaticViewSitemap,
@@ -59,6 +59,7 @@ def _local_media_urlpatterns():
 urlpatterns = _local_media_urlpatterns() + [
     path("admin/", admin.site.urls),
     path("health/", health_check, name="health_check"),
+    path("metrics/", metrics_view, name="metrics"),
     path("robots.txt", robots_txt, name="robots_txt"),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     # Public marketing site

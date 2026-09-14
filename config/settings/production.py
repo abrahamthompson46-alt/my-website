@@ -76,6 +76,14 @@ STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F811
 WHITENOISE_MAX_AGE = 60 * 60 * 24 * 365
 WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ("jpg", "jpeg", "png", "gif", "webp", "svg", "ico", "woff", "woff2")
 
+# Prefer JSON logs in production for journald / Docker / shippers
+if env("LOG_FORMAT", default="") == "":  # noqa: F405
+    LOG_FORMAT = "json"  # noqa: F811
+    LOGGING["handlers"]["console"]["formatter"] = "json"  # noqa: F405
+    LOGGING["handlers"]["file"]["formatter"] = "json"  # noqa: F405
+    LOGGING["handlers"]["error_file"]["formatter"] = "json"  # noqa: F405
+    LOGGING["handlers"]["security_file"]["formatter"] = "json"  # noqa: F405
+
 # Optional S3 media storage
 _aws_bucket = env("AWS_STORAGE_BUCKET_NAME", default=None)  # noqa: F405
 if _aws_bucket:

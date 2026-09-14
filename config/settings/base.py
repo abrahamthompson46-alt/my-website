@@ -97,6 +97,7 @@ MIDDLEWARE = [
     "organizations.middleware.ActiveOrganizationMiddleware",
     "core.middleware.CacheControlMiddleware",
     "core.middleware.RequestIDMiddleware",
+    "core.middleware.MetricsMiddleware",
     "control_room.middleware.PlatformRedirectMiddleware",
     "control_room.middleware.MaintenanceModeMiddleware",
 ]
@@ -239,22 +240,29 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="noreply@example.com")
 
 LOG_DIR = BASE_DIR / env("LOG_DIR", default="logs")
 LOG_LEVEL = env("LOG_LEVEL", default="INFO")
+LOG_FORMAT = env("LOG_FORMAT", default="text").lower()  # text | json
+
+_CONSOLE_FORMATTER = "json" if LOG_FORMAT == "json" else "simple"
+_FILE_FORMATTER = "json" if LOG_FORMAT == "json" else "verbose"
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} request_id={request_id} {message}",
             "style": "{",
         },
         "simple": {
-            "format": "{levelname} {asctime} {name} {message}",
+            "format": "{levelname} {asctime} {name} request_id={request_id} {message}",
             "style": "{",
         },
         "request": {
             "format": "{levelname} {asctime} {name} request_id={request_id} {message}",
             "style": "{",
+        },
+        "json": {
+            "()": "core.logging.JsonFormatter",
         },
     },
     "filters": {
@@ -272,7 +280,7 @@ LOGGING = {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
-            "formatter": "simple",
+            "formatter": _CONSOLE_FORMATTER,
             "filters": ["request_id"],
         },
         "file": {
@@ -281,7 +289,7 @@ LOGGING = {
             "filename": LOG_DIR / "django.log",
             "maxBytes": 10 * 1024 * 1024,
             "backupCount": 5,
-            "formatter": "verbose",
+            "formatter": _FILE_FORMATTER,
             "filters": ["request_id"],
         },
         "error_file": {
@@ -290,7 +298,7 @@ LOGGING = {
             "filename": LOG_DIR / "error.log",
             "maxBytes": 10 * 1024 * 1024,
             "backupCount": 10,
-            "formatter": "verbose",
+            "formatter": _FILE_FORMATTER,
             "filters": ["request_id"],
         },
         "security_file": {
@@ -299,7 +307,7 @@ LOGGING = {
             "filename": LOG_DIR / "security.log",
             "maxBytes": 10 * 1024 * 1024,
             "backupCount": 10,
-            "formatter": "verbose",
+            "formatter": _FILE_FORMATTER,
             "filters": ["request_id"],
         },
         "mail_admins": {
@@ -346,6 +354,13 @@ LOGGING = {
         },
     },
 }
+
+# ---------------------------------------------------------------------------
+# Observability / Prometheus
+# ---------------------------------------------------------------------------
+
+METRICS_ENABLED = env.bool("METRICS_ENABLED", default=False)
+METRICS_TOKEN = env("METRICS_TOKEN", default="")
 
 # ---------------------------------------------------------------------------
 # Security defaults (overridden in production)

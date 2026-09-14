@@ -52,3 +52,26 @@ def health_check(request):
     overall = "degraded" if degraded else "ok"
     status_code = 200 if overall != "error" else 503
     return JsonResponse({"status": overall, "checks": checks}, status=status_code)
+
+
+@never_cache
+@require_GET
+def metrics_view(request):
+    """Prometheus scrape endpoint (token-gated when METRICS_TOKEN is set)."""
+    from django.conf import settings
+    from django.http import Http404, HttpResponse
+
+    from core.metrics import metrics_enabled, render_metrics
+
+    if not metrics_enabled():
+        raise Http404()
+
+    expected = (getattr(settings, "METRICS_TOKEN", "") or "").strip()
+    if expected:
+        auth = request.headers.get("Authorization", "")
+        query_token = request.GET.get("token", "")
+        if auth != f"Bearer {expected}" and query_token != expected:
+            return HttpResponse(status=401)
+
+    body, content_type = render_metrics()
+    return HttpResponse(body, content_type=content_type)

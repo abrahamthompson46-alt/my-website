@@ -1,6 +1,6 @@
 # Zreta Platform — Upgrade Progress Tracker
 
-**Last updated:** 2026-09-14 (Phase 2 Celery)
+**Last updated:** 2026-09-14 (Phase 2 observability)
 
 Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 
@@ -62,6 +62,8 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 | P2-05 | API authentication | VERIFIED | DRF Token (+ session) authentication |
 | P2-06 | Celery/async jobs | VERIFIED | Celery + Redis broker; `docs/CELERY.md` |
 | P2-07 | Async email + webhooks | VERIFIED | `queue_platform_mail` + `enqueue_process_webhook` |
+| P2-08 | Structured logging + shipping | VERIFIED | JSON logs + request_id; `docs/OBSERVABILITY.md` |
+| P2-09 | Prometheus metrics | VERIFIED | Token-gated `/metrics/`; HTTP/webhook/email series |
 | P2-10 | API rate limiting and versioning | VERIFIED | DRF throttles + `/api/v1` namespace |
 ---
 
@@ -100,3 +102,4 @@ All items: **NOT STARTED**
 | 2026-08-13 | Phase 1A.1 verified: nginx private-media deny rules in zreta.com.conf (102 tests) |
 | 2026-08-13 | Phase 1A.2 started: backup/restore scripts and DR documentation |
 | 2026-09-14 | Phase 2.6–2.7: Celery workers, async email + webhook enqueue |
+| 2026-09-14 | Phase 2.8–2.9: JSON structured logging + Prometheus `/metrics/` |

@@ -1,6 +1,6 @@
 # Zreta Platform — Scope Truth Matrix
 
-**Last updated:** 2026-09-14 (Phase 2 Celery)  
+**Last updated:** 2026-09-14 (Phase 2 observability)  
 **Purpose:** Authoritative statement of what the repository implements today vs. what is planned.
 
 Legend:
@@ -25,6 +25,8 @@ Legend:
 | Platform control room | IMPLEMENTED | `control_room/` |
 | REST API (`/api/v1/*`) | IMPLEMENTED | `api/` + `docs/API_V1.md` |
 | Background job queue (Celery/RQ) | IMPLEMENTED | Celery + Redis; `docs/CELERY.md` |
+| Structured logging | IMPLEMENTED | JSON formatter + request_id; `docs/OBSERVABILITY.md` |
+| Prometheus metrics | IMPLEMENTED | Token-gated `/metrics/` |
 | Multi-tenant organizations | IMPLEMENTED | `organizations/` app |
 | SAML/OAuth SSO | NOT IMPLEMENTED | Seed/demo copy only |
 
