@@ -1,6 +1,6 @@
 # Zreta Platform — Scope Truth Matrix
 
-**Last updated:** 2026-09-14 (Phase 2 observability)  
+**Last updated:** 2026-09-14 (Phase 3.1–3.2 ledger slice)  
 **Purpose:** Authoritative statement of what the repository implements today vs. what is planned.
 
 Legend:
@@ -28,6 +28,8 @@ Legend:
 | Structured logging | IMPLEMENTED | JSON formatter + request_id; `docs/OBSERVABILITY.md` |
 | Prometheus metrics | IMPLEMENTED | Token-gated `/metrics/` |
 | Multi-tenant organizations | IMPLEMENTED | `organizations/` app |
+| General ledger (chart of accounts) | PARTIALLY IMPLEMENTED | `ledger.Account` org-scoped; no period close |
+| Double-entry journal posting | PARTIALLY IMPLEMENTED | `ledger.services.post_journal_entry` + trial balance; no API/UI yet |
 | SAML/OAuth SSO | NOT IMPLEMENTED | Seed/demo copy only |
 
 ---
@@ -72,12 +74,13 @@ Legend:
 | Repayment allocation | NOT IMPLEMENTED | — |
 | Savings accounts | NOT IMPLEMENTED | — |
 | Interest accrual | NOT IMPLEMENTED | — |
-| General ledger / double-entry | NOT IMPLEMENTED | — |
-| Journal entries | NOT IMPLEMENTED | — |
-| Business date / period close | NOT IMPLEMENTED | — |
+| General ledger / chart of accounts | PARTIALLY IMPLEMENTED | Org-scoped `Account` in `ledger` |
+| Journal entries (double-entry) | PARTIALLY IMPLEMENTED | Service-layer post + append-only posted rows; no reversals |
+| Trial balance | PARTIALLY IMPLEMENTED | Posted activity sums; gate G4 covered by unit tests |
+| Business date / period close | PARTIALLY IMPLEMENTED | `business_date` on entries; EOD/period close not built |
 | Regulatory reporting | NOT IMPLEMENTED | — |
 
-**Microfinance Core** on the public site is **product positioning / roadmap**, not a live module in this repository.
+**Microfinance Core** on the public site remains **product positioning / roadmap**. This repo now has a **first GL/journal slice** only — not a live lending product.
 
 ---
 
@@ -86,7 +89,7 @@ Legend:
 | Product | Site status (seed) | Live backend in repo |
 |---------|-------------------|----------------------|
 | ChurchHub | Generally Available | External app URLs; portal billing |
-| Microfinance Core | Catalog entry | NOT IMPLEMENTED |
+| Microfinance Core | Catalog entry | PARTIAL GL/journal only (`ledger`); lending not implemented |
 | ERP Suite | Catalog entry | NOT IMPLEMENTED |
 | School Management | Catalog entry | NOT IMPLEMENTED |
 | Hospital Management | Catalog entry | NOT IMPLEMENTED |

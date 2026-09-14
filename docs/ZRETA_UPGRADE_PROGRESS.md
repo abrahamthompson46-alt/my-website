@@ -1,8 +1,8 @@
 # Zreta Platform — Upgrade Progress Tracker
 
-**Last updated:** 2026-09-14 (Phase 2 observability)
+**Last updated:** 2026-09-14 (Phase 3.1–3.2 ledger slice)
 
-Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
+Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED` | `PARTIAL`
 
 ---
 
@@ -65,11 +65,31 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 | P2-08 | Structured logging + shipping | VERIFIED | JSON logs + request_id; `docs/OBSERVABILITY.md` |
 | P2-09 | Prometheus metrics | VERIFIED | Token-gated `/metrics/`; HTTP/webhook/email series |
 | P2-10 | API rate limiting and versioning | VERIFIED | DRF throttles + `/api/v1` namespace |
+
 ---
 
 ## Phase 3 — Financial core (MFI)
 
-All items: **NOT STARTED**
+| ID | Task | Status | Notes |
+|----|------|--------|-------|
+| P3-01 | Chart of accounts + GL structure | IMPLEMENTED | `ledger` app: org-scoped `Account` hierarchy |
+| P3-02 | Double-entry journal engine | PARTIAL | Balanced `post_journal_entry` + trial balance; no reversals/period close yet |
+| P3-03 | Business date + EOD processing | NOT STARTED | `business_date` field exists; EOD jobs not built |
+| P3-04 | Client/customer (borrower) management | NOT STARTED | — |
+| P3-05 | Loan product configuration | NOT STARTED | — |
+| P3-06 | Loan origination + approval workflow | NOT STARTED | — |
+| P3-07 | Disbursement posting | NOT STARTED | — |
+| P3-08 | Repayment allocation | NOT STARTED | — |
+| P3-09 | Savings accounts + deposits/withdrawals | NOT STARTED | — |
+| P3-10 | Interest accrual engine | NOT STARTED | — |
+| P3-11 | Penalties and fees | NOT STARTED | — |
+| P3-12 | Reversals and adjustments | NOT STARTED | — |
+| P3-13 | Period close + immutable periods | NOT STARTED | — |
+| P3-14 | Bank reconciliation | NOT STARTED | — |
+| P3-15 | Regulatory reporting exports | NOT STARTED | — |
+| P3-16 | Idempotent posting API | NOT STARTED | — |
+| P3-17 | Financial audit trail | NOT STARTED | — |
+| P3-18 | Property-based money tests | NOT STARTED | — |
 
 ---
 
@@ -87,7 +107,7 @@ All items: **NOT STARTED**
 | G1 | Phase 0 fixes deployed + tested | VERIFIED (local: 98 tests, migration check, security review) |
 | G2 | Coverage ≥ 55% on accounts/payments/common/core (CI gate) | VERIFIED | coverage fail-under=55 in CI |
 | G3 | Tenant isolation tests pass | VERIFIED | `organizations/tests/test_tenancy.py` |
-| G4 | MFI ledger trial balance balances | NOT STARTED |
+| G4 | MFI ledger trial balance balances | VERIFIED | `ledger/tests/test_double_entry.py` |
 
 ---
 
@@ -103,3 +123,4 @@ All items: **NOT STARTED**
 | 2026-08-13 | Phase 1A.2 started: backup/restore scripts and DR documentation |
 | 2026-09-14 | Phase 2.6–2.7: Celery workers, async email + webhook enqueue |
 | 2026-09-14 | Phase 2.8–2.9: JSON structured logging + Prometheus `/metrics/` |
+| 2026-09-14 | Phase 3.1–3.2 slice: org-scoped chart of accounts + double-entry posting + trial balance |
