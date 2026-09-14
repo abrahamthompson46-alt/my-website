@@ -1,6 +1,6 @@
 # Zreta Platform — Scope Truth Matrix
 
-**Last updated:** 2026-09-14 (Phase 3.3 business date / EOD)  
+**Last updated:** 2026-09-14 (Phase 3.4 borrower clients)  
 **Purpose:** Authoritative statement of what the repository implements today vs. what is planned.
 
 Legend:
@@ -31,6 +31,7 @@ Legend:
 | General ledger (chart of accounts) | PARTIALLY IMPLEMENTED | `ledger.Account` org-scoped; no period close |
 | Double-entry journal posting | PARTIALLY IMPLEMENTED | `ledger.services.post_journal_entry` + trial balance; no API/UI yet |
 | Business date + EOD | PARTIALLY IMPLEMENTED | Org calendar + day close/advance; no holiday calendar or month close |
+| MFI client / borrower registry | PARTIALLY IMPLEMENTED | `clients` app (org-scoped); no KYC docs/portal UI/API yet |
 | SAML/OAuth SSO | NOT IMPLEMENTED | Seed/demo copy only |
 
 ---
@@ -71,6 +72,7 @@ Legend:
 | Capability | Status | Notes |
 |------------|--------|-------|
 | Loan origination | NOT IMPLEMENTED | Product marketing only |
+| Client / borrower management | PARTIALLY IMPLEMENTED | Org-scoped `clients.Client`; no loans linked yet |
 | Loan disbursement | NOT IMPLEMENTED | — |
 | Repayment allocation | NOT IMPLEMENTED | — |
 | Savings accounts | NOT IMPLEMENTED | — |
@@ -81,7 +83,7 @@ Legend:
 | Business date / period close | PARTIALLY IMPLEMENTED | EOD closes/advances business day; period/month close is Phase 3.13 |
 | Regulatory reporting | NOT IMPLEMENTED | — |
 
-**Microfinance Core** on the public site remains **product positioning / roadmap**. This repo has a **GL/journal + business-date/EOD slice** only — not a live lending product.
+**Microfinance Core** on the public site remains **product positioning / roadmap**. This repo has **GL/journal + business-date/EOD + borrower registry** slices — not a live lending product.
 
 ---
 
@@ -90,7 +92,7 @@ Legend:
 | Product | Site status (seed) | Live backend in repo |
 |---------|-------------------|----------------------|
 | ChurchHub | Generally Available | External app URLs; portal billing |
-| Microfinance Core | Catalog entry | PARTIAL GL/journal only (`ledger`); lending not implemented |
+| Microfinance Core | Catalog entry | PARTIAL (`ledger` + `clients`); lending/origination not implemented |
 | ERP Suite | Catalog entry | NOT IMPLEMENTED |
 | School Management | Catalog entry | NOT IMPLEMENTED |
 | Hospital Management | Catalog entry | NOT IMPLEMENTED |
