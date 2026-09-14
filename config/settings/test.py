@@ -40,6 +40,11 @@ CACHES = {
     }
 }
 
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_BROKER_URL = "memory://"
+CELERY_RESULT_BACKEND = None
+
 INSTALLED_APPS = [app for app in INSTALLED_APPS if app != "debug_toolbar"]  # noqa: F405
 MIDDLEWARE = [mw for mw in MIDDLEWARE if "debug_toolbar" not in mw]  # noqa: F405
 

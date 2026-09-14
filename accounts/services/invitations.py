@@ -6,7 +6,7 @@ from django.utils import timezone
 from accounts.models import StaffInvitation
 from accounts.models.invitation import InvitationStatus
 from accounts.services.rbac import assign_role
-from control_room.services.email_delivery import send_platform_mail
+from control_room.services.email_delivery import queue_platform_mail
 
 
 def create_staff_invitation(*, email, role, invited_by, grant_staff_access=True, message=""):
@@ -43,7 +43,7 @@ def send_invitation_email(request, invitation, raw_token):
     subject = render_to_string("emails/staff_invite_subject.txt", context).strip()
     body = render_to_string("emails/staff_invite_body.txt", context)
     html_body = render_to_string("emails/staff_invite_body.html", context)
-    send_platform_mail(
+    queue_platform_mail(
         subject=subject,
         message=body,
         recipient_list=[invitation.email],

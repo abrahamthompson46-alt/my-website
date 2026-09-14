@@ -1,6 +1,6 @@
 # Zreta Platform — Upgrade Progress Tracker
 
-**Last updated:** 2026-08-13 (Phase 1A.2 in progress)
+**Last updated:** 2026-09-14 (Phase 2 Celery)
 
 Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 
@@ -60,7 +60,8 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED`
 | P2-03 | Tenant-scoped querysets | VERIFIED | Org FK + scoping on subscriptions/licenses/invoices/payments/tickets/downloads/notifications |
 | P2-04 | DRF API v1 | VERIFIED | `/api/v1/` token auth + org header scoping |
 | P2-05 | API authentication | VERIFIED | DRF Token (+ session) authentication |
-| P2-06 | Celery/async jobs | NOT STARTED |
+| P2-06 | Celery/async jobs | VERIFIED | Celery + Redis broker; `docs/CELERY.md` |
+| P2-07 | Async email + webhooks | VERIFIED | `queue_platform_mail` + `enqueue_process_webhook` |
 | P2-10 | API rate limiting and versioning | VERIFIED | DRF throttles + `/api/v1` namespace |
 ---
 
@@ -98,3 +99,4 @@ All items: **NOT STARTED**
 | 2026-08-13 | Phase 1A.1 started: web deploy removed, deployment procedure documented |
 | 2026-08-13 | Phase 1A.1 verified: nginx private-media deny rules in zreta.com.conf (102 tests) |
 | 2026-08-13 | Phase 1A.2 started: backup/restore scripts and DR documentation |
+| 2026-09-14 | Phase 2.6–2.7: Celery workers, async email + webhook enqueue |

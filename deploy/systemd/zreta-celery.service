@@ -1,0 +1,28 @@
+[Unit]
+Description=Zreta Celery Worker
+Documentation=https://www.zreta.com
+After=network-online.target redis-server.service postgresql.service
+Wants=network-online.target redis-server.service postgresql.service
+
+[Service]
+Type=simple
+User=marketing
+Group=marketing-runtime
+WorkingDirectory=/var/www/marketing-site
+EnvironmentFile=/var/www/marketing-site/.env
+Environment=PYTHONPATH=/var/www/marketing-site
+ExecStart=/var/www/marketing-site/.venv/bin/celery -A config worker --loglevel=INFO --concurrency=2
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/www/marketing-site/media /var/www/marketing-site/logs /var/log/marketing-site
+
+[Install]
+WantedBy=multi-user.target

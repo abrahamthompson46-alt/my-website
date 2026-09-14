@@ -1,6 +1,6 @@
 # Zreta Platform — Scope Truth Matrix
 
-**Last updated:** 2026-08-13 (Phase 0)  
+**Last updated:** 2026-09-14 (Phase 2 Celery)  
 **Purpose:** Authoritative statement of what the repository implements today vs. what is planned.
 
 Legend:
@@ -23,9 +23,9 @@ Legend:
 | Customer portal | IMPLEMENTED | `customer_portal/` |
 | Staff operations dashboard | IMPLEMENTED | `operations/` |
 | Platform control room | IMPLEMENTED | `control_room/` |
-| REST API (`/api/v1/*`) | NOT IMPLEMENTED | No DRF; no API routes |
-| Background job queue (Celery/RQ) | NOT IMPLEMENTED | No task workers |
-| Multi-tenant organizations | NOT IMPLEMENTED | No Organization model |
+| REST API (`/api/v1/*`) | IMPLEMENTED | `api/` + `docs/API_V1.md` |
+| Background job queue (Celery/RQ) | IMPLEMENTED | Celery + Redis; `docs/CELERY.md` |
+| Multi-tenant organizations | IMPLEMENTED | `organizations/` app |
 | SAML/OAuth SSO | NOT IMPLEMENTED | Seed/demo copy only |
 
 ---

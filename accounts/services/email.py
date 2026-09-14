@@ -3,7 +3,7 @@ import secrets
 from datetime import timedelta
 
 from django.conf import settings
-from control_room.services.email_delivery import send_platform_mail
+from control_room.services.email_delivery import queue_platform_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
@@ -62,7 +62,7 @@ def send_verification_email(request, user):
     subject = render_to_string("accounts/email/verify_email_subject.txt", context).strip()
     text_body = render_to_string("accounts/email/verify_email_body.txt", context)
     html_body = render_to_string("accounts/email/verify_email_body.html", context)
-    send_platform_mail(
+    queue_platform_mail(
         subject=subject,
         message=text_body,
         recipient_list=[user.email],

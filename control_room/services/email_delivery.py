@@ -148,6 +148,36 @@ def send_platform_mail(
     return mail.send(fail_silently=fail_silently)
 
 
+def queue_platform_mail(
+    *,
+    subject: str,
+    message: str,
+    recipient_list: list[str],
+    from_email: str | None = None,
+    from_name: str | None = None,
+    html_message: str | None = None,
+    reply_to: list[str] | None = None,
+    headers: dict[str, str] | None = None,
+    fail_silently: bool = False,
+):
+    """Send platform mail via Celery when async mode is enabled; otherwise inline."""
+    from common.services.async_jobs import dispatch_task
+    from common.tasks import send_platform_mail_task
+
+    return dispatch_task(
+        send_platform_mail_task,
+        subject=subject,
+        message=message,
+        recipient_list=list(recipient_list),
+        from_email=from_email,
+        from_name=from_name,
+        html_message=html_message,
+        reply_to=list(reply_to) if reply_to else None,
+        headers=dict(headers) if headers else None,
+        fail_silently=fail_silently,
+    )
+
+
 def get_email_status_summary() -> dict:
     config = get_platform_email_settings()
     issues: list[str] = []

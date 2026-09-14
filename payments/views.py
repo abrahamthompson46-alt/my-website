@@ -18,7 +18,7 @@ from payments.gateways.registry import list_available_gateways
 from payments.models import GatewayConfiguration, ManualPaymentDetail, ManualPaymentMethod, Payment, PaymentStatus
 from payments.services.checkout import create_checkout
 from payments.services.pricing import CheckoutPricingError, resolve_checkout_pricing
-from payments.services.webhooks import process_webhook, verify_payment
+from payments.services.webhooks import enqueue_process_webhook, verify_payment
 from products.models import PricingPlan, PricingTier
 
 logger = logging.getLogger("payments")
@@ -278,10 +278,15 @@ class GatewayWebhookView(View):
 
         headers = {k: v for k, v in request.headers.items()}
         try:
-            webhook_event, _ = process_webhook(gateway_config, payload, request.body, headers)
+            webhook_event, _ = enqueue_process_webhook(
+                gateway_config, payload, request.body, headers
+            )
         except Exception:
             logger.exception("Webhook processing failed for %s", gateway_code)
             return JsonResponse({"status": "error", "message": "Webhook processing failed."}, status=500)
+
+        if webhook_event is None:
+            return JsonResponse({"status": "accepted"}, status=202)
 
         if webhook_event.error_message and not webhook_event.processed:
             return JsonResponse({"status": "rejected", "message": webhook_event.error_message}, status=400)

@@ -35,6 +35,19 @@ services:
     volumes:
       - media_data:/app/media
 
+  worker:
+    build: .
+    command: celery -A config worker --loglevel=INFO --concurrency=2
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - media_data:/app/media
+
 volumes:
   postgres_data:
   media_data:

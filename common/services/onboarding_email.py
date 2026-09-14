@@ -1,20 +1,20 @@
 """Customer onboarding and lifecycle email notifications."""
 
 from django.conf import settings
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
+
+from control_room.services.email_delivery import queue_platform_mail
 
 
 def _send(template_prefix, subject_context, body_context, recipient):
     subject = render_to_string(f"emails/{template_prefix}_subject.txt", subject_context).strip()
     text_body = render_to_string(f"emails/{template_prefix}_body.txt", body_context)
     html_body = render_to_string(f"emails/{template_prefix}_body.html", body_context)
-    send_mail(
-        subject,
-        text_body,
-        settings.DEFAULT_FROM_EMAIL,
-        [recipient],
+    queue_platform_mail(
+        subject=subject,
+        message=text_body,
+        recipient_list=[recipient],
         html_message=html_body,
         fail_silently=False,
     )

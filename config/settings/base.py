@@ -493,6 +493,28 @@ if _redis_settings:
     SESSION_CACHE_ALIAS = _redis_settings["SESSION_CACHE_ALIAS"]
 
 # ---------------------------------------------------------------------------
+# Celery (Redis broker; falls back to memory:// when REDIS_URL unset)
+# ---------------------------------------------------------------------------
+
+from config.celery_settings import derive_celery_broker_url  # noqa: E402
+
+CELERY_BROKER_URL = derive_celery_broker_url(
+    env("REDIS_URL", default=None),
+    env("CELERY_BROKER_URL", default=None),
+)
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default=None)
+CELERY_TASK_ALWAYS_EAGER = env.bool("CELERY_TASK_ALWAYS_EAGER", default=False)
+CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_TASK_IGNORE_RESULT = True
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_TIME_LIMIT = env.int("CELERY_TASK_TIME_LIMIT", default=120)
+CELERY_TASK_SOFT_TIME_LIMIT = env.int("CELERY_TASK_SOFT_TIME_LIMIT", default=90)
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_TASK_ACKS_LATE = True
+
+# ---------------------------------------------------------------------------
 # Application-specific settings placeholders
 # ---------------------------------------------------------------------------
 

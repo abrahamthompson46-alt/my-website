@@ -15,6 +15,7 @@
     <li>Private payment-proof downloads and row-locked payment status transitions.</li>
     <li>Organization workspaces with membership roles and portal org switching (shared-schema tenancy foundation).</li>
     <li>Versioned REST API (<code>/api/v1</code>) with token auth, org-header scoping, and rate limits.</li>
+    <li>Celery workers for async email delivery and payment webhook processing (Redis broker).</li>
     <li>Append-only audit logs (application-enforced; no admin delete/edit).</li>
     <li>CSP that blocks inline scripts; framing denied at app and nginx layers.</li>
     <li>Public rate limits on checkout, contact, newsletter, and webhook endpoints.</li>
@@ -28,7 +29,6 @@
     <li>Full tenant expansion options (schema-per-tenant for regulated customers; invite/SSO flows).</li>
     <li>Public REST API expansion (webhooks API, write endpoints beyond tickets, API keys).</li>
     <li>SAML / OAuth SSO for enterprise identity providers.</li>
-    <li>Background job workers for async email and webhook processing.</li>
     <li>Domain engines for Microfinance Core and other vertical products beyond catalog and portal billing.</li>
 </ul>
 

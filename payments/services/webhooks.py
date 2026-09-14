@@ -1,5 +1,6 @@
 """Payment webhook processing with validation."""
 
+import base64
 import logging
 from decimal import Decimal
 
@@ -16,6 +17,31 @@ logger = logging.getLogger(__name__)
 _MINOR_UNIT_GATEWAYS = {"paystack", "flutterwave", "hubtel"}
 _TERMINAL_SUCCESS = {PaymentStatus.SUCCEEDED, PaymentStatus.REFUNDED}
 _TERMINAL_FAILURE = {PaymentStatus.FAILED, PaymentStatus.CANCELLED}
+
+
+def enqueue_process_webhook(gateway_config, payload: dict, raw_body: bytes, headers: dict):
+    """
+    Process a webhook inline or via Celery.
+
+    Returns:
+        (webhook_event, created_or_queued)
+        When queued asynchronously, webhook_event is None and created_or_queued is True.
+    """
+    from common.services.async_jobs import celery_async_enabled, dispatch_task
+    from common.tasks import process_webhook_task
+
+    if not celery_async_enabled():
+        return process_webhook(gateway_config, payload, raw_body, headers)
+
+    safe_headers = {str(k): str(v) for k, v in headers.items()}
+    dispatch_task(
+        process_webhook_task,
+        gateway_config.code,
+        payload,
+        base64.b64encode(raw_body).decode("ascii"),
+        safe_headers,
+    )
+    return None, True
 
 
 @transaction.atomic
