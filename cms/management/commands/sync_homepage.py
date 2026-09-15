@@ -54,9 +54,8 @@ class Command(BaseCommand):
 
         page.meta_title = "Zreta — Modular enterprise software"
         page.meta_description = (
-            "Zreta is a modular enterprise software platform. Products for faith communities, "
-            "financial services, education, healthcare, ERP, and HR — with GHS pricing, "
-            "Mobile Money, and enterprise security."
+            "Zreta markets and bills modular products including ChurchHub and CoreTrust — "
+            "with GHS pricing, Mobile Money, shared portal access, and enterprise security."
         )
         page.save(update_fields=["meta_title", "meta_description", "updated_at"])
 

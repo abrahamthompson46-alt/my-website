@@ -7,7 +7,8 @@ from decimal import Decimal
 from common.money import MONEY_QUANT, quantize_money
 from customer_portal.models import Invoice
 from customer_portal.models.invoice import InvoiceStatus
-from products.models import PricingPlan, PricingTier, Product, ProductStatus
+from products.models import PricingPlan, PricingTier, Product
+from products.services.availability import is_purchasable
 
 
 class CheckoutPricingError(ValueError):
@@ -73,7 +74,7 @@ def _resolve_plan_pricing(*, plan_id, tier_id) -> dict:
         raise CheckoutPricingError("Selected plan is not available for purchase.")
 
     product = plan.product
-    if not product.is_published or product.status not in {ProductStatus.GA, ProductStatus.BETA}:
+    if not is_purchasable(product):
         raise CheckoutPricingError("Selected product is not available for purchase.")
 
     if tier_id:
