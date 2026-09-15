@@ -40,6 +40,9 @@ CACHES = {
     }
 }
 
+# Avoid cache_page pollution across homepage/view tests.
+PUBLIC_PAGE_CACHE_SECONDS = 0
+
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 CELERY_BROKER_URL = "memory://"

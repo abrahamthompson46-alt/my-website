@@ -1,0 +1,76 @@
+"""Build outbound product URLs for homepage trial/demo CTAs."""
+
+from __future__ import annotations
+
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+
+from django.db.models import Q
+
+from products.models import Product, ProductStatus
+
+
+def build_intent_url(product, intent: str, *, source: str = "homepage") -> str:
+    """
+    Return a product-site URL for trial or demo, with tracking params.
+
+    intent: "trial" | "demo"
+    """
+    if intent == "trial":
+        base = product.register_url or product.external_app_url or product.demo_url
+        campaign = "start_trial"
+    else:
+        base = product.demo_url or product.external_app_url or product.register_url
+        campaign = "request_demo"
+
+    base = (base or "").strip()
+    if not base:
+        return ""
+
+    parts = urlsplit(base)
+    query = dict(parse_qsl(parts.query, keep_blank_values=True))
+    query.update(
+        {
+            "utm_source": "zreta",
+            "utm_medium": source,
+            "utm_campaign": campaign,
+            "intent": intent,
+            "product": product.slug,
+        }
+    )
+    return urlunsplit(
+        (parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment)
+    )
+
+
+def get_homepage_intent_products():
+    """Published GA/Beta products that can receive trial or demo traffic."""
+    return list(
+        Product.objects.filter(
+            is_published=True,
+            status__in=[ProductStatus.GA, ProductStatus.BETA],
+        )
+        .filter(
+            Q(register_url__gt="")
+            | Q(demo_url__gt="")
+            | Q(external_app_url__gt="")
+        )
+        .order_by("sort_order", "name")
+    )
+
+
+def annotate_intent_links(products, *, source: str = "homepage") -> list[dict]:
+    """Attach trial_url / demo_url for template rendering."""
+    rows = []
+    for product in products:
+        trial_url = build_intent_url(product, "trial", source=source)
+        demo_url = build_intent_url(product, "demo", source=source)
+        if not trial_url and not demo_url:
+            continue
+        rows.append(
+            {
+                "product": product,
+                "trial_url": trial_url,
+                "demo_url": demo_url,
+            }
+        )
+    return rows

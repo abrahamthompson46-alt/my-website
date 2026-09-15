@@ -118,8 +118,8 @@ HERO = {
     "product_pills": [
         "ChurchHub",
         "CoreTrust",
-        "ERP & operations",
-        "School & hospital suites",
+        "Shared billing portal",
+        "GHS · Mobile Money",
     ],
     "cta_primary_label": "Explore products",
     "cta_secondary_label": "Start free trial",
@@ -128,30 +128,39 @@ HERO = {
 
 CTA = {
     "title": "Ready to modernize your operations?",
-    "subtitle": "Browse products and start a 30-day free trial — no credit card required.",
+    "subtitle": "Start a trial or request a demo on the live ChurchHub or CoreTrust product sites.",
 }
 
 REQUEST_DEMO = {
-    "eyebrow": "Get started",
-    "title": "Start your 30-day free trial",
+    "eyebrow": "Request a demo",
+    "title": "See a guided walkthrough",
     "subtitle": (
-        "Pick a product, create your account, and launch from the customer portal — "
-        "no demo request or sales call required."
+        "Choose a product and continue on its landing page to request a demo account "
+        "from the product team."
+    ),
+}
+
+START_TRIAL = {
+    "eyebrow": "Start trial",
+    "title": "Start on the live product",
+    "subtitle": (
+        "Choose ChurchHub or CoreTrust. We’ll send you to that product’s signup page "
+        "to create your account."
     ),
 }
 
 HOW_IT_WORKS = [
     {
         "title": "Choose a product",
-        "description": "Browse modular solutions for faith, finance, education, healthcare, and operations.",
+        "description": "Browse ChurchHub, CoreTrust, and other modular solutions for your industry.",
     },
     {
-        "title": "Start your trial",
-        "description": "Create an account and activate a 30-day trial from any product page — no credit card required.",
+        "title": "Start trial or request a demo",
+        "description": "Continue to the live product site to create an account or request a demo.",
     },
     {
-        "title": "Launch from your portal",
-        "description": "Configure settings, invite your team, and upgrade when you're ready.",
+        "title": "Manage billing in Zreta",
+        "description": "Use your customer portal for subscriptions, invoices, and launch links.",
     },
 ]
 
@@ -172,7 +181,7 @@ def get_homepage_context():
         "trust_signals": TRUST_SIGNALS,
         "trust_strip": TRUST_STRIP,
         "cta_section": CTA,
-        "start_trial_section": REQUEST_DEMO,
+        "start_trial_section": START_TRIAL,
         "request_demo_section": REQUEST_DEMO,
         "how_it_works": HOW_IT_WORKS,
         "newsletter_section": NEWSLETTER,

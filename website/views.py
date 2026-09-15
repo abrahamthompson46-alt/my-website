@@ -14,6 +14,7 @@ from marketing.forms import NewsletterSubscribeForm
 from products.models import Product, ProductDemoRequest
 from website.forms import DemoRequestForm
 from website.services.homepage import get_homepage_featured_products
+from website.services.outbound_links import annotate_intent_links, get_homepage_intent_products
 
 
 class LegalPageMixin(SEOContextMixin, TemplateView):
@@ -126,6 +127,7 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         context.update(build_home_context())
         context["featured_products"] = get_homepage_featured_products()
+        context["intent_products"] = annotate_intent_links(get_homepage_intent_products())
         context.setdefault("demo_form", DemoRequestForm())
         context.setdefault("newsletter_form", NewsletterSubscribeForm())
         context["seo_meta"] = home_seo(self.request)

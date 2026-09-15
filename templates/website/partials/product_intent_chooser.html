@@ -1,0 +1,47 @@
+{% load ui_tags %}
+{# Requires: intent_products, intent ("trial"|"demo") #}
+
+{% if intent_products %}
+<ul class="product-intent-list" role="list">
+    {% for row in intent_products %}
+    {% with product=row.product %}
+    {% if intent == "trial" and row.trial_url %}
+    <li class="product-intent-list__item product-intent-list__item--{{ product.accent|default:'default' }}">
+        <div class="product-intent-list__copy">
+            <p class="product-intent-list__name">{{ product.name }}</p>
+            {% if product.tagline %}
+            <p class="product-intent-list__tagline">{{ product.tagline }}</p>
+            {% elif product.short_description %}
+            <p class="product-intent-list__tagline">{{ product.short_description|truncatewords:14 }}</p>
+            {% endif %}
+        </div>
+        <a href="{{ row.trial_url }}" class="btn btn--primary btn--md product-intent-list__cta" target="_blank" rel="noopener noreferrer">
+            Start on {{ product.name }}
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="external-link"></svg>
+        </a>
+    </li>
+    {% elif intent == "demo" and row.demo_url %}
+    <li class="product-intent-list__item product-intent-list__item--{{ product.accent|default:'default' }}">
+        <div class="product-intent-list__copy">
+            <p class="product-intent-list__name">{{ product.name }}</p>
+            {% if product.tagline %}
+            <p class="product-intent-list__tagline">{{ product.tagline }}</p>
+            {% elif product.short_description %}
+            <p class="product-intent-list__tagline">{{ product.short_description|truncatewords:14 }}</p>
+            {% endif %}
+        </div>
+        <a href="{{ row.demo_url }}" class="btn btn--primary btn--md product-intent-list__cta" target="_blank" rel="noopener noreferrer">
+            Demo {{ product.name }}
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="external-link"></svg>
+        </a>
+    </li>
+    {% endif %}
+    {% endwith %}
+    {% endfor %}
+</ul>
+{% else %}
+<div class="product-intent-list__empty">
+    <p>Browse the catalog to get started.</p>
+    {% ui_button label="View products" url_name="products:list" variant="primary" size="md" type="link" %}
+</div>
+{% endif %}

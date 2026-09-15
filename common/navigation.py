@@ -31,8 +31,8 @@ PUBLIC_HEADER_NAV = [
             {
                 "title": "Get Started",
                 "links": [
-                    {"label": "Request a Demo", "url_name": "contact:demo"},
-                    {"label": "Start Free Trial", "url_name": "contact:trial"},
+                    {"label": "Request a Demo", "url": "/#request-demo"},
+                    {"label": "Start Free Trial", "url": "/#start-trial"},
                     {"label": "View Documentation", "url_name": "documentation:index"},
                 ],
             },

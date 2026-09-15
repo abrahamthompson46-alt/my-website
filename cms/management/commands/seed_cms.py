@@ -23,6 +23,7 @@ from website.content import (
     INDUSTRIES,
     NEWSLETTER,
     REQUEST_DEMO,
+    START_TRIAL,
     STATISTICS,
     TRUST_SIGNALS,
     WHY_CHOOSE_US,
@@ -77,6 +78,7 @@ class Command(BaseCommand):
             ("statistics", "Platform", "Built for serious operations", "Shared standards across every Zreta product."),
             ("cta", "", CTA["title"], CTA["subtitle"]),
             ("trust_signals", "Why teams trust Zreta", "Built for real operations", "Payments, security, and support you can verify on this site."),
+            ("start_trial", START_TRIAL["eyebrow"], START_TRIAL["title"], START_TRIAL["subtitle"]),
             ("request_demo", REQUEST_DEMO["eyebrow"], REQUEST_DEMO["title"], REQUEST_DEMO["subtitle"]),
             ("newsletter", "", NEWSLETTER["title"], NEWSLETTER["subtitle"]),
         ]
@@ -129,11 +131,24 @@ class Command(BaseCommand):
                 sort_order=i,
             )
 
+        trial_benefits = [
+            ("Live product experience — not a sandbox brochure", "check"),
+            ("Account created on the product site", "check"),
+            ("Return to your Zreta portal anytime for billing", "check"),
+        ]
+        for i, (title, icon) in enumerate(trial_benefits):
+            SectionItem.objects.create(
+                section=sections["start_trial"],
+                title=title,
+                icon=icon,
+                sort_order=i,
+            )
+
         demo_benefits = [
-            ("Full product access for 30 days", "check"),
-            ("No credit card required", "check"),
-            ("Upgrade or cancel anytime from your portal", "check"),
-            ("GHS pricing and Mobile Money checkout", "check"),
+            ("Demo handled by the live product team", "check-circle"),
+            ("ChurchHub and CoreTrust already deployed", "check-circle"),
+            ("Continue on the product landing page", "check-circle"),
+            ("Sales help if you are unsure which product", "check-circle"),
         ]
         for i, (title, icon) in enumerate(demo_benefits):
             SectionItem.objects.create(

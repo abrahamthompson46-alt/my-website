@@ -91,6 +91,11 @@ class HomepageServiceTests(TestCase):
 
 
 class HomepageViewTests(TestCase):
+    def setUp(self):
+        from django.core.cache import cache
+
+        cache.clear()
+
     def test_homepage_uses_honest_copy(self):
         response = self.client.get(reverse("website:home"))
         self.assertEqual(response.status_code, 200)
@@ -103,10 +108,10 @@ class HomepageViewTests(TestCase):
         self.assertIn("Start free trial", content)
         self.assertIn("home-trust", content)
         self.assertIn("home-hero__trust-strip", content)
-        self.assertIn("home-trial", content)
+        self.assertIn("home-intent", content)
         self.assertIn("home-steps", content)
-        self.assertNotIn("request-demo", content)
-        self.assertNotIn("Request a demo", content)
+        self.assertIn("request-demo", content)
+        self.assertIn("Request a demo", content)
 
     def test_homepage_hides_testimonials_without_verified_stories(self):
         Testimonial.objects.create(

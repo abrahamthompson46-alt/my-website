@@ -1,34 +1,43 @@
 {% load ui_tags %}
 
-<section class="section home-trial" id="start-trial" aria-labelledby="trial-heading">
+<section class="section home-intent home-intent--trial" id="start-trial" aria-labelledby="trial-heading">
     <div class="container">
-        <div class="home-trial__card">
-            <div class="home-trial__content">
-                {% include "cms/partials/section_header.html" with section=start_trial_section eyebrow="Get started" title="Start your 30-day free trial" subtitle="Pick a product, create your account, and launch from the customer portal — no demo request or sales call required." %}
+        <div class="home-intent__card">
+            <div class="home-intent__content">
+                <header class="section__header section__header--left">
+                    <p class="section__eyebrow">{% if start_trial_section.eyebrow %}{{ start_trial_section.eyebrow }}{% else %}Start trial{% endif %}</p>
+                    <h2 id="trial-heading" class="section__title">
+                        {% if start_trial_section.title %}{{ start_trial_section.title }}{% else %}Start on the live product{% endif %}
+                    </h2>
+                    <p class="section__subtitle">
+                        {% if start_trial_section.subtitle %}{{ start_trial_section.subtitle }}
+                        {% else %}Choose ChurchHub or CoreTrust. We’ll send you to that product’s signup page to create your account.{% endif %}
+                    </p>
+                </header>
 
-                <ul class="home-trial__benefits">
+                <ul class="home-intent__benefits">
                     {% if trial_benefits %}
-                        {% for benefit in trial_benefits %}
+                        {% for item in trial_benefits %}
                         <li>
-                            <svg class="icon icon--sm" aria-hidden="true" data-icon="{% if benefit.icon %}{{ benefit.icon }}{% else %}check{% endif %}"></svg>
-                            {{ benefit.title }}
+                            <svg class="icon icon--sm" aria-hidden="true" data-icon="{{ item.icon|default:'check' }}"></svg>
+                            {{ item.title }}
                         </li>
                         {% endfor %}
                     {% else %}
-                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>Full product access for 30 days</li>
-                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>No credit card required</li>
-                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>Upgrade or cancel anytime from your portal</li>
-                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>GHS pricing and Mobile Money checkout</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>Live product experience — not a sandbox brochure</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>Account created on the product site</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg>Return to your Zreta portal anytime for billing</li>
                     {% endif %}
                 </ul>
             </div>
 
-            <div class="home-trial__actions">
-                {% ui_button label="Browse products" url_name="products:list" variant="primary" size="lg" extra_class="btn--full" %}
-                {% ui_button label="Create account" url_name="accounts:register" variant="secondary" size="lg" extra_class="btn--full" %}
-                {% if not user.is_authenticated %}
-                <p class="home-trial__hint">Already have an account? <a href="{% url 'accounts:login' %}?next={% url 'products:list' %}">Sign in</a> to activate a trial.</p>
-                {% endif %}
+            <div class="home-intent__chooser">
+                <p class="home-intent__chooser-label">Choose a product</p>
+                {% include "website/partials/product_intent_chooser.html" with intent_products=intent_products intent="trial" %}
+                <p class="home-intent__hint">
+                    Prefer to look around first?
+                    <a href="{% url 'products:list' %}">Browse all products</a>
+                </p>
             </div>
         </div>
     </div>

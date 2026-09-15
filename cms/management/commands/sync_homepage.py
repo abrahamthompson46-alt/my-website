@@ -16,6 +16,7 @@ from website.content import (
     INDUSTRIES,
     NEWSLETTER,
     REQUEST_DEMO,
+    START_TRIAL,
     STATISTICS,
     TRUST_SIGNALS,
     WHY_CHOOSE_US,
@@ -47,8 +48,8 @@ class Command(BaseCommand):
             hero.trust_text = HERO["trust_text"]
             hero.cta_primary_label = HERO.get("cta_primary_label", "Explore products")
             hero.cta_primary_url = hero.cta_primary_url or ""
-            hero.cta_secondary_label = HERO.get("cta_secondary_label", "Request a Demo")
-            hero.cta_secondary_url = "#request-demo"
+            hero.cta_secondary_label = HERO.get("cta_secondary_label", "Start free trial")
+            hero.cta_secondary_url = HERO.get("cta_secondary_url", "#start-trial")
             hero.is_active = True
             hero.save()
 
@@ -67,23 +68,43 @@ class Command(BaseCommand):
         self._sync_header(page, "featured_products", "Modular products on one platform", "Choose the Zreta products that fit your industry — each with shared billing, security, and customer portal access.", eyebrow="Products")
         self._sync_header(page, "statistics", "Built for serious operations", "Shared standards across every Zreta product.", eyebrow="Platform")
         self._sync_header(page, "cta", CTA["title"], CTA["subtitle"])
-        self._sync_header(
+        self._ensure_header(
+            page,
+            "start_trial",
+            START_TRIAL["title"],
+            START_TRIAL["subtitle"],
+            eyebrow=START_TRIAL["eyebrow"],
+            sort_order=7,
+        )
+        self._ensure_header(
             page,
             "request_demo",
             REQUEST_DEMO["title"],
             REQUEST_DEMO["subtitle"],
             eyebrow=REQUEST_DEMO["eyebrow"],
+            sort_order=8,
         )
         self._sync_header(page, "newsletter", NEWSLETTER["title"], NEWSLETTER["subtitle"])
+
+        trial_section = self._get_or_create_section(page, "start_trial", sort_order=7)
+        trial_section.items.all().delete()
+        for i, (title, icon) in enumerate(
+            [
+                ("Live product experience — not a sandbox brochure", "check"),
+                ("Account created on the product site", "check"),
+                ("Return to your Zreta portal anytime for billing", "check"),
+            ]
+        ):
+            SectionItem.objects.create(section=trial_section, title=title, icon=icon, sort_order=i, is_active=True)
 
         demo_section = self._get_or_create_section(page, "request_demo", sort_order=8)
         demo_section.items.all().delete()
         for i, (title, icon) in enumerate(
             [
-                ("30-minute tailored demo", "check-circle"),
-                ("Q&A with product specialists", "check-circle"),
-                ("GHS pricing overview", "check-circle"),
-                ("No commitment required", "check-circle"),
+                ("Demo handled by the live product team", "check-circle"),
+                ("ChurchHub and CoreTrust already deployed", "check-circle"),
+                ("Continue on the product landing page", "check-circle"),
+                ("Sales help if you are unsure which product", "check-circle"),
             ]
         ):
             SectionItem.objects.create(section=demo_section, title=title, icon=icon, sort_order=i, is_active=True)
@@ -166,6 +187,14 @@ class Command(BaseCommand):
         section = PageSection.objects.filter(page=page, section_key=key).first()
         if not section:
             return
+        section.eyebrow = eyebrow
+        section.title = title
+        section.subtitle = subtitle
+        section.is_active = True
+        section.save()
+
+    def _ensure_header(self, page, key, title, subtitle, eyebrow="", sort_order=0):
+        section = self._get_or_create_section(page, key, sort_order=sort_order)
         section.eyebrow = eyebrow
         section.title = title
         section.subtitle = subtitle

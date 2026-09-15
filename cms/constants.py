@@ -9,6 +9,7 @@ HOME_SECTIONS = [
     "statistics",
     "cta",
     "trust_signals",
+    "start_trial",
     "request_demo",
     "newsletter",
 ]

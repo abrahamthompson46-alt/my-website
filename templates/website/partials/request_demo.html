@@ -1,91 +1,44 @@
 {% load ui_tags %}
 
-<section class="section home-demo" id="request-demo" aria-labelledby="demo-heading">
-
+<section class="section home-intent home-intent--demo" id="request-demo" aria-labelledby="demo-heading">
     <div class="container">
+        <div class="home-intent__card home-intent__card--muted">
+            <div class="home-intent__content">
+                <header class="section__header section__header--left">
+                    <p class="section__eyebrow">{% if request_demo_section.eyebrow %}{{ request_demo_section.eyebrow }}{% else %}Request a demo{% endif %}</p>
+                    <h2 id="demo-heading" class="section__title">
+                        {% if request_demo_section.title %}{{ request_demo_section.title }}{% else %}See a guided walkthrough{% endif %}
+                    </h2>
+                    <p class="section__subtitle">
+                        {% if request_demo_section.subtitle %}{{ request_demo_section.subtitle }}
+                        {% else %}Pick a product and continue on its landing page to request a demo account from the product team.{% endif %}
+                    </p>
+                </header>
 
-        <div class="home-demo__grid">
-
-            <div class="home-demo__info">
-
-                {% include "cms/partials/section_header.html" with section=request_demo_section eyebrow="Request a Demo" title="See Zreta products in action" subtitle="Schedule a walkthrough with our team. We'll demo live products such as ChurchHub and CoreTrust, and explain how upcoming Zreta solutions fit your organization." %}
-
-                <ul class="home-demo__benefits">
-
+                <ul class="home-intent__benefits">
                     {% if demo_benefits %}
-
-                        {% for benefit in demo_benefits %}
-
+                        {% for item in demo_benefits %}
                         <li>
-
-                            <svg class="icon icon--sm" aria-hidden="true" data-icon="{% if benefit.icon %}{{ benefit.icon }}{% else %}check-circle{% endif %}"></svg>
-
-                            {{ benefit.title }}
-
+                            <svg class="icon icon--sm" aria-hidden="true" data-icon="{{ item.icon|default:'check-circle' }}"></svg>
+                            {{ item.title }}
                         </li>
-
                         {% endfor %}
-
                     {% else %}
-
-                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>30-minute tailored demo</li>
-
-                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>Q&amp;A with product experts</li>
-
-                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>GHS pricing overview</li>
-
-                        <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>No commitment required</li>
-
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>Demo handled by the live product team</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>ChurchHub and CoreTrust already deployed</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check-circle"></svg>Not sure which fit? <a href="{% url 'contact:demo' %}">Contact Zreta sales</a></li>
                     {% endif %}
-
                 </ul>
-
             </div>
 
-            <div class="home-demo__form-panel">
-
-                <form method="post" action="{% url 'website:home' %}#request-demo" class="form form--compact form--demo-grid" novalidate>
-
-                    {% csrf_token %}
-
-                    <input type="hidden" name="demo_submit" value="1">
-                    <div class="hp-field" aria-hidden="true">{{ demo_form.company_website }}</div>
-
-                    {% if demo_form.non_field_errors %}
-
-                    <div class="form__errors" role="alert">{{ demo_form.non_field_errors }}</div>
-
-                    {% endif %}
-
-                    <div class="form__fields">
-
-                        {% ui_field field=demo_form.full_name %}
-
-                        {% ui_field field=demo_form.work_email %}
-
-                        {% ui_field field=demo_form.company %}
-
-                        {% ui_field field=demo_form.phone show_optional=True %}
-
-                        {% ui_field field=demo_form.product_interest extra_class="form-field--full" %}
-
-                        {% ui_field field=demo_form.message show_optional=True extra_class="form-field--full" %}
-
-                    </div>
-
-                    <div class="form-actions form-actions--end">
-
-                        {% ui_button label="Request Demo" variant="primary" size="md" type="submit" %}
-
-                    </div>
-
-                </form>
-
+            <div class="home-intent__chooser">
+                <p class="home-intent__chooser-label">Choose a product</p>
+                {% include "website/partials/product_intent_chooser.html" with intent_products=intent_products intent="demo" %}
+                <p class="home-intent__hint">
+                    Need help choosing?
+                    <a href="{% url 'contact:demo' %}">Talk to Zreta</a>
+                </p>
             </div>
-
         </div>
-
     </div>
-
 </section>
-

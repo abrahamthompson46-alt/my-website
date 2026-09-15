@@ -30,7 +30,7 @@
                         {% for column in item.columns %}
                         {% for link in column.links %}
                         <li>
-                            <a href="{% if link.url_name %}{% nav_link_url link %}{% else %}#{% endif %}"
+                            <a href="{% if link.url_name %}{% nav_link_url link %}{% elif link.url %}{{ link.url }}{% else %}#{% endif %}"
                                class="mobile-nav__link">
                                 {{ link.label }}
                             </a>
@@ -50,8 +50,8 @@
         </nav>
         <div class="mobile-drawer__footer">
             <a href="{% url 'accounts:login' %}" class="btn btn--secondary btn--md btn--full">Log in</a>
-            <a href="{% url 'contact:trial' %}" class="btn btn--primary btn--md btn--full">Start Free Trial</a>
-            <a href="{% url 'contact:demo' %}" class="btn btn--secondary btn--md btn--full" style="margin-top:0.5rem;">Request a Demo</a>
+            <a href="{% url 'website:home' %}#start-trial" class="btn btn--primary btn--md btn--full">Start Free Trial</a>
+            <a href="{% url 'website:home' %}#request-demo" class="btn btn--secondary btn--md btn--full" style="margin-top:0.5rem;">Request a Demo</a>
         </div>
     </div>
 </div>
