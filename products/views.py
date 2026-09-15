@@ -266,7 +266,12 @@ class PlanStartView(View):
                 request.session.pop("plan_start", None)
                 messages.success(
                     request,
-                    f"Your {selection.product.name} trial is active until {subscription.trial_ends_at:%b %d, %Y}.",
+                    f"Your {selection.product.name} trial is active until {subscription.trial_ends_at:%b %d, %Y}."
+                    + (
+                        f" Launch it from your portal dashboard."
+                        if selection.product.external_app_url
+                        else ""
+                    ),
                 )
                 return redirect("customer_portal:dashboard")
             checkout_url = (

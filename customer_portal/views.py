@@ -30,6 +30,7 @@ from customer_portal.models import (
 )
 from customer_portal.services import (
     get_dashboard_stats,
+    get_launchable_subscriptions,
     get_or_create_profile,
     get_product_updates_for_user,
     get_recent_notifications,
@@ -46,7 +47,9 @@ class DashboardView(PortalMixin, TemplateView):
         user = self.request.user
         org = getattr(self.request, "organization", None)
         context["stats"] = get_dashboard_stats(user, organization=org)
-        subs = Subscription.objects.select_related("product")
+        subs = Subscription.objects.filter(
+            status__in=["active", "trial"]
+        ).select_related("product")
         invoices = Invoice.objects.order_by("-issued_at")
         if org is not None:
             context["subscriptions"] = subs.filter(organization=org)[:4]
@@ -54,6 +57,9 @@ class DashboardView(PortalMixin, TemplateView):
         else:
             context["subscriptions"] = subs.filter(user=user)[:4]
             context["recent_invoices"] = invoices.filter(user=user)[:5]
+        context["launchable_subscriptions"] = get_launchable_subscriptions(
+            user, organization=org
+        )
         context["recent_tickets"] = (
             SupportTicket.objects.filter(organization=org).order_by("-created_at")[:5]
             if org is not None

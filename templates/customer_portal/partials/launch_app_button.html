@@ -1,0 +1,3 @@
+{% if url %}
+<a href="{{ url }}" class="btn btn--{{ variant|default:'primary' }} btn--{{ size|default:'sm' }}" target="_blank" rel="noopener noreferrer">{{ label|default:"Launch app" }}</a>
+{% endif %}

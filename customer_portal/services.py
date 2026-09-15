@@ -69,3 +69,32 @@ def get_subscribed_products(user, organization=None):
     if organization is not None:
         return qs.filter(organization=organization)
     return qs.filter(user=user)
+
+
+def get_launchable_subscriptions(user, organization=None):
+    """
+    Active/trial subscriptions whose product has an external app URL.
+
+    Returns one subscription per product (first match), for portal Launch CTAs.
+    """
+    qs = (
+        Subscription.objects.filter(status__in=["active", "trial"])
+        .exclude(product__external_app_url="")
+        .select_related("product")
+        .order_by("product__sort_order", "product__name", "-started_at")
+    )
+    if organization is not None:
+        qs = qs.filter(organization=organization)
+    else:
+        qs = qs.filter(user=user)
+
+    seen = set()
+    launchable = []
+    for subscription in qs:
+        product = subscription.product
+        if product_id := product.pk:
+            if product_id in seen or not product.external_app_url:
+                continue
+            seen.add(product_id)
+            launchable.append(subscription)
+    return launchable

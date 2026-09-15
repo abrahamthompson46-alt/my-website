@@ -34,6 +34,12 @@
 
                 <span>${{ sub.amount|floatformat:2|intcomma }}/{{ sub.billing_interval }}</span>
 
+                {% if sub.is_active and sub.product.external_app_url %}
+
+                {% include "customer_portal/partials/launch_app_button.html" with url=sub.product.external_app_url variant="secondary" %}
+
+                {% endif %}
+
                 {% ui_badge label=sub.get_status_display variant="primary" %}
 
             </div>

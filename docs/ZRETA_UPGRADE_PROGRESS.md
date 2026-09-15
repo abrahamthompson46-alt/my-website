@@ -86,7 +86,7 @@ Brief experimental `ledger` / `clients` apps were removed. See `docs/ZRETA_PRODU
 |----|------|--------|-------|
 | P4-01 | CoreTrust catalog + external app links | IMPLEMENTED | Product rename + `micro.zreta.com` URLs |
 | P4-02 | ChurchHub portal ↔ app provisioning | NOT STARTED | — |
-| P4-03 | CoreTrust portal ↔ app deeper sync | NOT STARTED | License/launch polish |
+| P4-03 | CoreTrust / ChurchHub portal launch CTAs | IMPLEMENTED | Dashboard/subscriptions/licenses Launch app for active entitlements |
 | P4-04 | Unified identity across product apps | NOT STARTED | — |
 | P4-05 | Cross-product billing refinements | NOT STARTED | — |
 
@@ -118,3 +118,4 @@ Brief experimental `ledger` / `clients` apps were removed. See `docs/ZRETA_PRODU
 | 2026-09-14 | Phase 2.8–2.9: JSON structured logging + Prometheus `/metrics/` |
 | 2026-09-14 | Phase 3.1–3.4 briefly added in-repo ledger/clients (later reversed) |
 | 2026-09-14 | Product model realigned: storefront + external CoreTrust; Phase 3 cancelled; `ledger`/`clients` removed |
+| 2026-09-15 | Portal Launch app CTAs for active ChurchHub/CoreTrust subscriptions |
