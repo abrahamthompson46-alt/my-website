@@ -7,8 +7,9 @@ PURCHASABLE_STATUSES = frozenset({ProductStatus.GA, ProductStatus.BETA})
 
 
 def is_purchasable(product) -> bool:
+    """Published products in GA or Beta can be trialed or bought."""
     return bool(
         product
-        and product.is_published
-        and product.status in PURCHASABLE_STATUSES
+        and getattr(product, "is_published", False)
+        and getattr(product, "status", None) in PURCHASABLE_STATUSES
     )

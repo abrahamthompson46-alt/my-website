@@ -39,7 +39,11 @@ def resolve_tier(plan: PricingPlan, tier_id=None, currency=None):
 
 
 def get_plan_selection(*, product_slug, plan_slug, action="trial", tier_id=None, currency=None):
+    from products.services.availability import is_purchasable
+
     product = get_object_or_404(Product, slug=product_slug, is_published=True)
+    if not is_purchasable(product):
+        raise ValueError("This product is not available for trial or purchase yet.")
     plan = get_object_or_404(
         PricingPlan,
         product=product,

@@ -131,5 +131,23 @@ class SanitizePlatformTests(TestCase):
         self.assertEqual(self.product.status, ProductStatus.GA)
         self.assertTrue(self.product.external_app_url)
 
+    def test_fix_rewrites_legacy_microfinance_copy(self):
+        from cms.models import FAQ, FAQCategory
+
+        category = FAQCategory.objects.create(name="General", slug="general-sanitize")
+        faq = FAQ.objects.create(
+            category=category,
+            question="Do you offer Microfinance Core?",
+            answer="Yes, Microfinance Core is available.",
+            is_published=True,
+        )
+        report = run_sanitization(fix=True)
+        codes = {f.code: f for f in report.findings}
+        self.assertGreaterEqual(codes["stale_microfinance_copy"].fixed, 1)
+        faq.refresh_from_db()
+        self.assertIn("CoreTrust", faq.question)
+        self.assertNotIn("Microfinance Core", faq.question)
+        self.assertNotIn("Microfinance Core", faq.answer)
+
     def test_management_command_dry_run(self):
         call_command("sanitize_platform")

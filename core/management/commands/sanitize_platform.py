@@ -23,7 +23,8 @@ class Command(BaseCommand):
             action="store_true",
             help=(
                 "Apply safe repairs: null organization backfill, license org alignment, "
-                "featured-product policy, CoreTrust catalog fields, overdue trial expiry."
+                "featured-product policy, CoreTrust catalog fields, overdue trial expiry, "
+                "status/date repairs, cross-user link detach, and Microfinance Core→CoreTrust copy."
             ),
         )
 

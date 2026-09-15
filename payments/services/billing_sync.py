@@ -7,6 +7,7 @@ from customer_portal.models import Invoice, License, Subscription
 from customer_portal.models.invoice import InvoiceStatus
 from customer_portal.models.license import LicenseStatus
 from customer_portal.models.subscription import BillingInterval, SubscriptionStatus
+from payments.services.billing_integrity import assert_subscription_links
 from products.models.pricing import BillingInterval as PlanBillingInterval
 
 import secrets
@@ -26,6 +27,11 @@ def sync_payment_success(payment):
     """Update portal billing records after successful payment."""
     if payment.invoice_id:
         invoice = payment.invoice
+        assert_subscription_links(
+            user=payment.user,
+            organization=payment.organization,
+            subscription=invoice.subscription,
+        )
         invoice.status = InvoiceStatus.PAID
         invoice.paid_at = timezone.now().date()
         invoice.save(update_fields=["status", "paid_at", "updated_at"])

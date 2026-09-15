@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import timedelta
 from typing import Callable
 
 from django.db import transaction
@@ -20,9 +21,9 @@ from products.models import Product, ProductStatus
 from products.services.availability import PURCHASABLE_STATUSES
 
 
-PURCHASABLE_STATUSES = frozenset({ProductStatus.GA, ProductStatus.BETA})
 CORETRUST_SLUG = "microfinance-core"
 CORETRUST_NAME = "CoreTrust"
+LEGACY_NAME = "Microfinance Core"
 
 
 @dataclass
@@ -134,8 +135,8 @@ def check_license_org_alignment(*, fix: bool = False) -> Finding:
     )
 
 
-def check_cross_user_links() -> Finding:
-    """Report invoices/licenses whose user differs from linked subscription user."""
+def check_cross_user_links(*, fix: bool = False) -> Finding:
+    """Detect (and optionally detach) invoices/licenses linked to another user's subscription."""
     invoice_qs = Invoice.objects.filter(subscription__isnull=False).exclude(
         user_id=F("subscription__user_id")
     )
@@ -145,44 +146,87 @@ def check_cross_user_links() -> Finding:
     count = invoice_qs.count() + license_qs.count()
     samples = [f"invoice:{pk}" for pk in invoice_qs.values_list("pk", flat=True)[:4]]
     samples += [f"license:{pk}" for pk in license_qs.values_list("pk", flat=True)[:4]]
+    fixed = 0
+    if fix and count:
+        # Detach the bad link rather than rewriting ownership.
+        fixed += invoice_qs.update(subscription=None)
+        for license_obj in license_qs:
+            license_obj.subscription = None
+            license_obj.status = LicenseStatus.REVOKED
+            license_obj.save(update_fields=["subscription", "status", "updated_at"])
+            fixed += 1
+
     return Finding(
         code="cross_user_link",
         severity="error" if count else "info",
-        message=f"{count} invoice/license row(s) linked across different users (report-only)",
+        message=(
+            f"{count} invoice/license row(s) linked across different users"
+            + (f"; detached/revoked {fixed}" if fix else " (use --fix to detach)")
+        ),
         count=count,
         sample_ids=samples,
+        fixed=fixed,
     )
 
 
-def check_status_date_invariants() -> Finding:
-    """Impossible status/date combinations (report-only)."""
-    checks = [
-        Subscription.objects.filter(
-            status=SubscriptionStatus.TRIAL, trial_ends_at__isnull=True
-        ),
-        Subscription.objects.filter(
-            status=SubscriptionStatus.CANCELLED, cancelled_at__isnull=True
-        ),
-        Invoice.objects.filter(status=InvoiceStatus.PAID, paid_at__isnull=True),
-        Payment.objects.filter(status=PaymentStatus.SUCCEEDED, paid_at__isnull=True),
-        License.objects.filter(
-            status=LicenseStatus.ACTIVE,
-            subscription__status=SubscriptionStatus.EXPIRED,
-        ),
-    ]
-    total = 0
+def check_status_date_invariants(*, fix: bool = False) -> Finding:
+    """Impossible status/date combinations; apply deterministic repairs when asked."""
+    today = timezone.now().date()
+    now = timezone.now()
+    fixed = 0
     samples: list[str] = []
-    for qs in checks:
-        c = qs.count()
-        total += c
-        if c:
-            samples.extend(_sample_ids(qs, limit=2))
+
+    trial_missing_end = Subscription.objects.filter(
+        status=SubscriptionStatus.TRIAL, trial_ends_at__isnull=True
+    )
+    cancelled_missing = Subscription.objects.filter(
+        status=SubscriptionStatus.CANCELLED, cancelled_at__isnull=True
+    )
+    paid_invoice_missing = Invoice.objects.filter(
+        status=InvoiceStatus.PAID, paid_at__isnull=True
+    )
+    paid_payment_missing = Payment.objects.filter(
+        status=PaymentStatus.SUCCEEDED, paid_at__isnull=True
+    )
+    active_on_expired = License.objects.filter(
+        status=LicenseStatus.ACTIVE,
+        subscription__status=SubscriptionStatus.EXPIRED,
+    )
+
+    buckets = [
+        ("trial", trial_missing_end),
+        ("cancelled", cancelled_missing),
+        ("invoice", paid_invoice_missing),
+        ("payment", paid_payment_missing),
+        ("license", active_on_expired),
+    ]
+    total = sum(qs.count() for _, qs in buckets)
+    for label, qs in buckets:
+        samples.extend(f"{label}:{pk}" for pk in qs.values_list("pk", flat=True)[:2])
+
+    if fix and total:
+        for sub in trial_missing_end:
+            sub.trial_ends_at = (sub.started_at or today) + timedelta(days=30)
+            sub.save(update_fields=["trial_ends_at", "updated_at"])
+            fixed += 1
+        for sub in cancelled_missing:
+            sub.cancelled_at = sub.updated_at.date() if sub.updated_at else today
+            sub.save(update_fields=["cancelled_at", "updated_at"])
+            fixed += 1
+        fixed += paid_invoice_missing.update(paid_at=today)
+        fixed += paid_payment_missing.update(paid_at=now)
+        fixed += active_on_expired.update(status=LicenseStatus.EXPIRED)
+
     return Finding(
         code="status_date_invariant",
         severity="warning" if total else "info",
-        message=f"{total} status/date contradiction(s) (report-only)",
+        message=(
+            f"{total} status/date contradiction(s)"
+            + (f"; repaired {fixed}" if fix else "")
+        ),
         count=total,
         sample_ids=samples[:8],
+        fixed=fixed,
     )
 
 
@@ -262,13 +306,24 @@ def check_coretrust_catalog(*, fix: bool = False) -> Finding:
     )
 
 
-def check_stale_microfinance_copy() -> Finding:
-    """Report published CMS/docs still using legacy Microfinance Core wording."""
+def _replace_legacy_name(value: str) -> str:
+    if not value:
+        return value
+    return (
+        value.replace(LEGACY_NAME, CORETRUST_NAME)
+        .replace("microfinance core", "CoreTrust")
+        .replace("Microfinance core", "CoreTrust")
+    )
+
+
+def check_stale_microfinance_copy(*, fix: bool = False) -> Finding:
+    """Rewrite published CMS/docs still using legacy Microfinance Core wording."""
     from cms.models import FAQ, PageSection, SectionItem
     from documentation.models import DocArticle
 
-    needles = ("Microfinance Core", "microfinance core")
+    needles = (LEGACY_NAME, "microfinance core")
     hits = 0
+    fixed = 0
     samples: list[str] = []
 
     def _needle_q(fields):
@@ -278,31 +333,67 @@ def check_stale_microfinance_copy() -> Finding:
                 q |= Q(**{f"{field_name}__icontains": needle})
         return q
 
-    doc_qs = DocArticle.objects.filter(_needle_q(("title", "excerpt", "body")), is_published=True)
-    faq_qs = FAQ.objects.filter(_needle_q(("question", "answer")), is_published=True)
-    item_qs = SectionItem.objects.filter(
-        _needle_q(("title", "subtitle", "description")), is_active=True
-    )
-    section_qs = PageSection.objects.filter(
-        _needle_q(("title", "subtitle", "body")), is_active=True
-    )
+    targets = [
+        ("doc", DocArticle.objects.filter(_needle_q(("title", "excerpt", "body")), is_published=True), ("title", "excerpt", "body")),
+        ("faq", FAQ.objects.filter(_needle_q(("question", "answer")), is_published=True), ("question", "answer")),
+        (
+            "section_item",
+            SectionItem.objects.filter(_needle_q(("title", "subtitle", "description")), is_active=True),
+            ("title", "subtitle", "description"),
+        ),
+        (
+            "section",
+            PageSection.objects.filter(_needle_q(("title", "subtitle", "body")), is_active=True),
+            ("title", "subtitle", "body"),
+        ),
+    ]
 
-    for prefix, qs in (
-        ("doc", doc_qs),
-        ("faq", faq_qs),
-        ("section_item", item_qs),
-        ("section", section_qs),
-    ):
+    # Marketing stories may still use the legacy product name.
+    try:
+        from marketing.models import SuccessStory
+
+        targets.append(
+            (
+                "story",
+                SuccessStory.objects.filter(
+                    _needle_q(("title", "excerpt", "body", "quote")), is_published=True
+                ),
+                ("title", "excerpt", "body", "quote"),
+            )
+        )
+    except Exception:
+        pass
+
+    for prefix, qs, fields in targets:
         c = qs.count()
         hits += c
         samples.extend(f"{prefix}:{pk}" for pk in qs.values_list("pk", flat=True)[:3])
+        if not fix or c == 0:
+            continue
+        for obj in qs:
+            changed = []
+            for field_name in fields:
+                old = getattr(obj, field_name) or ""
+                new = _replace_legacy_name(old)
+                if new != old:
+                    setattr(obj, field_name, new)
+                    changed.append(field_name)
+            if changed:
+                if hasattr(obj, "updated_at"):
+                    changed.append("updated_at")
+                obj.save(update_fields=changed)
+                fixed += 1
 
     return Finding(
         code="stale_microfinance_copy",
         severity="warning" if hits else "info",
-        message=f"{hits} published content row(s) still mention Microfinance Core (report-only)",
+        message=(
+            f"{hits} published content row(s) still mention Microfinance Core"
+            + (f"; rewritten {fixed}" if fix else "")
+        ),
         count=hits,
         sample_ids=samples[:8],
+        fixed=fixed,
     )
 
 

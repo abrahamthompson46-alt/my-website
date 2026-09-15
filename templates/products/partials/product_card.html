@@ -39,8 +39,10 @@
     <div class="product-card__actions">
         <a href="{{ product.get_absolute_url }}" class="btn btn--link btn--sm">Learn more</a>
         <div class="product-card__cta-group">
-            {% if product.plans.exists %}
+            {% if product|product_purchasable and product.plans.exists %}
             <a href="{% product_trial_url product %}" class="btn btn--primary btn--sm">Start trial</a>
+            {% elif product.status == "coming_soon" %}
+            <span class="btn btn--secondary btn--sm" aria-disabled="true">Coming soon</span>
             {% endif %}
         </div>
     </div>

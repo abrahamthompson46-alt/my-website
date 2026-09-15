@@ -2,9 +2,14 @@
 
 from django.urls import reverse
 
+from products.services.availability import is_purchasable
+
 
 def get_product_trial_url(product):
-    """Return the self-serve trial URL for a product's default published plan."""
+    """Return the self-serve trial URL, or empty string when not purchasable."""
+    if not is_purchasable(product):
+        return ""
+
     plan = (
         product.plans.filter(is_published=True, is_contact_sales=False)
         .order_by("sort_order", "name")

@@ -19,6 +19,7 @@ class ProductTrialLinkTests(TestCase):
             slug="churchhub",
             category=category,
             is_published=True,
+            status="ga",
         )
         self.plan = PricingPlan.objects.create(
             product=self.product,
@@ -40,9 +41,26 @@ class ProductTrialLinkTests(TestCase):
             slug="empty",
             category=self.product.category,
             is_published=True,
+            status="ga",
         )
         url = get_product_trial_url(product)
         self.assertEqual(url, reverse("products:pricing", kwargs={"slug": "empty"}))
+
+    def test_trial_url_empty_when_not_purchasable(self):
+        product = Product.objects.create(
+            name="Soon",
+            slug="soon",
+            category=self.product.category,
+            is_published=True,
+            status="coming_soon",
+        )
+        PricingPlan.objects.create(
+            product=product,
+            name="Soon Plan",
+            slug="soon-plan",
+            is_published=True,
+        )
+        self.assertEqual(get_product_trial_url(product), "")
 
     def test_provision_trial_uses_thirty_day_default(self):
         user = User.objects.create_user(

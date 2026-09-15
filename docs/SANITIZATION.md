@@ -1,6 +1,6 @@
 # Platform sanitization
 
-**Last updated:** 2026-09-14
+**Last updated:** 2026-09-15
 
 ## Goal
 
@@ -13,7 +13,7 @@ python manage.py sanitize_platform
 python manage.py sanitize_platform --fix
 ```
 
-Default is **dry-run** (report only). `--fix` applies safe repairs only.
+Default is **dry-run** (report only). `--fix` applies safe repairs.
 
 ### Safe repairs (`--fix`)
 
@@ -21,17 +21,18 @@ Default is **dry-run** (report only). `--fix` applies safe repairs only.
 |-------|--------|
 | `null_organization` | Backfill org from linked subscription/invoice or user default org |
 | `license_org_mismatch` | Align license org to subscription org |
+| `cross_user_link` | Detach bad invoice subscription links; revoke mismatched licenses |
+| `status_date_invariant` | Fill missing paid/cancel/trial dates; expire licenses on expired subs |
 | `featured_policy` | Clear `is_featured` unless published GA/Beta |
 | `coretrust_catalog` | Normalize CoreTrust name/status/external URL |
+| `stale_microfinance_copy` | Rewrite “Microfinance Core” → “CoreTrust” in CMS/docs/marketing |
 | `overdue_trials` | Expire overdue trials + active licenses |
 
-### Report-only
+## UI consistency
 
-| Check | Meaning |
-|-------|---------|
-| `cross_user_link` | Invoice/license user ≠ subscription user |
-| `status_date_invariant` | Impossible status/date combinations |
-| `stale_microfinance_copy` | Published CMS/docs still say “Microfinance Core” |
+- Trial/buy CTAs only show for **published GA/Beta** products (`is_purchasable`)
+- Coming soon / draft / deprecated products show learn-more / live-app / demo instead
+- Plan start + checkout reject non-purchasable products
 
 ## Related
 

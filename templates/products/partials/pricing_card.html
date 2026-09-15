@@ -1,3 +1,4 @@
+{% load product_tags %}
 <article class="pricing-card{% if plan.is_popular %} pricing-card--popular{% endif %}">
     {% if plan.is_popular %}<span class="pricing-card__badge">Most Popular</span>{% endif %}
     <h3 class="pricing-card__name">{{ plan.name }}</h3>
@@ -30,7 +31,7 @@
     </ul>
     {% endif %}
     <div class="pricing-card__action">
-        {% if plan.is_contact_sales %}
+        {% if plan.is_contact_sales or not product|product_purchasable %}
         <a href="{% url 'contact:demo' %}" class="btn btn--secondary btn--md btn--full">Contact Sales</a>
         {% else %}
         <a href="{% url 'products:plan_start' slug=product.slug %}?plan={{ plan.slug }}&action=trial" class="btn btn--primary btn--md btn--full">Start 30-day free trial</a>
