@@ -86,6 +86,16 @@ class CredibilityPagesTests(TestCase):
         self.assertContains(response, "Live product")
         self.assertContains(response, "ChurchHub")
 
+    def test_empty_case_studies_redirect_to_resources(self):
+        response = self.client.get(reverse("marketing:case_studies"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], reverse("marketing:hub"))
+
+    def test_empty_success_stories_redirect_to_resources(self):
+        response = self.client.get(reverse("marketing:success_stories"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], reverse("marketing:hub"))
+
 
 class ProductDepthTests(TestCase):
     def setUp(self):

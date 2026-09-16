@@ -62,14 +62,13 @@ class ProductTrialLinkTests(TestCase):
         )
         self.assertEqual(get_product_trial_url(product), "")
 
-    def test_external_product_uses_register_url(self):
+    def test_external_product_uses_tracked_redirect(self):
         self.product.register_url = "https://mychurch.zreta.com/apply/"
         self.product.external_app_url = "https://mychurch.zreta.com/"
         self.product.save(update_fields=["register_url", "external_app_url", "updated_at"])
         url = get_product_trial_url(self.product)
-        self.assertTrue(url.startswith("https://mychurch.zreta.com/apply/"))
-        self.assertIn("utm_source=zreta", url)
-        self.assertIn("utm_campaign=start_trial", url)
+        self.assertTrue(url.startswith("/go/churchhub/trial/"))
+        self.assertIn("src=product_page", url)
 
     def test_provision_trial_uses_thirty_day_default(self):
         user = User.objects.create_user(

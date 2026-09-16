@@ -154,6 +154,8 @@ Master plan: [ZRETA_WEBSITE_ASSESSMENT_AND_PLAN.md](ZRETA_WEBSITE_ASSESSMENT_AND
 | W4-03 | Privacy Center | DONE | `/platform/privacy/` |
 | W4-04 | Business continuity summary | DONE | `/platform/continuity/` |
 | W4-07 | Status page component list | DONE | External products labelled; no fake uptime charts |
+| W5-01 | Soft-close empty case studies / success stories | DONE | Redirect to Resources hub when empty |
+| W5-02 | Outbound trial/demo funnel instrumentation | DONE | `/go/<slug>/<intent>/` + Ops Analytics |
 
-**Deferred (explicit):** real screenshot galleries, demo videos, invented case studies, CoreTrust product-site CTF rebrand (cross-repo).
+**Deferred (explicit):** real screenshot galleries, demo videos, invented case studies, CoreTrust product-site CTF rebrand (cross-repo), VPS deploy (operator).
 

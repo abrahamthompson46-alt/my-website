@@ -5,7 +5,7 @@ from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 
-from accounts.models import AuditLog, User
+from accounts.models import AuditEventType, AuditLog, User
 from customer_portal.models import Invoice, Subscription, SupportTicket
 from customer_portal.models.invoice import InvoiceStatus
 from customer_portal.models.subscription import SubscriptionStatus
@@ -49,6 +49,20 @@ def get_overview_stats():
             status__in=[PaymentStatus.PENDING, PaymentStatus.PROCESSING, PaymentStatus.PENDING_CONFIRMATION]
         ).count(),
         "demo_requests_new": ProductDemoRequest.objects.filter(status="new").count(),
+        "outbound_clicks_30d": AuditLog.objects.filter(
+            event_type=AuditEventType.OUTBOUND_INTENT_CLICK,
+            created_at__gte=thirty_days_ago,
+        ).count(),
+        "outbound_trial_clicks_30d": AuditLog.objects.filter(
+            event_type=AuditEventType.OUTBOUND_INTENT_CLICK,
+            created_at__gte=thirty_days_ago,
+            metadata__intent="trial",
+        ).count(),
+        "outbound_demo_clicks_30d": AuditLog.objects.filter(
+            event_type=AuditEventType.OUTBOUND_INTENT_CLICK,
+            created_at__gte=thirty_days_ago,
+            metadata__intent="demo",
+        ).count(),
         "leads_total": NewsletterSubscriber.objects.filter(is_active=True).count(),
         "open_tickets": SupportTicket.objects.filter(
             status__in=[TicketStatus.OPEN, TicketStatus.IN_PROGRESS, TicketStatus.WAITING]
@@ -150,3 +164,25 @@ def get_ticket_priority_breakdown():
         .values("priority")
         .annotate(count=Count("id"))
     )
+
+
+def get_outbound_funnel_breakdown(days=30):
+    """Aggregate tracked trial/demo redirects by product and intent."""
+    start = _days_ago(days)
+    rows = (
+        AuditLog.objects.filter(
+            event_type=AuditEventType.OUTBOUND_INTENT_CLICK,
+            created_at__gte=start,
+        )
+        .values("metadata__product", "metadata__intent")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+    )
+    return [
+        {
+            "product": row["metadata__product"] or "unknown",
+            "intent": row["metadata__intent"] or "unknown",
+            "count": row["count"],
+        }
+        for row in rows
+    ]

@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 
+from accounts.models import AuditEventType, AuditLog
 from products.models import Product, ProductCategory, ProductStatus
-from website.services.outbound_links import annotate_intent_links, build_intent_url
+from website.services.outbound_links import annotate_intent_links, build_intent_url, build_tracked_intent_path
 
 
 class OutboundLinkTests(TestCase):
@@ -47,11 +48,44 @@ class OutboundLinkTests(TestCase):
         self.assertIn("utm_campaign=request_demo", url)
         self.assertIn("intent=demo", url)
 
-    def test_annotate_intent_links(self):
+    def test_annotate_intent_links_use_tracked_paths(self):
         rows = annotate_intent_links([self.churchhub, self.coretrust])
         self.assertEqual(len(rows), 2)
-        self.assertTrue(rows[0]["trial_url"])
-        self.assertTrue(rows[0]["demo_url"])
+        self.assertTrue(rows[0]["trial_url"].startswith("/go/churchhub/trial/"))
+        self.assertTrue(rows[0]["demo_url"].startswith("/go/churchhub/demo/"))
+        self.assertIn("src=homepage", rows[0]["trial_url"])
+
+    def test_tracked_path_helper(self):
+        path = build_tracked_intent_path(self.churchhub, "trial", source="product_page")
+        self.assertEqual(path, "/go/churchhub/trial/?src=product_page")
+
+
+class OutboundIntentRedirectTests(TestCase):
+    def setUp(self):
+        category = ProductCategory.objects.create(name="Vertical", slug="vertical-go")
+        self.product = Product.objects.create(
+            name="ChurchHub",
+            slug="churchhub",
+            category=category,
+            status=ProductStatus.GA,
+            is_published=True,
+            register_url="https://mychurch.zreta.com/apply/",
+            external_app_url="https://mychurch.zreta.com/",
+        )
+
+    def test_redirect_logs_and_forwards(self):
+        response = self.client.get(reverse("website:outbound_intent", kwargs={"slug": "churchhub", "intent": "trial"}) + "?src=homepage")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response["Location"].startswith("https://mychurch.zreta.com/apply/"))
+        self.assertIn("utm_source=zreta", response["Location"])
+        self.assertEqual(
+            AuditLog.objects.filter(event_type=AuditEventType.OUTBOUND_INTENT_CLICK).count(),
+            1,
+        )
+        event = AuditLog.objects.get(event_type=AuditEventType.OUTBOUND_INTENT_CLICK)
+        self.assertEqual(event.metadata.get("product"), "churchhub")
+        self.assertEqual(event.metadata.get("intent"), "trial")
+        self.assertEqual(event.metadata.get("source"), "homepage")
 
 
 class HomepageIntentViewTests(TestCase):
@@ -91,7 +125,6 @@ class HomepageIntentViewTests(TestCase):
         self.assertIn('id="request-demo"', content)
         self.assertIn("Start on ChurchHub", content)
         self.assertIn("Demo CoreTrust", content)
-        self.assertIn("mychurch.zreta.com/apply/", content)
-        self.assertIn("micro.zreta.com/request-demo/", content)
-        self.assertIn("utm_source=zreta", content)
+        self.assertIn("/go/churchhub/trial/", content)
+        self.assertIn("/go/microfinance-core/demo/", content)
         self.assertIn("product-intent-list", content)

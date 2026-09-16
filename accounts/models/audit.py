@@ -23,6 +23,7 @@ class AuditEventType(models.TextChoices):
     ROLE_REMOVED = "role_removed", "Role Removed"
     DEMO_REQUEST_SUBMITTED = "demo_request_submitted", "Demo Request Submitted"
     DEMO_REQUEST_UPDATED = "demo_request_updated", "Demo Request Updated"
+    OUTBOUND_INTENT_CLICK = "outbound_intent_click", "Outbound Intent Click"
     PRODUCT_CREATED = "product_created", "Product Created"
     PRODUCT_UPDATED = "product_updated", "Product Updated"
     PAYMENT_CREATED = "payment_created", "Payment Created"

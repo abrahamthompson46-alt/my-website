@@ -4,7 +4,7 @@
 {% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 
 {% block content %}
-{% include "operations/partials/page_header.html" with title="Analytics" subtitle="Revenue, signups, and operational metrics." %}
+{% include "operations/partials/page_header.html" with title="Analytics" subtitle="Revenue, signups, outbound funnel, and operational metrics." %}
 
 <div class="ops-stats ops-stats--6">
     <div class="ops-stat ops-stat--primary">
@@ -15,7 +15,7 @@
     <div class="ops-stat"><p class="ops-stat__label">Subscriptions</p><p class="ops-stat__value">{{ stats.active_subscriptions }}</p></div>
     <div class="ops-stat"><p class="ops-stat__label">Open invoices</p><p class="ops-stat__value">{{ stats.open_invoices }}</p></div>
     <div class="ops-stat"><p class="ops-stat__label">Demo requests</p><p class="ops-stat__value">{{ stats.demo_requests_new }}</p></div>
-    <div class="ops-stat"><p class="ops-stat__label">Leads</p><p class="ops-stat__value">{{ stats.leads_total }}</p></div>
+    <div class="ops-stat"><p class="ops-stat__label">Outbound clicks (30d)</p><p class="ops-stat__value">{{ stats.outbound_clicks_30d|default:0 }}</p></div>
 </div>
 
 <div class="ops-grid ops-grid--2">
@@ -28,4 +28,34 @@
         <div class="ops-panel__body"><div class="ops-chart">{% for row in signups_chart %}<div class="ops-chart__bar-wrap"><div class="ops-chart__bar" style="height: {% widthratio row.count stats.new_customers_30d|default:1 100 %}%; min-height:4px; background: linear-gradient(to top, #6366f1, #818cf8);"></div><span class="ops-chart__label">{{ row.day|date:"M d" }}</span></div>{% empty %}<p class="text-secondary">No data.</p>{% endfor %}</div></div>
     </section>
 </div>
+
+<section class="ops-panel" style="margin-top: var(--space-6);">
+    <div class="ops-panel__header">
+        <h2 class="ops-panel__title">Outbound trial / demo funnel (30 days)</h2>
+    </div>
+    <div class="ops-panel__body">
+        <p class="text-secondary" style="margin-bottom: var(--space-4);">
+            Tracked via <code>/go/&lt;product&gt;/&lt;intent&gt;/</code> before visitors leave for ChurchHub or CoreTrust.
+            Trial: {{ stats.outbound_trial_clicks_30d|default:0 }} · Demo: {{ stats.outbound_demo_clicks_30d|default:0 }}
+        </p>
+        {% if outbound_funnel %}
+        <table class="ops-table">
+            <thead>
+                <tr><th>Product</th><th>Intent</th><th>Clicks</th></tr>
+            </thead>
+            <tbody>
+                {% for row in outbound_funnel %}
+                <tr>
+                    <td>{{ row.product }}</td>
+                    <td>{{ row.intent }}</td>
+                    <td>{{ row.count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-secondary">No outbound clicks recorded yet.</p>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

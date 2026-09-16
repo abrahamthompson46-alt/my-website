@@ -12,6 +12,7 @@ from website.views import (
     IntegrationsView,
     MicrofinanceSolutionView,
     OnboardingView,
+    OutboundIntentRedirectView,
     PaymentsPlatformView,
     PrivacyCenterView,
     PrivacyPolicyView,
@@ -26,6 +27,11 @@ app_name = "website"
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
+    path(
+        "go/<slug:slug>/<str:intent>/",
+        OutboundIntentRedirectView.as_view(),
+        name="outbound_intent",
+    ),
     path("solutions/churches/", ChurchesSolutionView.as_view(), name="solution_churches"),
     path("solutions/microfinance/", MicrofinanceSolutionView.as_view(), name="solution_microfinance"),
     path("solutions/enterprises/", EnterprisesSolutionView.as_view(), name="solution_enterprises"),

@@ -16,6 +16,7 @@ from marketing.models import (
 from operations.mixins import StaffRequiredMixin
 from operations.services.dashboard import (
     get_overview_stats,
+    get_outbound_funnel_breakdown,
     get_product_breakdown,
     get_recent_activity,
     get_revenue_chart,
@@ -59,6 +60,7 @@ class AnalyticsView(OpsBaseMixin, TemplateView):
         context["signups_chart"] = get_signups_chart(30)
         context["product_breakdown"] = get_product_breakdown()
         context["ticket_breakdown"] = get_ticket_priority_breakdown()
+        context["outbound_funnel"] = get_outbound_funnel_breakdown(30)
         context["breadcrumb_items"] = [
             {"label": "Dashboard", "url_name": "operations:dashboard"},
             {"label": "Analytics"},

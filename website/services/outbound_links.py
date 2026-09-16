@@ -5,6 +5,7 @@ from __future__ import annotations
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from django.db.models import Q
+from django.urls import reverse
 
 from products.models import Product, ProductStatus
 
@@ -42,6 +43,18 @@ def build_intent_url(product, intent: str, *, source: str = "homepage") -> str:
     )
 
 
+def build_tracked_intent_path(product, intent: str, *, source: str = "homepage") -> str:
+    """Storefront path that logs the click then redirects to the product site."""
+    destination = build_intent_url(product, intent, source=source)
+    if not destination:
+        return ""
+    path = reverse(
+        "website:outbound_intent",
+        kwargs={"slug": product.slug, "intent": intent},
+    )
+    return f"{path}?{urlencode({'src': source})}"
+
+
 def get_homepage_intent_products():
     """Published live storefront products that can receive trial or demo traffic."""
     from products.services.live_products import LIVE_PRODUCT_SLUGS
@@ -62,11 +75,11 @@ def get_homepage_intent_products():
 
 
 def annotate_intent_links(products, *, source: str = "homepage") -> list[dict]:
-    """Attach trial_url / demo_url for template rendering."""
+    """Attach trial_url / demo_url for template rendering (tracked storefront paths)."""
     rows = []
     for product in products:
-        trial_url = build_intent_url(product, "trial", source=source)
-        demo_url = build_intent_url(product, "demo", source=source)
+        trial_url = build_tracked_intent_path(product, "trial", source=source)
+        demo_url = build_tracked_intent_path(product, "demo", source=source)
         if not trial_url and not demo_url:
             continue
         rows.append(

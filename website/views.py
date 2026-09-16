@@ -1,10 +1,12 @@
 from django.conf import settings
 from django.contrib import messages
 from django.db import connection
-from django.shortcuts import redirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
+from django.views import View
+from django.views.decorators.cache import cache_page, never_cache
 from django.views.generic import TemplateView
 
 from cms.services import build_home_context
@@ -14,7 +16,11 @@ from marketing.forms import NewsletterSubscribeForm
 from products.models import Product, ProductDemoRequest
 from website.forms import DemoRequestForm
 from website.services.homepage import get_homepage_featured_products
-from website.services.outbound_links import annotate_intent_links, get_homepage_intent_products
+from website.services.outbound_links import (
+    annotate_intent_links,
+    build_intent_url,
+    get_homepage_intent_products,
+)
 from website.solutions import SOLUTIONS
 
 
@@ -143,8 +149,8 @@ class SolutionLandingView(SEOContextMixin, TemplateView):
         if product:
             from products.services.trial_links import get_product_demo_url, get_product_trial_url
 
-            context["trial_url"] = get_product_trial_url(product)
-            context["demo_url"] = get_product_demo_url(product)
+            context["trial_url"] = get_product_trial_url(product, source="solution")
+            context["demo_url"] = get_product_demo_url(product, source="solution")
         context["breadcrumb_items"] = [
             {"label": "Home", "url_name": "website:home"},
             {"label": "Solutions"},
@@ -181,6 +187,37 @@ class HealthcareSolutionView(SolutionLandingView):
     solution_key = "healthcare"
     seo_title = "Hospital management roadmap"
     seo_description = "Hospital Management is on the Zreta product roadmap."
+
+
+@method_decorator(never_cache, name="dispatch")
+class OutboundIntentRedirectView(View):
+    """Log trial/demo funnel clicks, then redirect to the live product site."""
+
+    def get(self, request, slug, intent):
+        if intent not in ("trial", "demo"):
+            raise Http404
+        product = get_object_or_404(Product, slug=slug, is_published=True)
+        source = (request.GET.get("src") or "storefront").strip()[:40] or "storefront"
+        destination = build_intent_url(product, intent, source=source)
+        if not destination:
+            return redirect("products:detail", slug=product.slug)
+
+        from accounts.models import AuditEventType
+        from accounts.services.audit import log_audit_event
+
+        log_audit_event(
+            AuditEventType.OUTBOUND_INTENT_CLICK,
+            request=request,
+            message=f"Outbound {intent} click for {product.slug}",
+            metadata={
+                "product": product.slug,
+                "intent": intent,
+                "source": source,
+                "destination_host": destination.split("/")[2] if "://" in destination else "",
+            },
+            status_code=302,
+        )
+        return HttpResponseRedirect(destination)
 
 
 class StatusPageView(TemplateView):

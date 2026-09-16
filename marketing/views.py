@@ -26,7 +26,7 @@ from marketing.models import (
 class MarketingHubView(SEOContextMixin, TemplateView):
     template_name = "marketing/hub.html"
     seo_title = "Resources"
-    seo_description = "Blog posts, events, case studies, white papers, and downloadable resources."
+    seo_description = "Blog posts, events, documentation, white papers, and downloadable resources."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -173,6 +173,12 @@ class SuccessStoryListView(SEOContextMixin, ListView):
     def get_queryset(self):
         return SuccessStory.objects.filter(is_published=True).select_related("product")
 
+    def get(self, request, *args, **kwargs):
+        # Soft-close empty proof pages until a verified story exists.
+        if not self.get_queryset().exists():
+            return redirect("marketing:hub")
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["breadcrumb_items"] = [
@@ -211,6 +217,12 @@ class CaseStudyListView(SEOContextMixin, ListView):
 
     def get_queryset(self):
         return CaseStudy.objects.filter(is_published=True).select_related("product")
+
+    def get(self, request, *args, **kwargs):
+        # Soft-close empty proof pages until a verified case study exists.
+        if not self.get_queryset().exists():
+            return redirect("marketing:hub")
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
