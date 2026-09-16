@@ -47,9 +47,9 @@ class Command(BaseCommand):
             hero.subheadline = HERO["subheadline"]
             hero.trust_text = HERO["trust_text"]
             hero.cta_primary_label = HERO.get("cta_primary_label", "Explore products")
-            hero.cta_primary_url = hero.cta_primary_url or ""
-            hero.cta_secondary_label = HERO.get("cta_secondary_label", "Start free trial")
-            hero.cta_secondary_url = HERO.get("cta_secondary_url", "#start-trial")
+            hero.cta_primary_url = HERO.get("cta_primary_url", "")
+            hero.cta_secondary_label = HERO.get("cta_secondary_label", "Request a demo")
+            hero.cta_secondary_url = HERO.get("cta_secondary_url", "#request-demo")
             hero.is_active = True
             hero.save()
 
@@ -140,11 +140,31 @@ class Command(BaseCommand):
             pass
 
         self._sync_platform_branding()
+        self._sync_about_page()
 
         if options["products"]:
             self._sync_product_featured_flags()
 
         self.stdout.write(self.style.SUCCESS("Homepage CMS content synced."))
+
+    def _sync_about_page(self):
+        about = CMSPage.objects.filter(page_type=PageType.ABOUT).first()
+        if not about:
+            return
+        hero = about.hero
+        if hero:
+            hero.eyebrow = "Company"
+            hero.headline = "About Zreta"
+            hero.subheadline = (
+                "Zreta markets and bills modular enterprise products. "
+                "ChurchHub and CoreTrust are live applications; more industries are on the roadmap."
+            )
+            hero.save()
+        from cms.models import TeamMember
+
+        TeamMember.objects.filter(
+            full_name__in=["Sarah Okonkwo", "James Mwangi", "Dr. Amina Hassan", "David Chen"]
+        ).update(is_published=False, show_on_about=False)
 
     def _sync_platform_branding(self):
         from control_room.models import PlatformSettings
@@ -224,12 +244,15 @@ class Command(BaseCommand):
         )
 
     def _industry_item(self, section, item, index):
+        extra = {"products": item["products"]}
+        if item.get("url_name"):
+            extra["url_name"] = item["url_name"]
         SectionItem.objects.create(
             section=section,
             title=item["name"],
             description=item["description"],
             icon=item["icon"],
-            extra_data={"products": item["products"]},
+            extra_data=extra,
             sort_order=index,
             is_active=True,
         )

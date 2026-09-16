@@ -7,10 +7,14 @@
         <span>{{ product.name|slice:":1" }}</span>
     </div>
 
-    {% if product.status == "coming_soon" %}
-    {% ui_badge label="Coming Soon" variant="warning" %}
+    {% if product.status == "ga" %}
+    {% ui_badge label="Live" variant="success" %}
     {% elif product.status == "beta" %}
-    {% ui_badge label="Beta" variant="primary" %}
+    {% ui_badge label="Early Access" variant="primary" %}
+    {% elif product.status == "coming_soon" %}
+    {% ui_badge label="Coming soon" variant="warning" %}
+    {% elif product.status == "draft" %}
+    {% ui_badge label="Roadmap" variant="warning" %}
     {% endif %}
 
     <h3 class="product-card__title">
@@ -25,24 +29,13 @@
     <p class="product-card__description">{{ product.short_description|truncatewords:24 }}</p>
     {% endif %}
 
-    {% if product.features.exists %}
-    <ul class="product-card__features">
-        {% for feature in product.features.all|slice:":3" %}
-        <li>
-            <svg class="icon icon--xs" aria-hidden="true" data-icon="check"></svg>
-            {{ feature.title }}
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
     <div class="product-card__actions">
         <a href="{{ product.get_absolute_url }}" class="btn btn--link btn--sm">Learn more</a>
         <div class="product-card__cta-group">
             {% if product|product_purchasable and product.plans.exists %}
             <a href="{% product_trial_url product %}" class="btn btn--primary btn--sm">Start trial</a>
-            {% elif product.status == "coming_soon" %}
-            <span class="btn btn--secondary btn--sm" aria-disabled="true">Coming soon</span>
+            {% elif product.status == "coming_soon" or product.status == "draft" %}
+            <a href="{% url 'contact:form' %}" class="btn btn--secondary btn--sm">Join waitlist</a>
             {% endif %}
         </div>
     </div>

@@ -139,18 +139,19 @@ def build_home_context():
     hero_banner = page_ctx.get("hero")
 
     if hero_banner:
+        fb_hero = fallback["hero"]
         hero = {
             "eyebrow": hero_banner.eyebrow,
             "headline": hero_banner.headline,
             "subheadline": hero_banner.subheadline,
             "trust_text": hero_banner.trust_text,
-            "cta_primary_label": hero_banner.cta_primary_label or "Explore products",
-            "cta_primary_url": hero_banner.cta_primary_url or "",
-            "cta_secondary_label": hero_banner.cta_secondary_label or "Start free trial",
-            "cta_secondary_url": hero_banner.cta_secondary_url or "#start-trial",
-            "headline_line1": fallback["hero"].get("headline_line1"),
-            "headline_line2": fallback["hero"].get("headline_line2"),
-            "product_pills": fallback["hero"].get("product_pills"),
+            "cta_primary_label": hero_banner.cta_primary_label or fb_hero.get("cta_primary_label", "Explore products"),
+            "cta_primary_url": hero_banner.cta_primary_url or fb_hero.get("cta_primary_url", ""),
+            "cta_secondary_label": hero_banner.cta_secondary_label or fb_hero.get("cta_secondary_label", "Request a demo"),
+            "cta_secondary_url": hero_banner.cta_secondary_url or fb_hero.get("cta_secondary_url", "#request-demo"),
+            "headline_line1": fb_hero.get("headline_line1"),
+            "headline_line2": fb_hero.get("headline_line2"),
+            "product_pills": fb_hero.get("product_pills") or [],
         }
     else:
         hero = fallback["hero"]
@@ -225,20 +226,48 @@ def build_home_context():
     }
 
 
+_PLACEHOLDER_TEAM_NAMES = frozenset(
+    {
+        "sarah okonkwo",
+        "james mwangi",
+        "dr. amina hassan",
+        "david chen",
+    }
+)
+
+
+def _filter_real_team_members(members):
+    """Hide seeded fictional leadership until real people are published."""
+    real = []
+    for member in members:
+        name = (member.full_name or "").strip().lower()
+        if name in _PLACEHOLDER_TEAM_NAMES:
+            continue
+        real.append(member)
+    return real
+
+
 def build_about_context():
     """Build about page context from CMS with fallbacks."""
+    team_members = _filter_real_team_members(get_about_team())
     page_ctx = get_about_page()
     if not page_ctx:
         return {
             "cms_page": None,
-            "hero": None,
+            "hero": {
+                "headline": "About Zreta",
+                "subheadline": (
+                    "Zreta markets and bills modular enterprise products. "
+                    "ChurchHub and CoreTrust are live today; more industries are on the roadmap."
+                ),
+            },
             "sections": {},
-            "team_members": get_about_team(),
+            "team_members": team_members,
         }
 
     return {
         "cms_page": page_ctx["page"],
         "hero": page_ctx.get("hero"),
         "sections": page_ctx["sections"],
-        "team_members": get_about_team(),
+        "team_members": team_members,
     }

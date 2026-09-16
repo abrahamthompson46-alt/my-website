@@ -1,0 +1,22 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>{{ SITE_NAME }} helps organizations evaluate live products, start on product sites, and manage commercial billing in one portal.</p>
+
+<h2>Typical path</h2>
+<ol>
+    <li><strong>Discover</strong> — review ChurchHub or CoreTrust on Zreta (Live) and industry solution pages.</li>
+    <li><strong>Trial or demo</strong> — continue to the product site (ChurchHub signup/demo or CoreTrust request-demo).</li>
+    <li><strong>Bill</strong> — purchase or convert through Zreta pricing when ready; manage invoices in the customer portal.</li>
+    <li><strong>Operate</strong> — use portal launch links, tickets, and documentation for ongoing access.</li>
+</ol>
+
+<h2>Enterprise packages (honest scope)</h2>
+<ul>
+    <li><strong>Guided onboarding</strong> — walkthrough of billing, portal users, and product launch links.</li>
+    <li><strong>Migration assist</strong> — coordination for data export/import owned by the product application teams; Zreta does not claim full in-repo banking/ERP migration engines.</li>
+    <li><strong>Procurement pack</strong> — Security Center, Privacy Center, SLA, continuity summary, and enterprise readiness pages.</li>
+</ul>
+
+<p><a href="{% url 'contact:form' %}">Talk to Zreta</a> · <a href="{% url 'website:enterprise' %}">Enterprise readiness</a></p>
+{% endblock %}

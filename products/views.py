@@ -114,6 +114,13 @@ class ProductDetailView(SEOContextMixin, PublishedProductMixin, DetailView):
 
         context["product_screenshots"] = product.screenshots.filter(kind=ScreenshotKind.SCREENSHOT)
         context["product_templates"] = product.screenshots.filter(kind=ScreenshotKind.TEMPLATE)
+        from products.services.live_products import is_live_storefront_product
+        from products.services.product_depth import get_product_depth
+        from products.services.trial_links import get_product_demo_url
+
+        context["is_live_storefront"] = is_live_storefront_product(product)
+        context["product_depth"] = get_product_depth(product.slug)
+        context["demo_url"] = get_product_demo_url(product)
         return context
 
     def get_extra_schema(self, context):

@@ -14,7 +14,7 @@
 {% block content %}
 <section class="section products-pricing">
     <div class="container">
-        {% include "components/layout/page_header.html" with title=product.name|add:" Pricing" subtitle="Transparent plans with monthly and annual billing. Start a 30-day free trial or purchase instantly." %}
+        {% include "components/layout/page_header.html" with title=product.name|add:" Pricing" subtitle="Transparent monthly and annual plans. Currency is shown next to each amount. Start a 30-day free trial where the product is purchasable, or contact sales." %}
 
         {% if monthly_plans or annual_plans or plans %}
         {% if monthly_plans %}
@@ -44,8 +44,8 @@
         {% endif %}
 
         <div class="pricing-footnotes">
-            <p>All paid plans include email support. Prices shown in USD; GHS tiers available where listed. Taxes may apply.</p>
-            <p>Need help choosing a plan? <a href="{% url 'contact:demo' %}">Contact sales</a> or see our <a href="{% url 'website:refund' %}">refund policy</a>.</p>
+            <p>Currency is labelled on each plan card (commonly <strong>GHS</strong>; USD when a USD tier exists). Do not assume a currency that is not printed next to the amount.</p>
+            <p>Standard support is included on paid plans; see the <a href="{% url 'website:sla' %}">Support SLA</a>. Need help choosing? <a href="{% url 'contact:demo' %}">Contact sales</a> or review the <a href="{% url 'website:refund' %}">refund policy</a>.</p>
         </div>
         {% else %}
         {% ui_empty_state illustration="billing" title="Pricing unavailable" message="Pricing is not yet available for this product." action_label="Contact Sales" action_url_name="contact:demo" %}

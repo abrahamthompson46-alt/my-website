@@ -15,11 +15,15 @@
         {% endif %}
         {% endwith %}
     </div>
-    {% if plan.tiers.count > 1 %}
+    {% with tier=plan.tiers.first %}
+    {% if tier and not plan.is_contact_sales %}
+    <p class="pricing-card__currencies text-muted">Currency: {{ tier.currency }}{% if plan.tiers.count > 1 %} · also {% for t in plan.tiers.all %}{% if not forloop.first %}{{ t.currency }}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}{% endif %}</p>
+    {% elif plan.tiers.count > 1 %}
     <p class="pricing-card__currencies text-muted">
-        {% for tier in plan.tiers.all %}{{ tier.currency }}{% if not forloop.last %} · {% endif %}{% endfor %}
+        Currencies: {% for t in plan.tiers.all %}{{ t.currency }}{% if not forloop.last %} · {% endif %}{% endfor %}
     </p>
     {% endif %}
+    {% endwith %}
     {% if plan.plan_features.exists %}
     <ul class="pricing-card__features">
         {% for pf in plan.plan_features.all %}

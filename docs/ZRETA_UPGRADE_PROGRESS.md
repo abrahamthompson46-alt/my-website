@@ -119,3 +119,41 @@ Brief experimental `ledger` / `clients` apps were removed. See `docs/ZRETA_PRODU
 | 2026-09-14 | Phase 3.1–3.4 briefly added in-repo ledger/clients (later reversed) |
 | 2026-09-14 | Product model realigned: storefront + external CoreTrust; Phase 3 cancelled; `ledger`/`clients` removed |
 | 2026-09-15 | Portal Launch app CTAs for active ChurchHub/CoreTrust subscriptions |
+| 2026-09-16 | Website assessment + implementation plan added (`docs/ZRETA_WEBSITE_ASSESSMENT_AND_PLAN.md`) |
+
+---
+
+## Website credibility & growth (from assessment)
+
+Master plan: [ZRETA_WEBSITE_ASSESSMENT_AND_PLAN.md](ZRETA_WEBSITE_ASSESSMENT_AND_PLAN.md)
+
+| ID | Task | Status | Notes |
+|----|------|--------|-------|
+| W1-01 | Trial length consistency (30 days) | DONE | Public templates + pricing use 30-day; refund 14-day window kept |
+| W1-02 | Pricing currency clarity (GHS/USD) | DONE | Currency labelled on pricing cards + footnotes |
+| W1-03 | CoreTrust naming only in public UI | DONE | Sanitize + sync; public UI CoreTrust |
+| W1-04 | Remove unproven trust slogans | DONE | About/hero/support rewrite; placeholder team filtered |
+| W1-05 | Hide empty Case Studies / Success Stories | DONE | Removed from primary nav + marketing hub + sitemap |
+| W1-06 | About/Company facts page | DONE | Facts-first About + sync_homepage about repair |
+| W1-07 | Security Center v1/v2 | DONE | Hub links + auth/encryption/disclosure |
+| W1-08 | Support Center v1 | DONE | `/support/` entry with docs/tickets/status/SLA |
+| W1-09 | Live / Early Access / Coming soon badges | DONE | Product cards + solution landings |
+| W2-01 | Homepage hero conversion rewrite | DONE | Brand-first hero; Products + Request demo CTAs |
+| W2-02 | Product cards scannable | DONE | Status badge + one outcome + CTA |
+| W2-05 | CTA consistency | DONE | Outbound chooser + solution CTAs |
+| W2-06 | Industry solution landing pages | DONE | `/solutions/*` |
+| W2-07 | Pricing polish | DONE | Monthly/annual + currency + SLA link |
+| W2-08 | Slim primary navigation | DONE | Products \| Solutions \| Platform \| Resources \| Pricing |
+| W3-01 | First verified customer story | DEFERRED | Keep Customers/stories hidden until verified |
+| W3-03 | Platform architecture page | DONE | `/platform/architecture/` |
+| W3-04 | Security Center depth | DONE | Linked from footer + platform nav |
+| W3-05 | API/integrations honesty | DONE | `/platform/integrations/` |
+| W3-07 | Product page depth templates | DONE | ChurchHub + CoreTrust depth sections |
+| W4-01 | Enterprise onboarding page | DONE | `/platform/onboarding/` |
+| W4-02 | SLA documentation | DONE | `/platform/sla/` |
+| W4-03 | Privacy Center | DONE | `/platform/privacy/` |
+| W4-04 | Business continuity summary | DONE | `/platform/continuity/` |
+| W4-07 | Status page component list | DONE | External products labelled; no fake uptime charts |
+
+**Deferred (explicit):** real screenshot galleries, demo videos, invented case studies, CoreTrust product-site CTF rebrand (cross-repo).
+

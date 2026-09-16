@@ -1,0 +1,22 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>This Privacy Center links the policies and practices that govern personal data on the {{ SITE_NAME }} marketing and billing platform.</p>
+
+<h2>Core documents</h2>
+<ul>
+    <li><a href="{% url 'website:privacy' %}">Privacy Policy</a> — collection, use, retention, and contact.</li>
+    <li><a href="{% url 'website:security' %}">Security Center</a> — authentication, audit logging, and disclosure.</li>
+    <li><a href="{% url 'website:terms' %}">Terms of Service</a> — contractual use of the site and portal.</li>
+</ul>
+
+<h2>Practical notes</h2>
+<ul>
+    <li>Account emails and billing records are processed to deliver subscriptions and support.</li>
+    <li>Payment card data is handled by payment gateways, not stored as raw PAN here.</li>
+    <li>Product applications (ChurchHub, CoreTrust) may have additional privacy notices on their domains.</li>
+</ul>
+
+<h2>Requests</h2>
+<p>For access, correction, or deletion requests related to Zreta accounts, contact <a href="mailto:{{ SUPPORT_EMAIL|default:'privacy@zreta.com' }}">{{ SUPPORT_EMAIL|default:"privacy@zreta.com" }}</a> or use the <a href="{% url 'contact:form' %}">contact form</a>.</p>
+{% endblock %}

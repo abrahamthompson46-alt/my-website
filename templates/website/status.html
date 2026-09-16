@@ -12,19 +12,26 @@
         <header class="status-page__header">
             <h1>System Status</h1>
             <p class="status-page__overall status-page__overall--{{ overall_status }}">
-                {% if overall_status == "operational" %}All systems operational{% else %}Some systems degraded{% endif %}
+                {% if overall_status == "operational" %}Marketing platform probes are healthy{% else %}Some marketing platform systems are degraded{% endif %}
+            </p>
+            <p class="section__subtitle">
+                These checks cover the Zreta website and billing platform. ChurchHub and CoreTrust are listed as external products — their uptime is owned by those applications.
             </p>
         </header>
 
         <div class="status-grid">
-            <article class="status-card status-card--{{ checks.database|default:'unknown' }}">
-                <h2>Website &amp; API</h2>
-                <p>{{ checks.database|title }}</p>
+            {% for name, state in components %}
+            <article class="status-card status-card--{{ state|default:'unknown' }}">
+                <h2>{{ name }}</h2>
+                <p>
+                    {% if state == "external" %}
+                    External product — check that product’s status channel
+                    {% else %}
+                    {{ state|title }}
+                    {% endif %}
+                </p>
             </article>
-            <article class="status-card status-card--{{ checks.cache|default:'unknown' }}">
-                <h2>Cache</h2>
-                <p>{{ checks.cache|title }}</p>
-            </article>
+            {% endfor %}
         </div>
 
         <div class="status-page__support">
@@ -33,7 +40,9 @@
                 <li>Target first response: <strong>{{ support_sla_hours }} business hours</strong></li>
                 <li>Support email: <a href="mailto:{{ support_email }}">{{ support_email }}</a></li>
                 <li>Health probe: <a href="{% url 'health_check' %}">/health/</a></li>
+                <li><a href="{% url 'website:sla' %}">Support SLA</a> · <a href="{% url 'support:index' %}">Support Center</a></li>
             </ul>
+            <p class="text-muted">Historical uptime charts are omitted until continuous telemetry is published. We do not invent percentages.</p>
         </div>
     </div>
 </section>

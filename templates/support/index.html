@@ -1,4 +1,68 @@
 {% extends "base_public.html" %}
+{% load ui_tags %}
+
+{% block title %}Support Center — {{ SITE_NAME }}{% endblock %}
+
+{% block breadcrumbs %}
+{% ui_breadcrumbs items=breadcrumb_items %}
+{% endblock %}
 
 {% block content %}
+<section class="section section--compact">
+    <div class="container">
+        <p class="section__eyebrow">Support</p>
+        <h1 class="section__title">Support Center</h1>
+        <p class="section__subtitle">
+            Help for Zreta billing, portal access, and product discovery. Application-day support for ChurchHub and CoreTrust may also involve their product teams.
+        </p>
+    </div>
+</section>
+
+<section class="section section--alt">
+    <div class="container">
+        <div class="grid grid--3">
+            <article class="feature-block">
+                <h2 class="feature-block__title">Documentation</h2>
+                <p class="feature-block__description">Guides for the platform, products, and honest scope notes.</p>
+                <a href="{% url 'documentation:index' %}" class="btn btn--secondary btn--sm">Browse docs</a>
+            </article>
+            <article class="feature-block">
+                <h2 class="feature-block__title">Customer tickets</h2>
+                <p class="feature-block__description">Signed-in customers can open and track support tickets in the portal.</p>
+                <a href="{% url 'customer_portal:ticket_create' %}" class="btn btn--secondary btn--sm">Open a ticket</a>
+            </article>
+            <article class="feature-block">
+                <h2 class="feature-block__title">System status</h2>
+                <p class="feature-block__description">Live probes for website, database, cache, and payments platform components.</p>
+                <a href="{% url 'website:status' %}" class="btn btn--secondary btn--sm">View status</a>
+            </article>
+            <article class="feature-block">
+                <h2 class="feature-block__title">Support SLA</h2>
+                <p class="feature-block__description">Published first-response targets ({{ support_sla_hours }} business hours by default).</p>
+                <a href="{% url 'website:sla' %}" class="btn btn--secondary btn--sm">Read SLA</a>
+            </article>
+            <article class="feature-block">
+                <h2 class="feature-block__title">Security &amp; privacy</h2>
+                <p class="feature-block__description">Security Center, Privacy Center, and disclosure contacts.</p>
+                <a href="{% url 'website:security' %}" class="btn btn--secondary btn--sm">Security Center</a>
+            </article>
+            <article class="feature-block">
+                <h2 class="feature-block__title">Contact</h2>
+                <p class="feature-block__description">Prospects and general inquiries can reach the team without a portal login.</p>
+                <a href="{% url 'contact:form' %}" class="btn btn--secondary btn--sm">Contact Zreta</a>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container container-prose">
+        <h2>Before you write in</h2>
+        <ul>
+            <li>For product trials and demos, use the ChurchHub or CoreTrust chooser on the <a href="{% url 'website:home' %}#start-trial">homepage</a>.</li>
+            <li>For invoices and payment proofs, sign in to the <a href="{% url 'customer_portal:dashboard' %}">customer portal</a>.</li>
+            <li>For roadmap products (ERP, School, Hospital, HR), use contact — they are not live for self-serve trial.</li>
+        </ul>
+    </div>
+</section>
 {% endblock %}

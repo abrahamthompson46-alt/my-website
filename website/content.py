@@ -57,25 +57,29 @@ INDUSTRIES = [
         "name": "Faith Organizations",
         "icon": "church",
         "description": "Churches and ministries connecting members, giving, and community programs.",
-        "products": ["ChurchHub"],
+        "products": ["ChurchHub · Live"],
+        "url_name": "website:solution_churches",
     },
     {
         "name": "Financial Services",
         "icon": "landmark",
         "description": "Microfinance institutions, SACCOs, and cooperatives running core banking with CoreTrust.",
-        "products": ["CoreTrust"],
+        "products": ["CoreTrust · Live"],
+        "url_name": "website:solution_microfinance",
     },
     {
         "name": "Education",
         "icon": "graduation-cap",
         "description": "Schools and training centers — School Management is on the roadmap.",
-        "products": ["Coming soon"],
+        "products": ["Roadmap"],
+        "url_name": "website:solution_education",
     },
     {
         "name": "Healthcare",
         "icon": "heart-pulse",
         "description": "Clinics and hospitals — Hospital Management is on the roadmap.",
-        "products": ["Coming soon"],
+        "products": ["Roadmap"],
+        "url_name": "website:solution_healthcare",
     },
 ]
 
@@ -105,25 +109,20 @@ TRUST_STRIP = [
 ]
 
 HERO = {
-    "eyebrow": "Zreta · Modular enterprise software",
-    "headline": "Enterprise software for organizations that need to scale",
-    "headline_line1": "Enterprise software for",
-    "headline_line2": "organizations that scale",
+    "eyebrow": "Enterprise software platform",
+    "headline": "Zreta",
+    "headline_line1": "Zreta",
+    "headline_line2": "Software for churches and microfinance institutions",
     "subheadline": (
-        "Zreta markets and sells ChurchHub and CoreTrust today — with shared billing, "
-        "security, and support. More industry products are on the roadmap. "
-        "Each live product runs as its own application."
+        "Market, bill, and support ChurchHub and CoreTrust from one platform — "
+        "each product runs as its own live application."
     ),
-    "trust_text": "30-day free trial · GHS pricing · Mobile Money payments · Published security pages",
-    "product_pills": [
-        "ChurchHub",
-        "CoreTrust",
-        "Shared billing portal",
-        "GHS · Mobile Money",
-    ],
+    "trust_text": "30-day paths on live products · GHS pricing · Published security pages",
+    "product_pills": [],
     "cta_primary_label": "Explore products",
-    "cta_secondary_label": "Start free trial",
-    "cta_secondary_url": "#start-trial",
+    "cta_primary_url": "/products/",
+    "cta_secondary_label": "Request a demo",
+    "cta_secondary_url": "#request-demo",
 }
 
 CTA = {

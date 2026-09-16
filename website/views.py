@@ -15,10 +15,13 @@ from products.models import Product, ProductDemoRequest
 from website.forms import DemoRequestForm
 from website.services.homepage import get_homepage_featured_products
 from website.services.outbound_links import annotate_intent_links, get_homepage_intent_products
+from website.solutions import SOLUTIONS
 
 
 class LegalPageMixin(SEOContextMixin, TemplateView):
     """Shared legal/trust page layout."""
+
+    page_title = ""
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -28,6 +31,7 @@ class LegalPageMixin(SEOContextMixin, TemplateView):
             context["support_sla_hours"] = get_platform_settings().support_sla_hours
         except Exception:
             context["support_sla_hours"] = 24
+        context["page_title"] = self.page_title
         context["breadcrumb_items"] = [
             {"label": "Home", "url_name": "website:home"},
             {"label": self.page_title},
@@ -51,9 +55,9 @@ class TermsOfServiceView(LegalPageMixin):
 
 class SecurityOverviewView(LegalPageMixin):
     template_name = "website/legal/security.html"
-    page_title = "Security"
-    seo_title = "Security Overview"
-    seo_description = "Security controls, data protection practices, and responsible disclosure."
+    page_title = "Security Center"
+    seo_title = "Security Center"
+    seo_description = "Security architecture, authentication, audit logging, and responsible disclosure for Zreta."
 
 
 class EnterpriseReadinessView(LegalPageMixin):
@@ -72,18 +76,135 @@ class RefundPolicyView(LegalPageMixin):
     seo_description = "Subscription cancellation, refunds, and billing dispute process."
 
 
+class ArchitectureView(LegalPageMixin):
+    template_name = "website/platform/architecture.html"
+    page_title = "Platform architecture"
+    seo_title = "Zreta platform architecture"
+    seo_description = "How Zreta shared billing, identity, and security relate to live product applications."
+
+
+class PaymentsPlatformView(LegalPageMixin):
+    template_name = "website/platform/payments.html"
+    page_title = "Payments & billing"
+    seo_title = "Payments and billing"
+    seo_description = "How Zreta handles GHS pricing, Mobile Money gateways, invoices, and the customer portal."
+
+
+class IntegrationsView(LegalPageMixin):
+    template_name = "website/platform/integrations.html"
+    page_title = "API & integrations"
+    seo_title = "API and integrations"
+    seo_description = "Zreta API access, webhooks, and integration approach for the marketing and billing platform."
+
+
+class SLAView(LegalPageMixin):
+    template_name = "website/platform/sla.html"
+    page_title = "Support SLA"
+    seo_title = "Support service levels"
+    seo_description = "Published support response targets for Zreta customers."
+
+
+class OnboardingView(LegalPageMixin):
+    template_name = "website/platform/onboarding.html"
+    page_title = "Enterprise onboarding"
+    seo_title = "Enterprise onboarding"
+    seo_description = "How Zreta helps organizations start ChurchHub or CoreTrust and manage billing."
+
+
+class PrivacyCenterView(LegalPageMixin):
+    template_name = "website/platform/privacy_center.html"
+    page_title = "Privacy Center"
+    seo_title = "Privacy Center"
+    seo_description = "Privacy policy, data handling practices, and how to contact Zreta about personal data."
+
+
+class ContinuityView(LegalPageMixin):
+    template_name = "website/platform/continuity.html"
+    page_title = "Business continuity"
+    seo_title = "Business continuity and backups"
+    seo_description = "What Zreta publishes about backups and continuity for the marketing and billing platform."
+
+
+class SolutionLandingView(SEOContextMixin, TemplateView):
+    template_name = "website/solution.html"
+    solution_key = ""
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        solution = SOLUTIONS[self.solution_key]
+        context["solution"] = solution
+        context["page_title"] = solution["title"]
+        product = (
+            Product.objects.filter(slug=solution["product_slug"], is_published=True)
+            .prefetch_related("plans", "features")
+            .first()
+        )
+        context["product"] = product
+        if product:
+            from products.services.trial_links import get_product_demo_url, get_product_trial_url
+
+            context["trial_url"] = get_product_trial_url(product)
+            context["demo_url"] = get_product_demo_url(product)
+        context["breadcrumb_items"] = [
+            {"label": "Home", "url_name": "website:home"},
+            {"label": "Solutions"},
+            {"label": solution["eyebrow"].split("·")[-1].strip()},
+        ]
+        return context
+
+
+class ChurchesSolutionView(SolutionLandingView):
+    solution_key = "churches"
+    seo_title = "Church management software"
+    seo_description = "ChurchHub for membership, giving, and administration — marketed and billed through Zreta."
+
+
+class MicrofinanceSolutionView(SolutionLandingView):
+    solution_key = "microfinance"
+    seo_title = "Microfinance software"
+    seo_description = "CoreTrust for MFIs and SACCOs — marketed and billed through Zreta."
+
+
+class EnterprisesSolutionView(SolutionLandingView):
+    solution_key = "enterprises"
+    seo_title = "Enterprise ERP roadmap"
+    seo_description = "ERP Suite is on the Zreta roadmap. Evaluate live products and shared billing today."
+
+
+class EducationSolutionView(SolutionLandingView):
+    solution_key = "education"
+    seo_title = "School management roadmap"
+    seo_description = "School Management is on the Zreta product roadmap."
+
+
+class HealthcareSolutionView(SolutionLandingView):
+    solution_key = "healthcare"
+    seo_title = "Hospital management roadmap"
+    seo_description = "Hospital Management is on the Zreta product roadmap."
+
+
 class StatusPageView(TemplateView):
     template_name = "website/status.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        checks = {"database": "unknown", "cache": "unknown"}
+        checks = {
+            "website": "unknown",
+            "database": "unknown",
+            "cache": "unknown",
+            "authentication": "unknown",
+            "payments": "unknown",
+        }
         try:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT 1")
             checks["database"] = "operational"
+            checks["website"] = "operational"
+            checks["authentication"] = "operational"
+            checks["payments"] = "operational"
         except Exception:
             checks["database"] = "degraded"
+            checks["website"] = "degraded"
 
         try:
             from django.core.cache import cache
@@ -108,6 +229,15 @@ class StatusPageView(TemplateView):
             {
                 "overall_status": overall,
                 "checks": checks,
+                "components": [
+                    ("Website", checks["website"]),
+                    ("Database", checks["database"]),
+                    ("Cache", checks["cache"]),
+                    ("Authentication", checks["authentication"]),
+                    ("Payments platform", checks["payments"]),
+                    ("ChurchHub", "external"),
+                    ("CoreTrust", "external"),
+                ],
                 "support_sla_hours": sla_hours,
                 "support_email": support_email,
                 "breadcrumb_items": [

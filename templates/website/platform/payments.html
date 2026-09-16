@@ -1,0 +1,24 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>{{ SITE_NAME }} bills subscriptions for catalog products in the currencies configured on each plan. Public pricing commonly lists <strong>GHS</strong> for Ghana and regional buyers.</p>
+
+<h2>What customers can do in the portal</h2>
+<ul>
+    <li>View subscriptions, invoices, and payment history.</li>
+    <li>Upload payment proofs for manual review where required.</li>
+    <li>Open support tickets and download licensed assets when entitled.</li>
+</ul>
+
+<h2>Payment methods</h2>
+<ul>
+    <li>Configured gateways may include Hubtel, Paystack, and Flutterwave for Mobile Money and card flows.</li>
+    <li>Card data is processed by the gateway — not stored as raw PAN on this platform.</li>
+    <li>Payment proof files are private and served only to authenticated, entitled users.</li>
+</ul>
+
+<h2>Dual path for live products</h2>
+<p>Start or demo on the product application (ChurchHub or CoreTrust), then manage commercial billing through Zreta. Roadmap products are not sold as live GA until published as such.</p>
+
+<p><a href="{% url 'products:list' %}">View products &amp; pricing</a> · <a href="{% url 'website:sla' %}">Support SLA</a></p>
+{% endblock %}

@@ -14,6 +14,7 @@ PUBLIC_HEADER_NAV = [
                 "links": [
                     {"label": "ChurchHub", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}, "accent": "churchhub"},
                     {"label": "CoreTrust", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}, "accent": "microfinance"},
+                    {"label": "All products", "url_name": "products:list"},
                 ],
             },
             {
@@ -26,11 +27,11 @@ PUBLIC_HEADER_NAV = [
                 ],
             },
             {
-                "title": "Get Started",
+                "title": "Get started",
                 "links": [
-                    {"label": "Request a Demo", "url": "/#request-demo"},
-                    {"label": "Start Free Trial", "url": "/#start-trial"},
-                    {"label": "View Documentation", "url_name": "documentation:index"},
+                    {"label": "Request a demo", "url": "/#request-demo"},
+                    {"label": "Start free trial", "url": "/#start-trial"},
+                    {"label": "Pricing", "url_name": "products:list"},
                 ],
             },
         ],
@@ -41,17 +42,34 @@ PUBLIC_HEADER_NAV = [
         "type": "mega",
         "columns": [
             {
-                "title": "By Industry",
+                "title": "By industry",
                 "links": [
-                    {"label": "Faith Organizations", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
-                    {"label": "Financial Services", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
-                    {"label": "Education (roadmap)", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}},
-                    {"label": "Healthcare (roadmap)", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}},
+                    {"label": "Churches", "url_name": "website:solution_churches"},
+                    {"label": "Microfinance", "url_name": "website:solution_microfinance"},
+                    {"label": "Enterprises", "url_name": "website:solution_enterprises"},
+                    {"label": "Education", "url_name": "website:solution_education"},
+                    {"label": "Healthcare", "url_name": "website:solution_healthcare"},
                 ],
             },
         ],
     },
-    {"label": "Customers", "url_name": "pages:list"},
+    {
+        "label": "Platform",
+        "key": "platform",
+        "type": "mega",
+        "columns": [
+            {
+                "title": "Capabilities",
+                "links": [
+                    {"label": "Architecture", "url_name": "website:architecture"},
+                    {"label": "Security Center", "url_name": "website:security"},
+                    {"label": "Payments & billing", "url_name": "website:payments_platform"},
+                    {"label": "API & integrations", "url_name": "website:integrations"},
+                    {"label": "System status", "url_name": "website:status"},
+                ],
+            },
+        ],
+    },
     {
         "label": "Resources",
         "key": "resources",
@@ -60,12 +78,11 @@ PUBLIC_HEADER_NAV = [
             {
                 "title": "Learn",
                 "links": [
-                    {"label": "Blog", "url_name": "marketing:blog_list"},
-                    {"label": "Events", "url_name": "marketing:events"},
-                    {"label": "Case Studies", "url_name": "marketing:case_studies"},
-                    {"label": "White Papers", "url_name": "marketing:whitepapers"},
+                    {"label": "Blog & guides", "url_name": "marketing:blog_list"},
                     {"label": "Documentation", "url_name": "documentation:index"},
+                    {"label": "White papers", "url_name": "marketing:whitepapers"},
                     {"label": "Support", "url_name": "support:index"},
+                    {"label": "FAQs", "url_name": "cms:faq_list"},
                 ],
             },
         ],
@@ -85,42 +102,40 @@ PUBLIC_FOOTER_COLUMNS = [
     {
         "title": "Solutions",
         "links": [
-            {"label": "Faith Organizations", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
-            {"label": "Financial Services", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
-            {"label": "Roadmap industries", "url_name": "products:list"},
+            {"label": "Churches", "url_name": "website:solution_churches"},
+            {"label": "Microfinance", "url_name": "website:solution_microfinance"},
+            {"label": "Enterprises", "url_name": "website:solution_enterprises"},
+        ],
+    },
+    {
+        "title": "Platform",
+        "links": [
+            {"label": "Architecture", "url_name": "website:architecture"},
+            {"label": "Security Center", "url_name": "website:security"},
+            {"label": "Support", "url_name": "support:index"},
+            {"label": "SLA", "url_name": "website:sla"},
+            {"label": "System status", "url_name": "website:status"},
         ],
     },
     {
         "title": "Company",
         "links": [
             {"label": "About", "url_name": "pages:about"},
-            {"label": "News", "url_name": "cms:news_list"},
-            {"label": "Careers", "url_name": "careers:list"},
             {"label": "Contact", "url_name": "contact:form"},
-        ],
-    },
-    {
-        "title": "Resources",
-        "links": [
-            {"label": "Blog", "url_name": "marketing:blog_list"},
-            {"label": "Events", "url_name": "marketing:events"},
-            {"label": "Success Stories", "url_name": "marketing:success_stories"},
-            {"label": "Case Studies", "url_name": "marketing:case_studies"},
-            {"label": "White Papers", "url_name": "marketing:whitepapers"},
-            {"label": "Resources", "url_name": "marketing:resources"},
-            {"label": "FAQs", "url_name": "cms:faq_list"},
-            {"label": "Documentation", "url_name": "documentation:index"},
+            {"label": "Careers", "url_name": "careers:list"},
+            {"label": "Enterprise onboarding", "url_name": "website:onboarding"},
         ],
     },
     {
         "title": "Legal",
         "links": [
             {"label": "Privacy", "url_name": "website:privacy"},
+            {"label": "Privacy Center", "url_name": "website:privacy_center"},
             {"label": "Terms", "url_name": "website:terms"},
             {"label": "Security", "url_name": "website:security"},
             {"label": "Enterprise readiness", "url_name": "website:enterprise"},
+            {"label": "Business continuity", "url_name": "website:continuity"},
             {"label": "Refund Policy", "url_name": "website:refund"},
-            {"label": "System Status", "url_name": "website:status"},
         ],
     },
 ]

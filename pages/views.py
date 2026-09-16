@@ -7,7 +7,7 @@ from core.seo.mixins import SEOContextMixin
 class AboutView(SEOContextMixin, TemplateView):
     template_name = "pages/about.html"
     seo_title = "About"
-    seo_description = "Learn about our mission, team, and enterprise platform."
+    seo_description = "Zreta markets and bills modular products including ChurchHub and CoreTrust."
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(build_about_context())

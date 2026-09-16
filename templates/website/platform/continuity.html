@@ -1,0 +1,21 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>{{ SITE_NAME }} maintains operational backups for the marketing and billing platform. This page summarizes what we publish — it is not a substitute for a signed DR schedule in an enterprise contract.</p>
+
+<h2>What we do</h2>
+<ul>
+    <li>Database and application backup procedures are documented for operators (see internal backup runbooks).</li>
+    <li>Production deployments use PostgreSQL, Redis, TLS, and restricted server access.</li>
+    <li>Payment webhook processing verifies signatures before trusted persistence.</li>
+</ul>
+
+<h2>What we do not claim here</h2>
+<ul>
+    <li>Specific RPO/RTO percentages unless stated in a signed agreement.</li>
+    <li>Uptime charts without supporting telemetry (see <a href="{% url 'website:status' %}">status</a>).</li>
+    <li>Disaster recovery ownership for ChurchHub or CoreTrust application data — those products own their own continuity plans.</li>
+</ul>
+
+<p><a href="{% url 'website:security' %}">Security Center</a> · <a href="{% url 'website:sla' %}">Support SLA</a></p>
+{% endblock %}

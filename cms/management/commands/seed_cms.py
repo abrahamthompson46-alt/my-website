@@ -15,7 +15,6 @@ from cms.models import (
     PageSection,
     PageType,
     SectionItem,
-    TeamMember,
 )
 from website.content import (
     CTA,
@@ -49,8 +48,9 @@ class Command(BaseCommand):
             subheadline=HERO["subheadline"],
             trust_text=HERO["trust_text"],
             cta_primary_label=HERO.get("cta_primary_label", "Explore products"),
-            cta_secondary_label=HERO.get("cta_secondary_label", "Start free trial"),
-            cta_secondary_url=HERO.get("cta_secondary_url", "#start-trial"),
+            cta_primary_url=HERO.get("cta_primary_url", ""),
+            cta_secondary_label=HERO.get("cta_secondary_label", "Request a demo"),
+            cta_secondary_url=HERO.get("cta_secondary_url", "#request-demo"),
             is_active=True,
         )
 
@@ -105,12 +105,15 @@ class Command(BaseCommand):
             )
 
         for i, item in enumerate(INDUSTRIES):
+            extra = {"products": item["products"]}
+            if item.get("url_name"):
+                extra["url_name"] = item["url_name"]
             SectionItem.objects.create(
                 section=sections["industries"],
                 title=item["name"],
                 description=item["description"],
                 icon=item["icon"],
-                extra_data={"products": item["products"]},
+                extra_data=extra,
                 sort_order=i,
             )
 
@@ -161,9 +164,12 @@ class Command(BaseCommand):
         about_hero = HeroBanner.objects.create(
             name="About Hero",
             placement=HeroPlacement.ABOUT,
-            eyebrow="About Us",
-            headline="Building software that powers organizations worldwide",
-            subheadline="We deliver modular, enterprise-grade SaaS for industries that demand reliability, security, and scale.",
+            eyebrow="Company",
+            headline="About Zreta",
+            subheadline=(
+                "Zreta markets and bills modular enterprise products. "
+                "ChurchHub and CoreTrust are live applications; more industries are on the roadmap."
+            ),
             is_active=True,
         )
 
@@ -177,18 +183,23 @@ class Command(BaseCommand):
         )
 
         about_sections = [
-            ("mission", "Our Mission", "Empower every organization with software built for their world.", ""),
-            ("vision", "Our Vision", "A unified platform where modular products share identity, data, and trust.", ""),
-            ("values", "Our Values", "", ""),
-            ("team", "Our Team", "Leadership & experts", "The people building the platform organizations trust."),
+            ("mission", "Mission", "Help organizations run with modular software they can trust.", ""),
+            ("vision", "How we work", "Storefront plus live product applications — not one monolith claiming every engine.", ""),
+            ("values", "What we publish", "", ""),
         ]
         about_section_objs = {}
         for i, (key, eyebrow, title, subtitle) in enumerate(about_sections):
             body = ""
             if key == "mission":
-                body = "We build enterprise SaaS that helps churches, hospitals, schools, and financial institutions run smarter operations."
+                body = (
+                    "We sell and support modular products for churches and microfinance institutions today, "
+                    "with shared billing, portal access, and security practices on Zreta."
+                )
             elif key == "vision":
-                body = "Organizations should not choose between best-of-breed tools and unified platforms — they deserve both."
+                body = (
+                    "ChurchHub and CoreTrust run as external applications. Zreta.com is the marketing, "
+                    "billing, and customer-portal layer. Roadmap products are labelled honestly until GA."
+                )
             about_section_objs[key] = PageSection.objects.create(
                 page=about_page,
                 section_key=key,
@@ -200,9 +211,9 @@ class Command(BaseCommand):
             )
 
         values = [
-            ("Customer obsession", "We succeed when our customers succeed.", "heart"),
-            ("Security first", "Trust is earned through rigorous security and compliance.", "shield-check"),
-            ("Modular excellence", "Each product stands alone and integrates seamlessly.", "layers"),
+            ("Evidence over slogans", "We publish Live vs Roadmap labels and avoid unverified customer counts.", "check-circle"),
+            ("Security first", "Staff MFA, audit logs, private payment proofs, and a public Security Center.", "shield-check"),
+            ("Modular products", "Each live product stands alone and connects through Zreta billing and portal.", "layers"),
         ]
         for i, (title, desc, icon) in enumerate(values):
             SectionItem.objects.create(
@@ -210,24 +221,6 @@ class Command(BaseCommand):
                 title=title,
                 description=desc,
                 icon=icon,
-                sort_order=i,
-            )
-
-        team = [
-            ("Sarah Okonkwo", "Chief Executive Officer", "Executive", True),
-            ("James Mwangi", "Chief Technology Officer", "Engineering", True),
-            ("Dr. Amina Hassan", "Chief Product Officer", "Product", True),
-            ("David Chen", "VP Customer Success", "Customer Success", False),
-        ]
-        for i, (name, role, dept, leadership) in enumerate(team):
-            TeamMember.objects.create(
-                full_name=name,
-                role=role,
-                department=dept,
-                bio=f"{name} leads our {dept.lower()} organization with deep industry expertise.",
-                is_leadership=leadership,
-                show_on_about=True,
-                is_published=True,
                 sort_order=i,
             )
 

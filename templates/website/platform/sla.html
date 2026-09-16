@@ -1,0 +1,20 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>These are published support targets for {{ SITE_NAME }} customers. They are operational goals, not a contractual uptime guarantee unless stated in a signed enterprise agreement.</p>
+
+<h2>Standard support</h2>
+<ul>
+    <li>Target first response: <strong>{{ support_sla_hours }} business hours</strong> via support tickets or email.</li>
+    <li>Channels: customer portal tickets, published support email, and contact form for prospects.</li>
+    <li>Coverage: billing, portal access, licensing, and marketing-platform issues.</li>
+</ul>
+
+<h2>Product-application support</h2>
+<p>Day-to-day ChurchHub and CoreTrust application issues may be handled with the respective product teams. Zreta coordinates billing and portal access.</p>
+
+<h2>Status &amp; incidents</h2>
+<p>Check the <a href="{% url 'website:status' %}">system status</a> page for component health. Historical uptime percentages are published only when telemetry supports them — we do not invent charts.</p>
+
+<p><a href="{% url 'support:index' %}">Support Center</a> · <a href="{% url 'contact:form' %}">Contact</a></p>
+{% endblock %}

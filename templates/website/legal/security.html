@@ -1,13 +1,22 @@
 {% extends "website/legal/base_legal.html" %}
 
 {% block legal_body %}
-<p>{{ SITE_NAME }} applies layered security controls across authentication, infrastructure, and operations. This page summarizes buyer-relevant practices — not a certification statement.</p>
+<p>{{ SITE_NAME }} applies layered security controls across authentication, infrastructure, and operations. This Security Center summarizes buyer-relevant practices — not a certification claim (we do not assert SOC 2 here).</p>
 
-<h2>Authentication & access</h2>
+<h2>Security Center map</h2>
+<ul>
+    <li><a href="{% url 'website:privacy_center' %}">Privacy Center</a> — policies and data requests</li>
+    <li><a href="{% url 'website:status' %}">System status</a> — live component probes</li>
+    <li><a href="{% url 'website:continuity' %}">Business continuity</a> — backups without overclaim</li>
+    <li><a href="{% url 'website:enterprise' %}">Enterprise readiness</a> — live vs roadmap controls</li>
+    <li><a href="{% url 'documentation:index' %}">Documentation</a> — operator and API notes</li>
+</ul>
+
+<h2>Authentication &amp; access</h2>
 <ul>
     <li>Email verification required for customer portal access.</li>
     <li>Staff accounts require two-factor authentication (TOTP + backup codes).</li>
-    <li>Login rate limiting, account lockout, and session tracking/revocation (including Redis-backed sessions).</li>
+    <li>Login rate limiting, account lockout, and session tracking/revocation.</li>
     <li>Role-based access control for staff and operations areas.</li>
 </ul>
 
@@ -28,11 +37,12 @@
     <li>Payment proof uploads are served through authenticated downloads, not public media URLs.</li>
 </ul>
 
-<h2>Buyer summary</h2>
-<p>See our <a href="{% url 'website:enterprise' %}">Enterprise readiness</a> page for live capabilities versus roadmap items.</p>
+<h2>Encryption &amp; transport</h2>
+<ul>
+    <li>HTTPS/TLS for production traffic.</li>
+    <li>Secure cookie flags in production settings.</li>
+</ul>
 
 <h2>Responsible disclosure</h2>
-<p>Report suspected vulnerabilities to <a href="mailto:{{ SUPPORT_EMAIL|default:'security@zreta.com' }}">{{ SUPPORT_EMAIL|default:"security@zreta.com" }}</a>. Include steps to reproduce and impact assessment.</p>
-
-<p>See also our <a href="{% url 'website:privacy' %}">Privacy Policy</a>.</p>
+<p>Report suspected vulnerabilities to <a href="mailto:{{ SUPPORT_EMAIL|default:'security@zreta.com' }}">{{ SUPPORT_EMAIL|default:"security@zreta.com" }}</a>. Include steps to reproduce and impact assessment. We do not operate a paid bug bounty unless separately announced.</p>
 {% endblock %}

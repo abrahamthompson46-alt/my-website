@@ -1,0 +1,74 @@
+{% extends "base_public.html" %}
+{% load ui_tags %}
+
+{% block title %}{{ solution.title }} — {{ SITE_NAME }}{% endblock %}
+
+{% block breadcrumbs %}
+{% include "components/breadcrumbs.html" with items=breadcrumb_items %}
+{% endblock %}
+
+{% block content %}
+<section class="section section--compact solution-hero">
+    <div class="container">
+        <p class="section__eyebrow">{{ solution.eyebrow }}</p>
+        {% if solution.status == "live" %}
+        {% ui_badge label="Live product" variant="success" %}
+        {% else %}
+        {% ui_badge label="On the roadmap" variant="warning" %}
+        {% endif %}
+        <h1 class="section__title" style="margin-top: var(--space-4);">{{ solution.title }}</h1>
+        <p class="section__subtitle">{{ solution.subtitle }}</p>
+        <div class="cluster" style="margin-top: var(--space-6);">
+            {% if solution.status == "live" and trial_url %}
+            <a href="{{ trial_url }}" class="btn btn--primary btn--lg" target="_blank" rel="noopener noreferrer">{{ solution.cta_primary }}</a>
+            {% elif product %}
+            <a href="{{ product.get_absolute_url }}" class="btn btn--primary btn--lg">{{ solution.cta_primary }}</a>
+            {% else %}
+            <a href="{% url 'products:list' %}" class="btn btn--primary btn--lg">{{ solution.cta_primary }}</a>
+            {% endif %}
+            {% if solution.status == "live" and demo_url %}
+            <a href="{{ demo_url }}" class="btn btn--secondary btn--lg" target="_blank" rel="noopener noreferrer">{{ solution.cta_secondary }}</a>
+            {% else %}
+            <a href="{% url 'contact:form' %}" class="btn btn--secondary btn--lg">{{ solution.cta_secondary }}</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt">
+    <div class="container">
+        <header class="section__header">
+            <h2 class="section__title">Outcomes</h2>
+            <p class="section__subtitle">What teams in this industry use {{ solution.product_name }} to improve.</p>
+        </header>
+        <ul class="grid grid--3" style="list-style: none; padding: 0; margin: var(--space-8) 0 0;">
+            {% for outcome in solution.outcomes %}
+            <li class="feature-block">
+                <h3 class="feature-block__title">{{ forloop.counter }}. Focus</h3>
+                <p class="feature-block__description">{{ outcome }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{% if product %}
+<section class="section">
+    <div class="container">
+        <header class="section__header">
+            <h2 class="section__title">Product on Zreta</h2>
+            <p class="section__subtitle">
+                {% if solution.status == "live" %}
+                {{ product.name }} is live. Zreta markets and bills it; the product application runs separately.
+                {% else %}
+                {{ product.name }} is published as a roadmap product. Trial and purchase open when it reaches GA.
+                {% endif %}
+            </p>
+        </header>
+        <div class="grid grid--3" style="margin-top: var(--space-8);">
+            {% include "products/partials/product_card.html" with product=product %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

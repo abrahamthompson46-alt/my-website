@@ -1,0 +1,24 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>{{ SITE_NAME }} exposes authenticated customer and operations APIs for organizations that integrate with the marketing and billing platform. A broad public partner marketplace is not claimed here.</p>
+
+<h2>Available today</h2>
+<ul>
+    <li>Authenticated REST endpoints for organization-scoped resources (see documentation).</li>
+    <li>Payment webhook receivers with signature verification and event deduplication.</li>
+    <li>Outbound product links with UTM parameters for ChurchHub and CoreTrust acquisition.</li>
+</ul>
+
+<h2>Honest limits</h2>
+<ul>
+    <li>A versioned public partner API catalog is planned; treat unpublished endpoints as unstable.</li>
+    <li>Product-application APIs (ChurchHub, CoreTrust) are owned by those products, not this storefront.</li>
+    <li>Only integrations that are actually configured in production should be treated as live.</li>
+</ul>
+
+<h2>Webhooks</h2>
+<p>Gateway webhooks are verified before persistence and async processing. Failed verification does not create trusted payment records.</p>
+
+<p><a href="{% url 'documentation:index' %}">Open documentation</a> · <a href="{% url 'website:architecture' %}">Architecture</a></p>
+{% endblock %}

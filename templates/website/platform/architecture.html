@@ -1,0 +1,40 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>{{ SITE_NAME }} is the marketing, billing, and customer-portal layer for modular enterprise products. Live applications such as ChurchHub and CoreTrust run as separate products and connect through shared identity, payments, and support practices where configured.</p>
+
+<h2>Platform layers</h2>
+<pre class="platform-diagram" style="overflow:auto;padding:1rem;background:var(--color-surface-alt, #f5f5f5);border-radius:8px;line-height:1.5;">
+┌─────────────────────────────────────────────┐
+│  Zreta.com — storefront, CMS, docs, SEO     │
+├─────────────────────────────────────────────┤
+│  Shared services                            │
+│  · Billing &amp; invoices (GHS / Mobile Money)  │
+│  · Customer portal &amp; licenses               │
+│  · Auth, MFA (staff), audit logs            │
+│  · Support tickets &amp; status                 │
+├──────────────────┬──────────────────────────┤
+│  ChurchHub       │  CoreTrust               │
+│  (external app)  │  (external app)          │
+│  Live            │  Live                    │
+├──────────────────┴──────────────────────────┤
+│  Roadmap products (ERP, School, Hospital…)  │
+└─────────────────────────────────────────────┘
+</pre>
+
+<h2>What lives on Zreta</h2>
+<ul>
+    <li>Product catalog, pricing display, and honest Live vs Roadmap labels.</li>
+    <li>Checkout, subscriptions, invoices, and authenticated downloads.</li>
+    <li>Demo requests, contact forms, documentation, and system status.</li>
+</ul>
+
+<h2>What lives on product sites</h2>
+<ul>
+    <li>ChurchHub application workflows (membership, giving, administration).</li>
+    <li>CoreTrust application workflows (loans, savings, collections).</li>
+    <li>Product-specific onboarding and day-to-day operations.</li>
+</ul>
+
+<p>See also <a href="{% url 'website:security' %}">Security Center</a>, <a href="{% url 'website:payments_platform' %}">Payments &amp; billing</a>, and <a href="{% url 'website:enterprise' %}">Enterprise readiness</a>.</p>
+{% endblock %}

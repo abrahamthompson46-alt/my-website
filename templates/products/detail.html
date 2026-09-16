@@ -27,9 +27,15 @@
                 {% include "products/partials/product_hero_actions.html" %}
             </div>
             <ul class="product-hero__trust" aria-label="Trial highlights">
-                <li>30-day free trial</li>
-                <li>No credit card required</li>
-                <li>Instant account setup</li>
+                {% if is_live_storefront %}
+                <li>Live product application</li>
+                <li>30-day path where offered</li>
+                <li>Billing via Zreta portal</li>
+                {% else %}
+                <li>On the roadmap</li>
+                <li>Not live for self-serve trial</li>
+                <li>Contact Zreta for early interest</li>
+                {% endif %}
             </ul>
         </div>
         {% include "products/partials/product_hero_media.html" %}
@@ -49,9 +55,15 @@
                 {% include "products/partials/product_hero_actions.html" %}
             </div>
             <ul class="product-hero__trust" aria-label="Trial highlights">
-                <li>30-day free trial</li>
-                <li>No credit card required</li>
-                <li>Instant account setup</li>
+                {% if is_live_storefront %}
+                <li>Live product application</li>
+                <li>30-day path where offered</li>
+                <li>Billing via Zreta portal</li>
+                {% else %}
+                <li>On the roadmap</li>
+                <li>Not live for self-serve trial</li>
+                <li>Contact Zreta for early interest</li>
+                {% endif %}
             </ul>
         </div>
         {% include "products/partials/product_hero_media.html" %}
@@ -63,6 +75,26 @@
 <section class="section">
     <div class="container container-prose">
         <div class="product-prose">{{ product.long_description|linebreaks }}</div>
+    </div>
+</section>
+{% endif %}
+
+{% if product_depth %}
+<section class="section section--alt">
+    <div class="container">
+        <header class="section__header section__header--center">
+            <h2 class="section__title">How this product fits Zreta</h2>
+            <p class="section__subtitle">{{ product_depth.external_notice }}</p>
+        </header>
+        <div class="grid grid--2" style="margin-top: var(--space-8);">
+            {% for depth in product_depth.sections %}
+            <article class="feature-block">
+                <p class="section__eyebrow">{% if depth.scope == "platform" %}Zreta platform{% else %}Product application{% endif %}</p>
+                <h3 class="feature-block__title">{{ depth.title }}</h3>
+                <p class="feature-block__description">{{ depth.body }}</p>
+            </article>
+            {% endfor %}
+        </div>
     </div>
 </section>
 {% endif %}
