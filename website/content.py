@@ -28,7 +28,7 @@ WHY_CHOOSE_US = [
     {
         "icon": "layers",
         "title": "Modular by design",
-        "description": "Choose the products you need — ChurchHub, CoreTrust, and more — each with shared billing, portal, and support on Zreta.",
+        "description": "Choose ChurchHub or CoreTrust today — more industry products are on the roadmap — with shared billing, portal, and support on Zreta.",
     },
     {
         "icon": "globe",
@@ -43,7 +43,7 @@ WHY_CHOOSE_US = [
     {
         "icon": "zap",
         "title": "Fast time to value",
-        "description": "Start a 30-day trial from any product page and access your customer portal after verification.",
+        "description": "Start on the live ChurchHub or CoreTrust product site, then manage billing in your Zreta portal.",
     },
     {
         "icon": "bar-chart",
@@ -68,14 +68,14 @@ INDUSTRIES = [
     {
         "name": "Education",
         "icon": "graduation-cap",
-        "description": "Schools and training centers managing admissions, fees, and parent engagement.",
-        "products": ["School Management"],
+        "description": "Schools and training centers — School Management is on the roadmap.",
+        "products": ["Coming soon"],
     },
     {
         "name": "Healthcare",
         "icon": "heart-pulse",
-        "description": "Clinics and hospitals with appointments, billing, and patient records.",
-        "products": ["Hospital Management"],
+        "description": "Clinics and hospitals — Hospital Management is on the roadmap.",
+        "products": ["Coming soon"],
     },
 ]
 

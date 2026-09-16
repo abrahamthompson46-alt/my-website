@@ -65,7 +65,7 @@ class Command(BaseCommand):
         self._sync_section(page, "statistics", STATISTICS, item_factory=self._stat_item)
         self._sync_section(page, "trust_signals", TRUST_SIGNALS, item_factory=self._trust_item)
 
-        self._sync_header(page, "featured_products", "Modular products on one platform", "Choose the Zreta products that fit your industry — each with shared billing, security, and customer portal access.", eyebrow="Products")
+        self._sync_header(page, "featured_products", "Live products on Zreta", "ChurchHub and CoreTrust are live today — each with shared billing, security, and customer portal access.", eyebrow="Products")
         self._sync_header(page, "statistics", "Built for serious operations", "Shared standards across every Zreta product.", eyebrow="Platform")
         self._sync_header(page, "cta", CTA["title"], CTA["subtitle"])
         self._ensure_header(
@@ -168,12 +168,16 @@ class Command(BaseCommand):
             self.stdout.write(f"Platform settings updated: {', '.join(updated)}")
 
     def _sync_product_featured_flags(self):
+        live_slugs = {"churchhub", "microfinance-core"}
         for product in Product.objects.filter(is_published=True):
-            featured = product.status in (ProductStatus.GA, ProductStatus.BETA)
+            featured = (
+                product.slug in live_slugs
+                and product.status in (ProductStatus.GA, ProductStatus.BETA)
+            )
             if product.is_featured != featured:
                 product.is_featured = featured
                 product.save(update_fields=["is_featured", "updated_at"])
-        self.stdout.write("Product featured flags normalized for GA/BETA catalog items.")
+        self.stdout.write("Product featured flags limited to live ChurchHub and CoreTrust.")
 
     def _get_or_create_section(self, page, key, sort_order):
         section, _ = PageSection.objects.get_or_create(

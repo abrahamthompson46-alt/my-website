@@ -70,7 +70,7 @@ class Command(BaseCommand):
         )
 
         section_defs = [
-            ("featured_products", "Products", "Modular products on one platform", "Choose the Zreta products that fit your industry — each with shared billing, security, and customer portal access."),
+            ("featured_products", "Products", "Live products on Zreta", "ChurchHub and CoreTrust are live today — each with shared billing, security, and customer portal access."),
             ("why_choose_us", "Why Choose Us", "Built for enterprise reliability", "Security, modular design, and support you can verify on this site."),
             ("industries", "Industries", "Solutions for every sector", "Purpose-built products for your industry."),
             ("testimonials", "Testimonials", "What our customers say", "Verified customer stories appear here as they are published."),

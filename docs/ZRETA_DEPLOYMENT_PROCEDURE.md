@@ -116,11 +116,29 @@ curl -sS -o /dev/null -w "HTTP %{http_code}\n" https://www.zreta.com/health/
 
 Or via the Gunicorn socket (see `deploy-app.sh`).
 
+### 6b. Homepage CMS + catalog honesty (required after marketing releases)
+
+```bash
+sudo -u marketing bash -c '
+  set -a; source /var/www/marketing-site/.env; set +a
+  source /var/www/marketing-site/.venv/bin/activate
+  cd /var/www/marketing-site
+  python manage.py sync_homepage --products
+  python manage.py sanitize_platform --fix
+'
+```
+
+Confirm homepage `#start-trial` / `#request-demo` links hit:
+- ChurchHub apply/contact
+- CoreTrust `https://micro.zreta.com/request-demo/`
+
 ### 7. Smoke test
 
 - Load homepage and customer login
+- Click Start free trial → product chooser → ChurchHub / CoreTrust outbound URLs include `utm_source=zreta`
 - Verify `/app/payments/` checkout still works (staging/manual gateway if enabled)
 - Check logs: `/var/log/nginx/` and `/var/www/marketing-site/logs/`
+- Confirm `/media/private/` returns 404 publicly
 
 ---
 

@@ -28,8 +28,8 @@ class OutboundLinkTests(TestCase):
             is_published=True,
             is_featured=True,
             sort_order=2,
-            demo_url="https://micro.zreta.com/",
-            register_url="https://micro.zreta.com/",
+            demo_url="https://micro.zreta.com/request-demo/",
+            register_url="https://micro.zreta.com/request-demo/",
             external_app_url="https://micro.zreta.com/",
         )
 
@@ -43,7 +43,7 @@ class OutboundLinkTests(TestCase):
 
     def test_demo_url_uses_demo_and_tracking(self):
         url = build_intent_url(self.coretrust, "demo")
-        self.assertTrue(url.startswith("https://micro.zreta.com/"))
+        self.assertTrue(url.startswith("https://micro.zreta.com/request-demo/"))
         self.assertIn("utm_campaign=request_demo", url)
         self.assertIn("intent=demo", url)
 
@@ -78,8 +78,8 @@ class HomepageIntentViewTests(TestCase):
             status=ProductStatus.GA,
             is_published=True,
             is_featured=True,
-            demo_url="https://micro.zreta.com/",
-            register_url="https://micro.zreta.com/",
+            demo_url="https://micro.zreta.com/request-demo/",
+            register_url="https://micro.zreta.com/request-demo/",
             external_app_url="https://micro.zreta.com/",
         )
 
@@ -92,6 +92,6 @@ class HomepageIntentViewTests(TestCase):
         self.assertIn("Start on ChurchHub", content)
         self.assertIn("Demo CoreTrust", content)
         self.assertIn("mychurch.zreta.com/apply/", content)
-        self.assertIn("micro.zreta.com/", content)
+        self.assertIn("micro.zreta.com/request-demo/", content)
         self.assertIn("utm_source=zreta", content)
         self.assertIn("product-intent-list", content)

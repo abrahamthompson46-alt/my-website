@@ -263,21 +263,28 @@ def check_coretrust_catalog(*, fix: bool = False) -> Finding:
             count=1,
         )
 
+    expected_demo = "https://micro.zreta.com/request-demo/"
+    expected_register = "https://micro.zreta.com/request-demo/"
+    expected_app = "https://micro.zreta.com/"
+
     drift = []
     if product.name != CORETRUST_NAME:
         drift.append(f"name={product.name!r}")
-    if not product.external_app_url:
-        drift.append("missing external_app_url")
-    if product.name == "Microfinance Core":
-        drift.append("legacy Microfinance Core name")
+    if (product.external_app_url or "").rstrip("/") != expected_app.rstrip("/"):
+        drift.append("external_app_url")
+    if (product.demo_url or "").rstrip("/") != expected_demo.rstrip("/"):
+        drift.append("demo_url")
+    if (product.register_url or "").rstrip("/") != expected_register.rstrip("/"):
+        drift.append("register_url")
+    if not product.is_published or product.status != ProductStatus.GA:
+        drift.append("publish/status")
 
     fixed = 0
     if fix and drift:
         product.name = CORETRUST_NAME
-        if not product.external_app_url:
-            product.external_app_url = "https://micro.zreta.com/"
-        if not product.demo_url:
-            product.demo_url = "https://micro.zreta.com/"
+        product.external_app_url = expected_app
+        product.demo_url = expected_demo
+        product.register_url = expected_register
         product.is_published = True
         product.status = ProductStatus.GA
         product.save(
@@ -285,6 +292,7 @@ def check_coretrust_catalog(*, fix: bool = False) -> Finding:
                 "name",
                 "external_app_url",
                 "demo_url",
+                "register_url",
                 "is_published",
                 "status",
                 "updated_at",
@@ -298,7 +306,7 @@ def check_coretrust_catalog(*, fix: bool = False) -> Finding:
         message=(
             "CoreTrust catalog OK"
             if not drift
-            else f"CoreTrust drift: {', '.join(drift)}" + ("; repaired" if fix else "")
+            else f"CoreTrust drift: {', '.join(drift)}" + ("; repaired" if fixed else "")
         ),
         count=len(drift),
         sample_ids=[str(product.pk)],

@@ -1,6 +1,6 @@
 # Zreta Platform — Upgrade Progress Tracker
 
-**Last updated:** 2026-09-14 (storefront + external CoreTrust realignment)
+**Last updated:** 2026-09-16 (catalog honesty + CoreTrust request-demo URLs)
 
 Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED` | `PARTIAL` | `CANCELLED`
 
@@ -11,8 +11,8 @@ Status legend: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `VERIFIED` | `PAR
 | ID | Task | Status | Notes |
 |----|------|--------|-------|
 | P1A-01 | Remove web-triggered git deploy (SEC-003) | VERIFIED | Commit `055a63f` |
-| P1A-02 | Document controlled VPS deployment procedure | VERIFIED | `ZRETA_DEPLOYMENT_PROCEDURE.md` |
-| P1A-03 | Backup & disaster recovery foundation | IN PROGRESS | Scripts + docs; restore drill pending VPS |
+| P1A-02 | Document controlled VPS deployment procedure | VERIFIED | `ZRETA_DEPLOYMENT_PROCEDURE.md` (+ homepage sync step) |
+| P1A-03 | Backup & disaster recovery foundation | IMPLEMENTED | Scripts + timer docs ready; **operator must run** `test-restore-drill.sh` once on VPS to mark VERIFIED |
 
 ---
 
