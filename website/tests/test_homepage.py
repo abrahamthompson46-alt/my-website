@@ -26,12 +26,16 @@ class HomepageServiceTests(TestCase):
         )
 
     def test_featured_products_respect_sort_order(self):
-        erp = self._create_product("erp-suite", sort_order=1)
-        churchhub = self._create_product("churchhub", sort_order=2)
-        school = self._create_product("school-management", sort_order=3)
+        self._create_product("erp-suite", sort_order=1)
+        self._create_product("churchhub", sort_order=2)
+        self._create_product("microfinance-core", sort_order=3)
+        self._create_product("school-management", sort_order=4)
 
         featured = get_homepage_featured_products()
-        self.assertEqual([product.slug for product in featured], ["erp-suite", "churchhub", "school-management"])
+        self.assertEqual(
+            [product.slug for product in featured],
+            ["churchhub", "microfinance-core"],
+        )
 
     def test_featured_products_exclude_coming_soon(self):
         self._create_product("churchhub", sort_order=1)
@@ -40,6 +44,11 @@ class HomepageServiceTests(TestCase):
         featured = get_homepage_featured_products()
         self.assertEqual(len(featured), 1)
         self.assertEqual(featured[0].slug, "churchhub")
+
+    def test_featured_products_ignore_non_live_ga(self):
+        self._create_product("erp-suite", sort_order=1, featured=True)
+        featured = get_homepage_featured_products()
+        self.assertEqual(featured, [])
 
     def test_should_hide_placeholder_testimonials(self):
         Testimonial.objects.create(

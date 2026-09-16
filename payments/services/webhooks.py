@@ -24,11 +24,20 @@ def enqueue_process_webhook(gateway_config, payload: dict, raw_body: bytes, head
     Process a webhook inline or via Celery.
 
     Returns:
-        (webhook_event, created_or_queued)
-        When queued asynchronously, webhook_event is None and created_or_queued is True.
+        (webhook_event, accepted)
+        - accepted False + event None → invalid signature (reject)
+        - accepted True + event None → queued asynchronously
+        - otherwise webhook_event is the persisted row
     """
     from common.services.async_jobs import celery_async_enabled, dispatch_task
     from common.tasks import process_webhook_task
+    from core.metrics import observe_webhook
+
+    adapter = get_gateway_from_model(gateway_config)
+    if adapter.supports_webhooks and not adapter.verify_webhook(raw_body, headers):
+        observe_webhook(gateway=gateway_config.code, result="invalid_signature")
+        logger.warning("Rejected webhook for %s before queue: invalid signature", gateway_config.code)
+        return None, False
 
     if not celery_async_enabled():
         return process_webhook(gateway_config, payload, raw_body, headers)
@@ -41,8 +50,6 @@ def enqueue_process_webhook(gateway_config, payload: dict, raw_body: bytes, head
         base64.b64encode(raw_body).decode("ascii"),
         safe_headers,
     )
-    from core.metrics import observe_webhook
-
     observe_webhook(gateway=gateway_config.code, result="queued")
     return None, True
 
@@ -53,6 +60,11 @@ def process_webhook(gateway_config, payload: dict, raw_body: bytes, headers: dic
 
     adapter = get_gateway_from_model(gateway_config)
     signature_valid = adapter.verify_webhook(raw_body, headers) if adapter.supports_webhooks else True
+
+    if not signature_valid:
+        observe_webhook(gateway=gateway_config.code, result="invalid_signature")
+        logger.warning("Rejected webhook for %s: invalid signature", gateway_config.code)
+        return None, False
 
     parsed = adapter.parse_webhook(payload, headers)
     event_id = (
@@ -69,17 +81,11 @@ def process_webhook(gateway_config, payload: dict, raw_body: bytes, headers: dic
             "event_type": parsed.event_type,
             "payload": payload,
             "headers": dict(headers),
-            "signature_valid": signature_valid,
+            "signature_valid": True,
         },
     )
     if not created:
         observe_webhook(gateway=gateway_config.code, result="duplicate")
-        return webhook_event, False
-
-    if not signature_valid:
-        webhook_event.error_message = "Invalid webhook signature."
-        webhook_event.save(update_fields=["error_message", "updated_at"])
-        observe_webhook(gateway=gateway_config.code, result="invalid_signature")
         return webhook_event, False
 
     if not parsed.handled or not parsed.reference:
@@ -118,7 +124,7 @@ def process_webhook(gateway_config, payload: dict, raw_body: bytes, headers: dic
     else:
         webhook_event.error_message = f"Payment not found for reference {parsed.reference}"
         webhook_event.save(update_fields=["error_message", "updated_at"])
-        observe_webhook(gateway=gateway_config.code, result="payment_not_found")
+        observe_webhook(gateway=gateway_config.code, result="payment_missing")
 
     return webhook_event, True
 

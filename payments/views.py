@@ -278,7 +278,7 @@ class GatewayWebhookView(View):
 
         headers = {k: v for k, v in request.headers.items()}
         try:
-            webhook_event, _ = enqueue_process_webhook(
+            webhook_event, accepted = enqueue_process_webhook(
                 gateway_config, payload, request.body, headers
             )
         except Exception:
@@ -286,6 +286,8 @@ class GatewayWebhookView(View):
             return JsonResponse({"status": "error", "message": "Webhook processing failed."}, status=500)
 
         if webhook_event is None:
+            if not accepted:
+                return JsonResponse({"status": "rejected", "message": "Invalid signature."}, status=400)
             return JsonResponse({"status": "accepted"}, status=202)
 
         if webhook_event.error_message and not webhook_event.processed:

@@ -1,6 +1,6 @@
-# Enterprise Platform
+# Zreta
 
-Django enterprise marketing site with customer portal, payments, operations dashboard, and no-code platform control room.
+Django marketing and billing storefront for modular products (ChurchHub, CoreTrust), with customer portal, payments, operations dashboard, and platform control room.
 
 ## Quick start (development)
 

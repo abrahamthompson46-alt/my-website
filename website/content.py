@@ -14,7 +14,7 @@ FEATURED_PRODUCTS = [
         "slug": "microfinance-core",
         "accent": "finance",
         "tagline": "Core banking for microfinance institutions",
-        "description": "Live MFI platform for loans, savings, and collections — marketed here, running as its own product.",
+        "description": "Microfinance platform for loans, savings, and collections — marketed here, running as its own product.",
         "features": ["Loan management", "Savings accounts", "Collections"],
     },
 ]
@@ -84,10 +84,10 @@ TESTIMONIALS = []
 LATEST_NEWS = []
 
 STATISTICS = [
-    {"value": "30 days", "label": "Free trial on every plan"},
+    {"value": "30 days", "label": "ChurchHub demo window"},
     {"value": "GHS", "label": "Local pricing available"},
     {"value": "24h", "label": "Support response target"},
-    {"value": "3+", "label": "Payment gateway options"},
+    {"value": "2", "label": "Live products today"},
 ]
 
 TRUST_SIGNALS = [
@@ -110,8 +110,8 @@ HERO = {
     "headline_line1": "Enterprise software for",
     "headline_line2": "organizations that scale",
     "subheadline": (
-        "Zreta markets and sells modular products for growing organizations — "
-        "ChurchHub, CoreTrust, and more — with shared billing, security, and support. "
+        "Zreta markets and sells ChurchHub and CoreTrust today — with shared billing, "
+        "security, and support. More industry products are on the roadmap. "
         "Each live product runs as its own application."
     ),
     "trust_text": "30-day free trial · GHS pricing · Mobile Money payments · Published security pages",
@@ -131,21 +131,20 @@ CTA = {
     "subtitle": "Start a trial or request a demo on the live ChurchHub or CoreTrust product sites.",
 }
 
-REQUEST_DEMO = {
-    "eyebrow": "Request a demo",
-    "title": "See a guided walkthrough",
-    "subtitle": (
-        "Choose a product and continue on its landing page to request a demo account "
-        "from the product team."
-    ),
-}
-
 START_TRIAL = {
     "eyebrow": "Start trial",
     "title": "Start on the live product",
     "subtitle": (
-        "Choose ChurchHub or CoreTrust. We’ll send you to that product’s signup page "
-        "to create your account."
+        "Choose ChurchHub to create an account on its signup page, or continue to "
+        "CoreTrust to begin with the product team."
+    ),
+}
+
+REQUEST_DEMO = {
+    "eyebrow": "Request a demo",
+    "title": "See a guided walkthrough",
+    "subtitle": (
+        "Pick ChurchHub or CoreTrust and continue on its product site to request a demo."
     ),
 }
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 PRIVATE_MEDIA_PREFIX = "private/"
 LEGACY_PRIVATE_PREFIXES = (
     "payments/proofs/",
+    "portal/downloads/",
 )
 
 

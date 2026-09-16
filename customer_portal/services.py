@@ -73,12 +73,18 @@ def get_subscribed_products(user, organization=None):
 
 def get_launchable_subscriptions(user, organization=None):
     """
-    Active/trial subscriptions whose product has an external app URL.
+    Active/trial subscriptions whose product is published GA/Beta with an app URL.
 
     Returns one subscription per product (first match), for portal Launch CTAs.
     """
+    from products.models import ProductStatus
+
     qs = (
         Subscription.objects.filter(status__in=["active", "trial"])
+        .filter(
+            product__is_published=True,
+            product__status__in=[ProductStatus.GA, ProductStatus.BETA],
+        )
         .exclude(product__external_app_url="")
         .select_related("product")
         .order_by("product__sort_order", "product__name", "-started_at")

@@ -10,22 +10,19 @@ PUBLIC_HEADER_NAV = [
         "type": "mega",
         "columns": [
             {
-                "title": "By Product",
+                "title": "Live now",
                 "links": [
                     {"label": "ChurchHub", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}, "accent": "churchhub"},
                     {"label": "CoreTrust", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}, "accent": "microfinance"},
+                ],
+            },
+            {
+                "title": "Roadmap",
+                "links": [
                     {"label": "ERP Suite", "url_name": "products:detail", "url_kwargs": {"slug": "erp-suite"}, "accent": "erp"},
                     {"label": "School Management", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}, "accent": "school"},
                     {"label": "Hospital Management", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}, "accent": "hospital"},
                     {"label": "HR & Payroll", "url_name": "products:detail", "url_kwargs": {"slug": "hr-payroll"}, "accent": "hr"},
-                ],
-            },
-            {
-                "title": "Platform",
-                "links": [
-                    {"label": "Integrations", "url_name": "pages:list"},
-                    {"label": "Compare Products", "url_name": "products:list"},
-                    {"label": "Pricing", "url_name": "products:list"},
                 ],
             },
             {
@@ -46,10 +43,10 @@ PUBLIC_HEADER_NAV = [
             {
                 "title": "By Industry",
                 "links": [
-                    {"label": "Education", "url_name": "pages:list"},
-                    {"label": "Healthcare", "url_name": "pages:list"},
                     {"label": "Faith Organizations", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
                     {"label": "Financial Services", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
+                    {"label": "Education (roadmap)", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}},
+                    {"label": "Healthcare (roadmap)", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}},
                 ],
             },
         ],
@@ -82,18 +79,15 @@ PUBLIC_FOOTER_COLUMNS = [
         "links": [
             {"label": "ChurchHub", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
             {"label": "CoreTrust", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
-            {"label": "ERP Suite", "url_name": "products:detail", "url_kwargs": {"slug": "erp-suite"}},
-            {"label": "School Management", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}},
-            {"label": "Hospital Management", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}},
-            {"label": "HR & Payroll", "url_name": "products:detail", "url_kwargs": {"slug": "hr-payroll"}},
+            {"label": "All products", "url_name": "products:list"},
         ],
     },
     {
         "title": "Solutions",
         "links": [
-            {"label": "Education", "url_name": "pages:list"},
-            {"label": "Healthcare", "url_name": "pages:list"},
-            {"label": "Financial Services", "url_name": "pages:list"},
+            {"label": "Faith Organizations", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}},
+            {"label": "Financial Services", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}},
+            {"label": "Roadmap industries", "url_name": "products:list"},
         ],
     },
     {

@@ -21,12 +21,15 @@ _PLACEHOLDER_NEWS_SLUGS = {
 
 
 def get_homepage_featured_products(limit: int = HOMEPAGE_FEATURED_LIMIT):
-    """Return published, available featured products ordered by catalog sort order."""
+    """Return published live storefront products for the homepage feature strip."""
+    from products.services.live_products import LIVE_PRODUCT_SLUGS
+
     return list(
         Product.objects.filter(
             is_published=True,
             is_featured=True,
             status__in=[ProductStatus.GA, ProductStatus.BETA],
+            slug__in=LIVE_PRODUCT_SLUGS,
         )
         .prefetch_related("features", "plans")
         .order_by("sort_order")[:limit]

@@ -1,5 +1,41 @@
 {% load ui_tags product_tags %}
-{% if product|product_purchasable and trial_url %}
+{% if product|product_purchasable %}
+{% if product.external_app_url or product.register_url or product.demo_url %}
+<section class="product-trial-cta section section--alt" id="start-trial">
+    <div class="container">
+        <div class="product-trial-cta__card">
+            <div class="product-trial-cta__content">
+                <p class="product-trial-cta__eyebrow">Live product</p>
+                <h2 class="product-trial-cta__title">Continue on {{ product.name }}</h2>
+                <p class="product-trial-cta__subtitle">
+                    {{ product.name }} runs as its own application. Start or request a demo on the product site,
+                    then manage billing in your Zreta portal.
+                </p>
+                <ul class="product-trial-cta__benefits">
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Account and demo handled on the live product</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Shared Zreta billing and customer portal</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Launch links available after purchase</li>
+                </ul>
+            </div>
+            <div class="product-trial-cta__actions">
+                {% if trial_url %}
+                <a href="{{ trial_url }}" class="btn btn--primary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Start on {{ product.name }}</a>
+                {% elif product.external_app_url %}
+                <a href="{{ product.external_app_url }}" class="btn btn--primary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Open live app</a>
+                {% endif %}
+                {% if product.demo_url %}
+                <a href="{{ product.demo_url }}" class="btn btn--secondary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Request a demo</a>
+                {% else %}
+                <a href="{% url 'contact:demo' %}" class="btn btn--secondary btn--lg btn--full">Contact Zreta</a>
+                {% endif %}
+                {% if product.plans.exists %}
+                <a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg btn--full">View Zreta pricing</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% elif trial_url %}
 <section class="product-trial-cta section section--alt" id="start-trial">
     <div class="container">
         <div class="product-trial-cta__card">
@@ -28,22 +64,5 @@
         </div>
     </div>
 </section>
-{% elif product.external_app_url %}
-<section class="product-trial-cta section section--alt" id="start-trial">
-    <div class="container">
-        <div class="product-trial-cta__card">
-            <div class="product-trial-cta__content">
-                <p class="product-trial-cta__eyebrow">Live product</p>
-                <h2 class="product-trial-cta__title">Open {{ product.name }}</h2>
-                <p class="product-trial-cta__subtitle">
-                    {{ product.name }} runs as its own application. Launch it directly or request a walkthrough.
-                </p>
-            </div>
-            <div class="product-trial-cta__actions">
-                <a href="{{ product.external_app_url }}" class="btn btn--primary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Open live app</a>
-                <a href="{% url 'contact:demo' %}" class="btn btn--secondary btn--lg btn--full">Request a demo</a>
-            </div>
-        </div>
-    </div>
-</section>
+{% endif %}
 {% endif %}

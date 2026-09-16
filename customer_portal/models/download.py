@@ -1,6 +1,12 @@
 from django.db import models
 
 from core.models import BaseModel
+from core.media_paths import PRIVATE_MEDIA_PREFIX
+
+
+def private_portal_download_upload_to(instance, filename: str) -> str:
+    safe_name = filename.rsplit("/", 1)[-1]
+    return f"{PRIVATE_MEDIA_PREFIX}portal/downloads/{safe_name}"
 
 
 class DownloadCategory(models.TextChoices):
@@ -26,7 +32,7 @@ class CustomerDownload(BaseModel):
     )
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    file = models.FileField(upload_to="portal/downloads/")
+    file = models.FileField(upload_to=private_portal_download_upload_to)
     category = models.CharField(
         max_length=20,
         choices=DownloadCategory.choices,

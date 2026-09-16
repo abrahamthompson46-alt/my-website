@@ -43,11 +43,14 @@ def build_intent_url(product, intent: str, *, source: str = "homepage") -> str:
 
 
 def get_homepage_intent_products():
-    """Published GA/Beta products that can receive trial or demo traffic."""
+    """Published live storefront products that can receive trial or demo traffic."""
+    from products.services.live_products import LIVE_PRODUCT_SLUGS
+
     return list(
         Product.objects.filter(
             is_published=True,
             status__in=[ProductStatus.GA, ProductStatus.BETA],
+            slug__in=LIVE_PRODUCT_SLUGS,
         )
         .filter(
             Q(register_url__gt="")

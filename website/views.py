@@ -82,16 +82,16 @@ class StatusPageView(TemplateView):
             with connection.cursor() as cursor:
                 cursor.execute("SELECT 1")
             checks["database"] = "operational"
-        except Exception as exc:
-            checks["database"] = str(exc)
+        except Exception:
+            checks["database"] = "degraded"
 
         try:
             from django.core.cache import cache
 
             cache.set("status_probe", "ok", 5)
             checks["cache"] = "operational" if cache.get("status_probe") == "ok" else "degraded"
-        except Exception as exc:
-            checks["cache"] = str(exc)
+        except Exception:
+            checks["cache"] = "degraded"
 
         try:
             from control_room.services import get_platform_settings

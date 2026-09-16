@@ -80,13 +80,13 @@ class Command(BaseCommand):
                 "category": categories["vertical"],
                 "tagline": "Core banking for microfinance institutions",
                 "short_description": (
-                    "Live MFI platform for loans, savings, collections, and operations — "
-                    "marketed and billed through Zreta."
+                    "Microfinance platform for loans, savings, collections, and operations — "
+                    "marketed and billed through Zreta; continue on the CoreTrust product site."
                 ),
                 "long_description": (
                     "CoreTrust is Zreta's microfinance product for MFIs, SACCOs, and cooperatives. "
                     "It runs as its own deployed application. This site markets CoreTrust, sells "
-                    "subscriptions, and links customers to the live app."
+                    "subscriptions, and links customers to the product experience."
                 ),
                 "status": ProductStatus.GA,
                 "is_featured": True,

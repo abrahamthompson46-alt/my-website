@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -149,6 +150,23 @@ class DownloadListView(PortalMixin, UserQuerysetMixin, ListView):
             {"label": "Downloads"},
         ]
         return context
+
+
+class DownloadFileView(PortalMixin, View):
+    """Serve portal downloads only to the owning org/user — never via public media URLs."""
+
+    def get(self, request, pk):
+        org = getattr(request, "organization", None)
+        qs = CustomerDownload.objects.filter(is_active=True)
+        if org is not None:
+            qs = qs.filter(organization=org)
+        else:
+            qs = qs.filter(user=request.user)
+        download = get_object_or_404(qs, pk=pk)
+        if not download.file:
+            raise Http404("Download not found.")
+        filename = download.file.name.rsplit("/", 1)[-1]
+        return FileResponse(download.file.open("rb"), as_attachment=True, filename=filename)
 
 
 class TicketListView(PortalMixin, UserQuerysetMixin, ListView):
