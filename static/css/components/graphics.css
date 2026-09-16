@@ -1,17 +1,35 @@
 /* Branded graphics — hero, illustrations, badges, empty states */
 
 .hero-dashboard {
+  position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
+.hero-dashboard::before {
+  content: "";
+  position: absolute;
+  inset: 12% 8% 8%;
+  border-radius: 40%;
+  background:
+    radial-gradient(circle at 70% 30%, rgba(20, 184, 166, 0.22) 0%, transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.18) 0%, transparent 50%);
+  filter: blur(18px);
+  z-index: 0;
+  pointer-events: none;
+}
+
 .hero-dashboard__image {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   height: auto;
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
+  box-shadow:
+    0 24px 48px -20px rgba(15, 23, 42, 0.28),
+    0 8px 16px -8px rgba(15, 23, 42, 0.12);
   animation: hero-float 6s ease-in-out infinite;
 }
 
