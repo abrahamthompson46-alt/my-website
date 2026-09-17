@@ -432,6 +432,11 @@ UNSUPPORTED_TRUST_PHRASES = (
     "trusted by industry leaders",
     "organizations trust worldwide",
     "hospital management 2.0",
+    "14-day free trial",
+    "14-day trial",
+    "14 day trial",
+    "free trial on every plan",
+    "every product offers a free trial",
 )
 
 

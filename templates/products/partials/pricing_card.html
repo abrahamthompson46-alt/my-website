@@ -37,6 +37,9 @@
     <div class="pricing-card__action">
         {% if plan.is_contact_sales or not product|product_purchasable %}
         <a href="{% url 'contact:demo' %}" class="btn btn--secondary btn--md btn--full">Contact Sales</a>
+        {% elif product.slug == "microfinance-core" %}
+        <a href="{% url 'contact:demo' %}" class="btn btn--primary btn--md btn--full">Request a CoreTrust demo</a>
+        <a href="{% url 'products:plan_start' slug=product.slug %}?plan={{ plan.slug }}&action=buy" class="btn btn--secondary btn--md btn--full">Buy via Zreta</a>
         {% else %}
         <a href="{% url 'products:plan_start' slug=product.slug %}?plan={{ plan.slug }}&action=trial" class="btn btn--primary btn--md btn--full">Start 30-day free trial</a>
         <a href="{% url 'products:plan_start' slug=product.slug %}?plan={{ plan.slug }}&action=buy" class="btn btn--secondary btn--md btn--full">Buy now</a>

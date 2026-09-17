@@ -6,6 +6,27 @@
         <div class="product-trial-cta__card">
             <div class="product-trial-cta__content">
                 <p class="product-trial-cta__eyebrow">Live product</p>
+                {% if product.slug == "churchhub" %}
+                <h2 class="product-trial-cta__title">Start a 30-day ChurchHub trial</h2>
+                <p class="product-trial-cta__subtitle">
+                    Continue on the ChurchHub product site to create your account, then manage billing in your Zreta portal.
+                </p>
+                <ul class="product-trial-cta__benefits">
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> 30-day free trial on ChurchHub</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Shared Zreta billing and customer portal</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Launch links available after purchase</li>
+                </ul>
+                {% elif product.slug == "microfinance-core" %}
+                <h2 class="product-trial-cta__title">Request a CoreTrust demo</h2>
+                <p class="product-trial-cta__subtitle">
+                    CoreTrust onboarding starts with the product team (not a self-serve Zreta checkout trial). Manage commercial billing in Zreta when you purchase.
+                </p>
+                <ul class="product-trial-cta__benefits">
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Demo and evaluation with the CoreTrust team</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Shared Zreta billing and customer portal</li>
+                    <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Launch links available after purchase</li>
+                </ul>
+                {% else %}
                 <h2 class="product-trial-cta__title">Continue on {{ product.name }}</h2>
                 <p class="product-trial-cta__subtitle">
                     {{ product.name }} runs as its own application. Start or request a demo on the product site,
@@ -16,14 +37,21 @@
                     <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Shared Zreta billing and customer portal</li>
                     <li><svg class="icon icon--sm" aria-hidden="true" data-icon="check"></svg> Launch links available after purchase</li>
                 </ul>
+                {% endif %}
             </div>
             <div class="product-trial-cta__actions">
-                {% if trial_url %}
-                <a href="{{ trial_url }}" class="btn btn--primary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Start on {{ product.name }}</a>
+                {% if product.slug == "microfinance-core" and demo_url %}
+                <a href="{{ demo_url }}" class="btn btn--primary btn--lg btn--full">Request a CoreTrust demo</a>
+                {% elif trial_url %}
+                <a href="{{ trial_url }}" class="btn btn--primary btn--lg btn--full">{% if product.slug == "churchhub" %}Start 30-day trial{% else %}Start on {{ product.name }}{% endif %}</a>
                 {% elif product.external_app_url %}
                 <a href="{{ product.external_app_url }}" class="btn btn--primary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Open live app</a>
                 {% endif %}
-                {% if product.demo_url %}
+                {% if product.slug != "microfinance-core" and demo_url %}
+                <a href="{{ demo_url }}" class="btn btn--secondary btn--lg btn--full">Request a demo</a>
+                {% elif product.slug == "microfinance-core" and trial_url %}
+                <a href="{{ trial_url }}" class="btn btn--secondary btn--lg btn--full">Continue to CoreTrust</a>
+                {% elif product.demo_url and not demo_url %}
                 <a href="{{ product.demo_url }}" class="btn btn--secondary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Request a demo</a>
                 {% else %}
                 <a href="{% url 'contact:demo' %}" class="btn btn--secondary btn--lg btn--full">Contact Zreta</a>

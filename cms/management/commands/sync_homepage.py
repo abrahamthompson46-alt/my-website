@@ -187,7 +187,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Homepage CMS content synced."))
 
     def _scrub_unsupported_trust_claims(self):
-        """Rewrite leftover CMS slogans that outrun public proof."""
+        """Rewrite leftover CMS slogans and trial contradictions that outrun public proof."""
         replacements = {
             "The platform global organizations trust.": (
                 "Built for organizations that take operations seriously."
@@ -200,15 +200,53 @@ class Command(BaseCommand):
             "organizations trust worldwide": "organizations that take operations seriously",
             "Why teams trust Zreta": "What you can verify",
             "Built for enterprise reliability": "Shared layer behind live products",
+            # Trial duration — portal default is 30 days; never advertise 14-day trials.
+            "14-day free trial": "30-day free trial",
+            "14-day trial": "30-day trial",
+            "14 day free trial": "30-day free trial",
+            "14 day trial": "30-day trial",
+            "14 days — Free trial": "30 days — ChurchHub free trial",
+            "14 days": "30 days",  # applied carefully via field filters below for trial contexts
+            "Start a 14-day trial": "Start a 30-day trial",
+            "activate a 30-day trial": "start on the live product (ChurchHub trial or CoreTrust demo)",
+            "Free trial on every plan": "ChurchHub: 30-day trial · CoreTrust: request a demo",
+            "free trial on every plan": "ChurchHub: 30-day trial · CoreTrust: request a demo",
+            "Every product offers a free trial with full feature access.": (
+                "ChurchHub offers a 30-day free trial. CoreTrust starts with a product demo."
+            ),
+            "every product offers a free trial": (
+                "ChurchHub offers a 30-day free trial; CoreTrust starts with a demo"
+            ),
+            "Create an account and activate a 30-day trial": (
+                "Continue to ChurchHub for a 30-day trial, or request a CoreTrust demo"
+            ),
         }
+        # Exact 14-days replacements only in trial-related copy (not refund policy pages).
+        trial_only_replacements = {
+            "14 days": "30 days",
+            "14-day": "30-day",
+        }
+
+        def apply_replacements(value: str, *, trial_context: bool = False) -> str:
+            new_value = value
+            for old, new in replacements.items():
+                if old == "14 days":
+                    continue
+                if old in new_value:
+                    new_value = new_value.replace(old, new)
+            if trial_context:
+                lower = new_value.lower()
+                if "trial" in lower or "free" in lower or "plan" in lower:
+                    for old, new in trial_only_replacements.items():
+                        if old in new_value and "refund" not in lower:
+                            new_value = new_value.replace(old, new)
+            return new_value
+
         for banner in HeroBanner.objects.all():
             changed = False
             for field in ("eyebrow", "headline", "subheadline", "trust_text"):
                 value = getattr(banner, field) or ""
-                new_value = value
-                for old, new in replacements.items():
-                    if old in new_value:
-                        new_value = new_value.replace(old, new)
+                new_value = apply_replacements(value, trial_context=True)
                 if new_value != value:
                     setattr(banner, field, new_value)
                     changed = True
@@ -219,10 +257,7 @@ class Command(BaseCommand):
             changed = False
             for field in ("eyebrow", "title", "subtitle", "body"):
                 value = getattr(section, field) or ""
-                new_value = value
-                for old, new in replacements.items():
-                    if old in new_value:
-                        new_value = new_value.replace(old, new)
+                new_value = apply_replacements(value, trial_context=True)
                 if new_value != value:
                     setattr(section, field, new_value)
                     changed = True
@@ -231,17 +266,35 @@ class Command(BaseCommand):
 
         for item in SectionItem.objects.all():
             changed = False
-            for field in ("title", "description"):
+            for field in ("title", "description", "value"):
+                if not hasattr(item, field):
+                    continue
                 value = getattr(item, field) or ""
-                new_value = value
-                for old, new in replacements.items():
-                    if old in new_value:
-                        new_value = new_value.replace(old, new)
+                if not isinstance(value, str):
+                    continue
+                new_value = apply_replacements(value, trial_context=True)
                 if new_value != value:
                     setattr(item, field, new_value)
                     changed = True
             if changed:
                 item.save()
+
+        # FAQs often retain old trial copy.
+        try:
+            from cms.models import FAQ
+
+            for faq in FAQ.objects.all():
+                changed = False
+                for field in ("question", "answer"):
+                    value = getattr(faq, field) or ""
+                    new_value = apply_replacements(value, trial_context=True)
+                    if new_value != value:
+                        setattr(faq, field, new_value)
+                        changed = True
+                if changed:
+                    faq.save()
+        except Exception:
+            pass
 
     def _fix_copy_typos(self):
         from products.models import Product
