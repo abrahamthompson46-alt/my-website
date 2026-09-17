@@ -174,7 +174,9 @@ class Command(BaseCommand):
 
         self._rewrite_hospital_roadmap_content()
         self._scrub_unsupported_trust_claims()
+        self._force_trial_faq_answers()
         self._fix_copy_typos()
+        self._normalize_churchhub_copy()
         self._sync_platform_branding()
         self._sync_about_page()
         self._sync_roadmap_catalog()
@@ -369,6 +371,65 @@ class Command(BaseCommand):
                     faq.save()
         except Exception:
             pass
+
+    def _force_trial_faq_answers(self):
+        """Force FAQ answers that must stay consistent with homepage trial/demo messaging."""
+        from cms.models import FAQ
+
+        trial_answer = (
+            "Yes. ChurchHub offers a 30-day free trial with full feature access. "
+            "CoreTrust starts with a product demo and guided onboarding — not a self-serve free trial."
+        )
+        products_answer = (
+            "Zreta markets and bills ChurchHub and CoreTrust today. "
+            "Additional industry products appear in the catalog as roadmap items."
+        )
+        for faq in FAQ.objects.all():
+            question = (faq.question or "").strip().lower()
+            answer = faq.answer or ""
+            new_answer = answer
+            if "free trial" in question:
+                new_answer = trial_answer
+            elif "what products are included" in question:
+                new_answer = products_answer
+            elif "every product offers a free trial" in answer.lower():
+                new_answer = trial_answer
+            if new_answer != answer:
+                faq.answer = new_answer
+                faq.save(update_fields=["answer", "updated_at"])
+
+    def _normalize_churchhub_copy(self):
+        """Keep ChurchHub product copy free of the recurring 'system.s' / 'system..' typo."""
+        import re
+
+        churchhub = Product.objects.filter(slug="churchhub").first()
+        if not churchhub:
+            return
+        canonical_long = (
+            "ChurchHub is an integrated church management platform for local churches and "
+            "denominational organizations. Manage members, giving, events, groups, communications, "
+            "administration, permissions, and reporting from one secure and auditable system."
+        )
+        desc = churchhub.long_description or ""
+        needs_fix = (
+            "system.s" in desc
+            or "system.." in desc
+            or bool(re.search(r"auditable system\.?[sS]\.?\s*$", desc))
+        )
+        if needs_fix or (
+            "auditable system" in desc.lower() and not desc.rstrip().endswith("system.")
+        ):
+            # Prefer surgical repair of the known ending; fall back to canonical copy.
+            repaired = re.sub(
+                r"(one secure and auditable system)\.?[sS]?\.?\s*$",
+                r"\1.",
+                desc,
+                flags=re.IGNORECASE,
+            )
+            churchhub.long_description = repaired if repaired != desc else canonical_long
+            if "system.s" in churchhub.long_description or "system.." in churchhub.long_description:
+                churchhub.long_description = canonical_long
+            churchhub.save(update_fields=["long_description", "updated_at"])
 
     def _fix_copy_typos(self):
         from products.models import Product

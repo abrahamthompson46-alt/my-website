@@ -204,8 +204,12 @@ class OutboundIntentRedirectView(View):
         if intent not in ("trial", "demo"):
             raise Http404
         product = get_object_or_404(Product, slug=slug, is_published=True)
+        # CoreTrust is demo-led — never send visitors to a self-serve trial path.
+        resolved_intent = intent
+        if product.slug == "microfinance-core" and intent == "trial":
+            resolved_intent = "demo"
         source = (request.GET.get("src") or "storefront").strip()[:40] or "storefront"
-        destination = build_intent_url(product, intent, source=source)
+        destination = build_intent_url(product, resolved_intent, source=source)
         if not destination:
             return redirect("products:detail", slug=product.slug)
 
@@ -215,10 +219,11 @@ class OutboundIntentRedirectView(View):
         log_audit_event(
             AuditEventType.OUTBOUND_INTENT_CLICK,
             request=request,
-            message=f"Outbound {intent} click for {product.slug}",
+            message=f"Outbound {resolved_intent} click for {product.slug}",
             metadata={
                 "product": product.slug,
-                "intent": intent,
+                "intent": resolved_intent,
+                "requested_intent": intent,
                 "source": source,
                 "destination_host": destination.split("/")[2] if "://" in destination else "",
             },

@@ -15,7 +15,16 @@ def build_intent_url(product, intent: str, *, source: str = "homepage") -> str:
     Return a product-site URL for trial or demo, with tracking params.
 
     intent: "trial" | "demo"
+    CoreTrust is demo-led — trial intent is always coerced to demo.
     """
+    intent = (intent or "").strip().lower()
+    if intent not in ("trial", "demo"):
+        return ""
+
+    # CoreTrust has no self-serve free trial — always resolve demo destinations.
+    if getattr(product, "slug", None) == "microfinance-core" and intent == "trial":
+        intent = "demo"
+
     if intent == "trial":
         base = product.register_url or product.external_app_url or product.demo_url
         campaign = "start_trial"
@@ -45,6 +54,10 @@ def build_intent_url(product, intent: str, *, source: str = "homepage") -> str:
 
 def build_tracked_intent_path(product, intent: str, *, source: str = "homepage") -> str:
     """Storefront path that logs the click then redirects to the product site."""
+    intent = (intent or "").strip().lower()
+    # Never emit a /go/.../trial/ path for CoreTrust.
+    if getattr(product, "slug", None) == "microfinance-core" and intent == "trial":
+        intent = "demo"
     destination = build_intent_url(product, intent, source=source)
     if not destination:
         return ""

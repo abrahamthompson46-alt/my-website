@@ -1,28 +1,22 @@
-{% load ui_tags product_tags %}
-{% if cms_hero and cms_hero.cta_primary_url %}
-<a href="{{ cms_hero.cta_primary_url }}" class="btn btn--primary btn--lg">{{ cms_hero.cta_primary_label|default:"Start free trial" }}</a>
-{% elif product.register_url or product.external_app_url or product.demo_url %}
-{% if trial_url %}
-<a href="{{ trial_url }}" class="btn btn--primary btn--lg">Start on {{ product.name }}</a>
-{% elif product.external_app_url %}
-<a href="{{ product.external_app_url }}" class="btn btn--primary btn--lg" target="_blank" rel="noopener noreferrer">Open live app</a>
-{% else %}
-{% ui_button label="Request a demo" url_name="contact:demo" variant="primary" size="lg" %}
-{% endif %}
-{% elif product|product_purchasable and trial_url %}
-<a href="{{ trial_url }}" class="btn btn--primary btn--lg">Start 30-day free trial</a>
-{% elif product|product_purchasable and product.plans.exists %}
-<a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--primary btn--lg">View pricing &amp; start trial</a>
-{% else %}
-{% ui_button label="Request a demo" url_name="contact:demo" variant="primary" size="lg" %}
-{% endif %}
-
-{% if product|product_purchasable and product.plans.exists %}
-<a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--secondary btn--lg">Compare plans</a>
-{% endif %}
-
-{% if demo_url %}
-<a href="{{ demo_url }}" class="btn btn--ghost btn--lg">Request demo</a>
-{% elif product.external_app_url and not trial_url %}
-<a href="{{ product.external_app_url }}" class="btn btn--ghost btn--lg" target="_blank" rel="noopener noreferrer">Open live app</a>
-{% endif %}
+{% load product_tags %}
+{# Primary CTAs for product detail hero. CoreTrust is demo-led; ChurchHub keeps trial. #}
+<div class="product-hero__actions">
+    {% if product.slug == "microfinance-core" %}
+    {% product_demo_url product as coretrust_demo %}
+    {% if coretrust_demo %}
+    <a href="{{ coretrust_demo }}" class="btn btn--primary btn--lg">Request CoreTrust Demo</a>
+    {% else %}
+    <a href="{% url 'contact:demo' %}" class="btn btn--primary btn--lg">Request CoreTrust Demo</a>
+    {% endif %}
+    <a href="{% url 'contact:form' %}" class="btn btn--secondary btn--lg">Talk to sales</a>
+    {% elif product|product_purchasable and product.plans.exists %}
+    <a href="{% product_trial_url product %}" class="btn btn--primary btn--lg">Start {{ product.name }} trial</a>
+    <a href="{% product_demo_url product %}" class="btn btn--secondary btn--lg">Request demo</a>
+    {% elif product.status == "coming_soon" or product.status == "draft" %}
+    <a href="{% url 'contact:form' %}" class="btn btn--primary btn--lg">Join waitlist</a>
+    <a href="{% url 'contact:form' %}" class="btn btn--secondary btn--lg">Talk to sales</a>
+    {% else %}
+    <a href="{% product_demo_url product %}" class="btn btn--primary btn--lg">Request demo</a>
+    <a href="{% url 'contact:form' %}" class="btn btn--secondary btn--lg">Talk to sales</a>
+    {% endif %}
+</div>

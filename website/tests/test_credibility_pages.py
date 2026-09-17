@@ -136,5 +136,8 @@ class ProductDepthTests(TestCase):
         self.assertIn("Demo-led start on CoreTrust", content)
         self.assertNotIn("Instant account setup", content)
         self.assertNotIn("30-day path where offered", content)
+        self.assertIn("Request CoreTrust Demo", content)
+        self.assertNotIn("Start CoreTrust trial", content)
+        self.assertNotIn("/go/microfinance-core/trial/", content)
 
 

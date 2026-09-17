@@ -546,6 +546,30 @@ def check_unsupported_marketing_claims(*, fix: bool = False) -> Finding:
             product.save()
             fixed += 1
 
+    # Force FAQ trial answers that contradict homepage messaging.
+    from cms.models import FAQ
+
+    trial_answer = (
+        "Yes. ChurchHub offers a 30-day free trial with full feature access. "
+        "CoreTrust starts with a product demo and guided onboarding — not a self-serve free trial."
+    )
+    stale_faqs = FAQ.objects.filter(
+        Q(answer__icontains="every product offers a free trial")
+        | Q(question__icontains="free trial")
+    )
+    for faq in stale_faqs:
+        answer_lower = (faq.answer or "").lower()
+        question_lower = (faq.question or "").lower()
+        if "every product offers a free trial" in answer_lower or (
+            "free trial" in question_lower and "coretrust starts with a product demo" not in answer_lower
+        ):
+            hits += 1
+            samples.append(f"faq:{faq.pk}")
+            if fix:
+                faq.answer = trial_answer
+                faq.save(update_fields=["answer", "updated_at"])
+                fixed += 1
+
     return Finding(
         code="unsupported_marketing_claims",
         severity="warning" if hits else "info",

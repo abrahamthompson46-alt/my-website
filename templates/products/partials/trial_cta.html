@@ -40,21 +40,28 @@
                 {% endif %}
             </div>
             <div class="product-trial-cta__actions">
-                {% if product.slug == "microfinance-core" and demo_url %}
+                {% if product.slug == "microfinance-core" %}
+                {% if demo_url %}
                 <a href="{{ demo_url }}" class="btn btn--primary btn--lg btn--full">Request a CoreTrust demo</a>
-                {% elif trial_url %}
+                {% elif product.demo_url %}
+                <a href="{{ product.demo_url }}" class="btn btn--primary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Request a CoreTrust demo</a>
+                {% else %}
+                <a href="{% url 'contact:demo' %}" class="btn btn--primary btn--lg btn--full">Request a CoreTrust demo</a>
+                {% endif %}
+                <a href="{% url 'contact:form' %}" class="btn btn--secondary btn--lg btn--full">Talk to sales</a>
+                {% else %}
+                {% if trial_url %}
                 <a href="{{ trial_url }}" class="btn btn--primary btn--lg btn--full">{% if product.slug == "churchhub" %}Start 30-day trial{% else %}Start on {{ product.name }}{% endif %}</a>
                 {% elif product.external_app_url %}
                 <a href="{{ product.external_app_url }}" class="btn btn--primary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Open live app</a>
                 {% endif %}
-                {% if product.slug != "microfinance-core" and demo_url %}
+                {% if demo_url %}
                 <a href="{{ demo_url }}" class="btn btn--secondary btn--lg btn--full">Request a demo</a>
-                {% elif product.slug == "microfinance-core" and trial_url %}
-                <a href="{{ trial_url }}" class="btn btn--secondary btn--lg btn--full">Continue to CoreTrust</a>
-                {% elif product.demo_url and not demo_url %}
+                {% elif product.demo_url %}
                 <a href="{{ product.demo_url }}" class="btn btn--secondary btn--lg btn--full" target="_blank" rel="noopener noreferrer">Request a demo</a>
                 {% else %}
                 <a href="{% url 'contact:demo' %}" class="btn btn--secondary btn--lg btn--full">Contact Zreta</a>
+                {% endif %}
                 {% endif %}
                 {% if product.plans.exists %}
                 <a href="{% url 'products:pricing' slug=product.slug %}" class="btn btn--ghost btn--lg btn--full">View Zreta pricing</a>

@@ -235,7 +235,7 @@ class Command(BaseCommand):
         faq_cat = FAQCategory.objects.create(name="General", slug="general", sort_order=0)
         faqs = [
             ("What products are included in the platform?", "Zreta markets and bills ChurchHub and CoreTrust today. Additional industry products appear in the catalog as roadmap items."),
-            ("Is there a free trial?", "ChurchHub offers a 30-day free trial via its product site. CoreTrust starts with a product demo. Roadmap products are not trialable yet."),
+            ("Is there a free trial?", "Yes. ChurchHub offers a 30-day free trial with full feature access. CoreTrust starts with a product demo and guided onboarding — not a self-serve free trial."),
             ("Do you offer on-premise deployment?", "We primarily offer cloud SaaS with dedicated tenant options. Contact sales for hybrid or private cloud arrangements."),
             ("What support SLAs do you provide?", "Published support targets are listed on this site. Contact us for plan-specific response commitments."),
         ]

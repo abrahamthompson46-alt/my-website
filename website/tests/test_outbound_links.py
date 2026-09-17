@@ -61,6 +61,14 @@ class OutboundLinkTests(TestCase):
         path = build_tracked_intent_path(self.churchhub, "trial", source="product_page")
         self.assertEqual(path, "/go/churchhub/trial/?src=product_page")
 
+    def test_coretrust_trial_intent_coerced_to_demo(self):
+        url = build_intent_url(self.coretrust, "trial")
+        self.assertTrue(url.startswith("https://micro.zreta.com/request-demo/"))
+        self.assertIn("utm_campaign=request_demo", url)
+        self.assertIn("intent=demo", url)
+        path = build_tracked_intent_path(self.coretrust, "trial", source="product_page")
+        self.assertEqual(path, "/go/microfinance-core/demo/?src=product_page")
+
 
 class OutboundIntentRedirectTests(TestCase):
     def setUp(self):
@@ -88,6 +96,30 @@ class OutboundIntentRedirectTests(TestCase):
         self.assertEqual(event.metadata.get("product"), "churchhub")
         self.assertEqual(event.metadata.get("intent"), "trial")
         self.assertEqual(event.metadata.get("source"), "homepage")
+
+    def test_coretrust_trial_path_redirects_as_demo(self):
+        category = ProductCategory.objects.create(name="Vertical", slug="vertical-ct")
+        Product.objects.create(
+            name="CoreTrust",
+            slug="microfinance-core",
+            category=category,
+            status=ProductStatus.GA,
+            is_published=True,
+            demo_url="https://micro.zreta.com/request-demo/",
+            register_url="https://micro.zreta.com/apply/",
+            external_app_url="https://micro.zreta.com/",
+        )
+        response = self.client.get(
+            reverse("website:outbound_intent", kwargs={"slug": "microfinance-core", "intent": "trial"})
+            + "?src=legacy"
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response["Location"].startswith("https://micro.zreta.com/request-demo/"))
+        self.assertIn("intent=demo", response["Location"])
+        self.assertIn("utm_campaign=request_demo", response["Location"])
+        event = AuditLog.objects.get(event_type=AuditEventType.OUTBOUND_INTENT_CLICK)
+        self.assertEqual(event.metadata.get("intent"), "demo")
+        self.assertEqual(event.metadata.get("requested_intent"), "trial")
 
 
 class HomepageIntentViewTests(TestCase):
