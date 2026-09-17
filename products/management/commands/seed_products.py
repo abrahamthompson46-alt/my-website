@@ -157,9 +157,13 @@ class Command(BaseCommand):
                 "slug": "hospital-management",
                 "accent": ProductAccent.HOSPITAL,
                 "category": categories["vertical"],
-                "tagline": "Healthcare operations, simplified",
-                "short_description": "Appointments, billing, pharmacy, lab, and patient records in a compliant platform.",
-                "long_description": "Hospital Management streamlines clinical and administrative workflows for hospitals and clinics with EMR-lite, billing, pharmacy, and lab integrations.",
+                "tagline": "Healthcare operations — on the roadmap",
+                "short_description": "Roadmap product for appointments, billing, pharmacy, lab, and patient records.",
+                "long_description": (
+                    "Hospital Management is on the Zreta roadmap. Planned capabilities include "
+                    "clinical and administrative workflows for hospitals and clinics — EMR-lite, "
+                    "billing, pharmacy, and lab integrations — when the product reaches GA."
+                ),
                 "status": ProductStatus.COMING_SOON,
                 "is_featured": False,
                 "sort_order": 5,

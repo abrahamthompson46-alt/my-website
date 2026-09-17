@@ -57,9 +57,9 @@ class Command(BaseCommand):
 
 posts = [
             (
-                "Hospital Management: what we're building",
+                "Inside Zreta's Hospital Management Roadmap",
                 "updates",
-                "A look at the Hospital Management roadmap on Zreta — not a live release announcement.",
+                "What Hospital Management is planned to cover on Zreta — not a live product release announcement.",
                 False,
             ),
             ("How to scale microfinance operations", "guides", "A practical framework for evaluating cloud-native microfinance operations.", False),

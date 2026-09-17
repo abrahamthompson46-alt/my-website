@@ -469,7 +469,7 @@ def check_unsupported_marketing_claims(*, fix: bool = False) -> Finding:
                         setattr(
                             banner,
                             field,
-                            "Built for organizations that take operations seriously.",
+                            "Enterprise software for organizations that scale.",
                         )
                     elif "trusted by industry leaders" in lower:
                         setattr(banner, field, "Built for serious operations")
@@ -483,7 +483,37 @@ def check_unsupported_marketing_claims(*, fix: bool = False) -> Finding:
     hits += hospital_posts.count()
     samples.extend(f"blog:{pk}" for pk in hospital_posts.values_list("pk", flat=True)[:3])
     if fix and hospital_posts.exists():
-        fixed += hospital_posts.update(is_published=False, is_featured=False)
+        from django.utils import timezone
+
+        roadmap_title = "Inside Zreta's Hospital Management Roadmap"
+        roadmap_excerpt = (
+            "What Hospital Management is planned to cover on Zreta — "
+            "not a live product release announcement."
+        )
+        roadmap_body = (
+            "Hospital Management is on the Zreta roadmap.\n\n"
+            "We are exploring appointments, billing, and clinical workflows for clinics "
+            "and hospitals. This article is a roadmap note, not a generally-available release.\n\n"
+            "ChurchHub and CoreTrust are the live products on Zreta today. Hospital Management "
+            "remains Coming soon until we publish it as live."
+        )
+        target_slug = "inside-zretas-hospital-management-roadmap"
+        primary = hospital_posts.first()
+        primary.title = roadmap_title
+        primary.slug = target_slug
+        primary.excerpt = roadmap_excerpt
+        primary.body = roadmap_body
+        if hasattr(primary, "meta_title"):
+            primary.meta_title = roadmap_title
+        if hasattr(primary, "meta_description"):
+            primary.meta_description = roadmap_excerpt
+        primary.is_featured = False
+        primary.is_published = True
+        if not primary.published_at:
+            primary.published_at = timezone.now()
+        primary.save()
+        fixed += 1
+        hospital_posts.exclude(pk=primary.pk).update(is_published=False, is_featured=False)
 
     seeded_stories = SuccessStory.objects.filter(
         Q(slug="unity-microfinance-success") | Q(company__icontains="Unity"),
@@ -499,7 +529,10 @@ def check_unsupported_marketing_claims(*, fix: bool = False) -> Finding:
         fixed += seeded_cases.update(is_published=False, is_featured=False)
 
     typo_products = Product.objects.filter(
-        Q(long_description__contains="system.s")
+        Q(long_description__contains="system..")
+        | Q(short_description__contains="system..")
+        | Q(tagline__contains="system..")
+        | Q(long_description__contains="system.s")
         | Q(short_description__contains="system.s")
         | Q(tagline__contains="system.s")
     )
@@ -508,8 +541,8 @@ def check_unsupported_marketing_claims(*, fix: bool = False) -> Finding:
         for product in typo_products:
             for field in ("short_description", "long_description", "tagline"):
                 value = getattr(product, field) or ""
-                if "system.s" in value:
-                    setattr(product, field, value.replace("system.s", "system."))
+                value = value.replace("system..", "system.").replace("system.s", "system.")
+                setattr(product, field, value)
             product.save()
             fixed += 1
 

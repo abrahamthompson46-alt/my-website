@@ -7,6 +7,7 @@ Usage:
 """
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.models import Q
 
 from cms.models import CMSPage, HeroBanner, NewsArticle, PageSection, PageType, SectionItem, Testimonial
 from products.models import Product, ProductStatus
@@ -144,7 +145,6 @@ class Command(BaseCommand):
         ).update(is_published=False, show_on_home=False)
 
         NewsArticle.objects.filter(slug="enterprise-platform-expands-18-countries").update(is_published=False)
-        NewsArticle.objects.filter(title__icontains="Hospital Management 2.0").update(is_published=False)
 
         try:
             from marketing.models import BlogPost, CaseStudy, SuccessStory
@@ -153,12 +153,8 @@ class Command(BaseCommand):
                 slug__in=[
                     "enterprise-platform-achieves-soc-2-type-ii",
                     "enterprise-platform-expands-18-countries",
-                    "introducing-hospital-management-2-0",
                 ]
             ).update(is_published=False, is_featured=False)
-            BlogPost.objects.filter(title__icontains="Hospital Management 2.0").update(
-                is_published=False, is_featured=False
-            )
 
             # Seeded fictional proof must not appear as customer evidence.
             SuccessStory.objects.filter(
@@ -176,28 +172,95 @@ class Command(BaseCommand):
         except Exception:
             pass
 
+        self._rewrite_hospital_roadmap_content()
         self._scrub_unsupported_trust_claims()
         self._fix_copy_typos()
         self._sync_platform_branding()
         self._sync_about_page()
+        self._sync_roadmap_catalog()
 
         if options["products"]:
             self._sync_product_featured_flags()
 
         self.stdout.write(self.style.SUCCESS("Homepage CMS content synced."))
 
+    def _rewrite_hospital_roadmap_content(self):
+        """Keep Hospital Management messaging as roadmap — never as a live 2.0 release."""
+        title = "Inside Zreta's Hospital Management Roadmap"
+        excerpt = (
+            "What Hospital Management is planned to cover on Zreta — "
+            "not a live product release announcement."
+        )
+        body = (
+            "Hospital Management is on the Zreta roadmap.\n\n"
+            "We are exploring appointments, billing, and clinical workflows for clinics "
+            "and hospitals. This article is a roadmap note, not a generally-available release.\n\n"
+            "ChurchHub and CoreTrust are the live products on Zreta today. Hospital Management "
+            "remains Coming soon until we publish it as live."
+        )
+
+        NewsArticle.objects.filter(
+            Q(title__icontains="Hospital Management 2.0")
+            | Q(slug="introducing-hospital-management-2-0")
+        ).update(
+            title=title,
+            excerpt=excerpt,
+            body=body,
+            is_published=False,
+        )
+
+        try:
+            from django.utils import timezone
+            from marketing.models import BlogPost
+
+            target_slug = "inside-zretas-hospital-management-roadmap"
+            posts = list(
+                BlogPost.objects.filter(
+                    Q(title__icontains="Hospital Management 2.0")
+                    | Q(slug="introducing-hospital-management-2-0")
+                    | Q(title__icontains="Hospital Management: what we're building")
+                    | Q(slug=target_slug)
+                )
+            )
+            primary = None
+            for post in posts:
+                if post.slug == target_slug or "2.0" in (post.title or ""):
+                    primary = post
+                    break
+            if primary is None and posts:
+                primary = posts[0]
+            if primary is not None:
+                primary.title = title
+                primary.slug = target_slug
+                primary.excerpt = excerpt
+                primary.body = body
+                primary.meta_title = title
+                primary.meta_description = excerpt
+                primary.is_featured = False
+                primary.is_published = True
+                if not primary.published_at:
+                    primary.published_at = timezone.now()
+                primary.save()
+                for post in posts:
+                    if post.pk != primary.pk:
+                        post.is_published = False
+                        post.is_featured = False
+                        post.save(update_fields=["is_published", "is_featured", "updated_at"])
+        except Exception:
+            pass
+
     def _scrub_unsupported_trust_claims(self):
         """Rewrite leftover CMS slogans and trial contradictions that outrun public proof."""
         replacements = {
             "The platform global organizations trust.": (
-                "Built for organizations that take operations seriously."
+                "Enterprise software for organizations that scale."
             ),
             "The platform global organizations trust": (
-                "Built for organizations that take operations seriously"
+                "Enterprise software for organizations that scale"
             ),
-            "global organizations trust": "organizations that take operations seriously",
+            "global organizations trust": "organizations that scale",
             "Trusted by industry leaders": "Built for serious operations",
-            "organizations trust worldwide": "organizations that take operations seriously",
+            "organizations trust worldwide": "organizations that scale",
             "Why teams trust Zreta": "What you can verify",
             "Built for enterprise reliability": "Shared layer behind live products",
             # Trial duration — portal default is 30 days; never advertise 14-day trials.
@@ -220,6 +283,17 @@ class Command(BaseCommand):
             "Create an account and activate a 30-day trial": (
                 "Continue to ChurchHub for a 30-day trial, or request a CoreTrust demo"
             ),
+            (
+                "Our platform includes ChurchHub, CoreTrust, ERP Suite, School Management, "
+                "Hospital Management, and HR & Payroll — each deployable independently or together."
+            ): (
+                "Zreta markets and bills ChurchHub and CoreTrust today. Additional industry "
+                "products appear in the catalog as roadmap items."
+            ),
+            "each deployable independently or together": (
+                "with live products today and roadmap items labelled honestly"
+            ),
+            "30-day demo via its product site": "30-day free trial via its product site",
         }
         # Exact 14-days replacements only in trial-related copy (not refund policy pages).
         trial_only_replacements = {
@@ -299,19 +373,70 @@ class Command(BaseCommand):
     def _fix_copy_typos(self):
         from products.models import Product
 
+        typo_pairs = (
+            ("system..", "system."),
+            ("system.s", "system."),  # legacy mistype from earlier scrubbers
+        )
+
         for product in Product.objects.all():
             changed_fields = []
             for field in ("short_description", "long_description", "tagline"):
                 value = getattr(product, field) or ""
-                if "system.s" in value:
-                    setattr(product, field, value.replace("system.s", "system."))
+                new_value = value
+                for old, new in typo_pairs:
+                    if old in new_value:
+                        new_value = new_value.replace(old, new)
+                if new_value != value:
+                    setattr(product, field, new_value)
                     changed_fields.append(field)
             if changed_fields:
                 product.save(update_fields=[*changed_fields, "updated_at"])
 
-        for section in PageSection.objects.filter(body__contains="system.s"):
-            section.body = section.body.replace("system.s", "system.")
-            section.save(update_fields=["body", "updated_at"])
+        for section in PageSection.objects.all():
+            body = section.body or ""
+            new_body = body
+            for old, new in typo_pairs:
+                if old in new_body:
+                    new_body = new_body.replace(old, new)
+            if new_body != body:
+                section.body = new_body
+                section.save(update_fields=["body", "updated_at"])
+
+    def _sync_roadmap_catalog(self):
+        """Ensure roadmap catalog entries stay published as Coming soon (no broken nav links)."""
+        roadmap_slugs = (
+            "erp-suite",
+            "school-management",
+            "hospital-management",
+            "hr-payroll",
+        )
+        updated = Product.objects.filter(slug__in=roadmap_slugs).update(
+            status=ProductStatus.COMING_SOON,
+            is_featured=False,
+            is_published=True,
+        )
+        # Soften present-tense Hospital copy that reads as if GA were live.
+        hospital = Product.objects.filter(slug="hospital-management").first()
+        if hospital:
+            hospital.short_description = (
+                "Roadmap product for appointments, billing, pharmacy, lab, and patient records."
+            )
+            hospital.long_description = (
+                "Hospital Management is on the Zreta roadmap. Planned capabilities include "
+                "clinical and administrative workflows for hospitals and clinics — EMR-lite, "
+                "billing, pharmacy, and lab integrations — when the product reaches GA."
+            )
+            hospital.tagline = "Healthcare operations — on the roadmap"
+            hospital.save(
+                update_fields=[
+                    "short_description",
+                    "long_description",
+                    "tagline",
+                    "updated_at",
+                ]
+            )
+        if updated:
+            self.stdout.write(f"Roadmap catalog entries normalized: {updated}")
 
     def _sync_about_page(self):
         about = CMSPage.objects.filter(page_type=PageType.ABOUT).first()

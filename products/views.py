@@ -51,7 +51,7 @@ class ProductListView(SEOContextMixin, PublishedProductMixin, ListView):
     context_object_name = "products"
     paginate_by = 12
     seo_title = "Products"
-    seo_description = "Explore our enterprise software products built for modern teams."
+    seo_description = "Explore live ChurchHub and CoreTrust products, plus roadmap industry solutions."
     seo_og_image = "/static/images/og/products.svg"
 
     def get_queryset(self):
