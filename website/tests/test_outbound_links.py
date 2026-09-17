@@ -54,6 +54,8 @@ class OutboundLinkTests(TestCase):
         self.assertTrue(rows[0]["trial_url"].startswith("/go/churchhub/trial/"))
         self.assertTrue(rows[0]["demo_url"].startswith("/go/churchhub/demo/"))
         self.assertIn("src=homepage", rows[0]["trial_url"])
+        self.assertEqual(rows[1]["trial_url"], "")
+        self.assertTrue(rows[1]["demo_url"].startswith("/go/microfinance-core/demo/"))
 
     def test_tracked_path_helper(self):
         path = build_tracked_intent_path(self.churchhub, "trial", source="product_page")
@@ -123,8 +125,10 @@ class HomepageIntentViewTests(TestCase):
         content = response.content.decode()
         self.assertIn('id="start-trial"', content)
         self.assertIn('id="request-demo"', content)
-        self.assertIn("Start on ChurchHub", content)
-        self.assertIn("Demo CoreTrust", content)
+        self.assertIn("Start ChurchHub trial", content)
+        self.assertIn("Request CoreTrust Demo", content)
+        self.assertNotIn("Start on CoreTrust", content)
         self.assertIn("/go/churchhub/trial/", content)
         self.assertIn("/go/microfinance-core/demo/", content)
+        self.assertNotIn("/go/microfinance-core/trial/", content)
         self.assertIn("product-intent-list", content)

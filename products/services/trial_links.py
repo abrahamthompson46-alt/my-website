@@ -12,7 +12,11 @@ def get_product_trial_url(product, *, source: str = "product_page"):
 
     External live products continue via a tracked Zreta redirect to their register/demo URL.
     In-platform products use Zreta plan-start checkout.
+    CoreTrust is demo-led — never advertise a self-serve trial URL for it.
     """
+    if getattr(product, "slug", None) == "microfinance-core":
+        return ""
+
     if not is_purchasable(product):
         return ""
 

@@ -78,7 +78,11 @@ def annotate_intent_links(products, *, source: str = "homepage") -> list[dict]:
     """Attach trial_url / demo_url for template rendering (tracked storefront paths)."""
     rows = []
     for product in products:
-        trial_url = build_tracked_intent_path(product, "trial", source=source)
+        # CoreTrust is demo-led — do not attach a self-serve trial CTA.
+        if product.slug == "microfinance-core":
+            trial_url = ""
+        else:
+            trial_url = build_tracked_intent_path(product, "trial", source=source)
         demo_url = build_tracked_intent_path(product, "demo", source=source)
         if not trial_url and not demo_url:
             continue

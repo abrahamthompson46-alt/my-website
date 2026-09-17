@@ -70,6 +70,19 @@ class ProductTrialLinkTests(TestCase):
         self.assertTrue(url.startswith("/go/churchhub/trial/"))
         self.assertIn("src=product_page", url)
 
+    def test_coretrust_has_no_self_serve_trial_url(self):
+        product = Product.objects.create(
+            name="CoreTrust",
+            slug="microfinance-core",
+            category=self.product.category,
+            is_published=True,
+            status="ga",
+            demo_url="https://micro.zreta.com/request-demo/",
+            register_url="https://micro.zreta.com/request-demo/",
+            external_app_url="https://micro.zreta.com/",
+        )
+        self.assertEqual(get_product_trial_url(product), "")
+
     def test_provision_trial_uses_thirty_day_default(self):
         user = User.objects.create_user(
             username="trial-user",

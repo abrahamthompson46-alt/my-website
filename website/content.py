@@ -148,11 +148,11 @@ CTA = {
 }
 
 START_TRIAL = {
-    "eyebrow": "Start trial",
-    "title": "Start on the live product",
+    "eyebrow": "ChurchHub trial",
+    "title": "Start a ChurchHub trial",
     "subtitle": (
-        "Choose ChurchHub to create an account on its signup page, or continue to "
-        "CoreTrust to begin with the product team."
+        "Create a ChurchHub account on its signup page. CoreTrust starts with a product demo "
+        "instead of a self-serve trial."
     ),
 }
 
