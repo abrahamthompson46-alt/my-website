@@ -400,8 +400,6 @@ class Command(BaseCommand):
 
     def _normalize_churchhub_copy(self):
         """Keep ChurchHub product copy free of the recurring 'system.s' / 'system..' typo."""
-        import re
-
         churchhub = Product.objects.filter(slug="churchhub").first()
         if not churchhub:
             return
@@ -411,32 +409,26 @@ class Command(BaseCommand):
             "administration, permissions, and reporting from one secure and auditable system."
         )
         desc = churchhub.long_description or ""
-        needs_fix = (
-            "system.s" in desc
-            or "system.." in desc
-            or bool(re.search(r"auditable system\.?[sS]\.?\s*$", desc))
-        )
-        if needs_fix or (
-            "auditable system" in desc.lower() and not desc.rstrip().endswith("system.")
-        ):
-            # Prefer surgical repair of the known ending; fall back to canonical copy.
-            repaired = re.sub(
-                r"(one secure and auditable system)\.?[sS]?\.?\s*$",
-                r"\1.",
-                desc,
-                flags=re.IGNORECASE,
+        if (
+            desc != canonical_long
+            and (
+                "system.s" in desc
+                or "system.." in desc
+                or "auditable system" in desc.lower()
             )
-            churchhub.long_description = repaired if repaired != desc else canonical_long
-            if "system.s" in churchhub.long_description or "system.." in churchhub.long_description:
-                churchhub.long_description = canonical_long
+        ):
+            churchhub.long_description = canonical_long
             churchhub.save(update_fields=["long_description", "updated_at"])
 
     def _fix_copy_typos(self):
         from products.models import Product
 
+        # Order matters: "system.s." must be fixed before "system.s" → "system."
+        # or the trailing period becomes "system..".
         typo_pairs = (
+            ("system.s.", "system."),
             ("system..", "system."),
-            ("system.s", "system."),  # legacy mistype from earlier scrubbers
+            ("system.s", "system."),
         )
 
         for product in Product.objects.all():

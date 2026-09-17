@@ -535,14 +535,31 @@ def check_unsupported_marketing_claims(*, fix: bool = False) -> Finding:
         | Q(long_description__contains="system.s")
         | Q(short_description__contains="system.s")
         | Q(tagline__contains="system.s")
+        | Q(long_description__contains="system.s.")
+        | Q(short_description__contains="system.s.")
+        | Q(tagline__contains="system.s.")
     )
     hits += typo_products.count()
     if fix:
         for product in typo_products:
             for field in ("short_description", "long_description", "tagline"):
                 value = getattr(product, field) or ""
-                value = value.replace("system..", "system.").replace("system.s", "system.")
+                value = (
+                    value.replace("system.s.", "system.")
+                    .replace("system..", "system.")
+                    .replace("system.s", "system.")
+                )
                 setattr(product, field, value)
+            if product.slug == "churchhub" and (
+                "system.." in (product.long_description or "")
+                or "system.s" in (product.long_description or "")
+                or "auditable system" in (product.long_description or "").lower()
+            ):
+                product.long_description = (
+                    "ChurchHub is an integrated church management platform for local churches and "
+                    "denominational organizations. Manage members, giving, events, groups, communications, "
+                    "administration, permissions, and reporting from one secure and auditable system."
+                )
             product.save()
             fixed += 1
 

@@ -33,7 +33,7 @@
         <a href="{{ product.get_absolute_url }}" class="btn btn--link btn--sm">Learn more</a>
         <div class="product-card__cta-group">
             {% if product.slug == "microfinance-core" %}
-            <a href="{% product_demo_url product %}" class="btn btn--primary btn--sm">Request CoreTrust Demo</a>
+            <a href="{% product_demo_url product %}" class="btn btn--primary btn--sm">Request demo</a>
             {% elif product|product_purchasable and product.plans.exists %}
             <a href="{% product_trial_url product %}" class="btn btn--primary btn--sm">Start trial</a>
             {% elif product.status == "coming_soon" or product.status == "draft" %}

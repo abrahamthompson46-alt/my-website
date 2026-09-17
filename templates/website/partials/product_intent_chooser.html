@@ -5,7 +5,23 @@
 <ul class="product-intent-list" role="list">
     {% for row in intent_products %}
     {% with product=row.product %}
-    {% if intent == "trial" and row.trial_url %}
+    {% if product.slug == "microfinance-core" and row.demo_url %}
+    {# CoreTrust is always demo-led on the homepage, including the trial section. #}
+    <li class="product-intent-list__item product-intent-list__item--{{ product.accent|default:'default' }}">
+        <div class="product-intent-list__copy">
+            <p class="product-intent-list__name">{{ product.name }}</p>
+            {% if product.tagline %}
+            <p class="product-intent-list__tagline">{{ product.tagline }}</p>
+            {% elif product.short_description %}
+            <p class="product-intent-list__tagline">{{ product.short_description|truncatewords:14 }}</p>
+            {% endif %}
+        </div>
+        <a href="{{ row.demo_url }}" class="btn btn--primary btn--md product-intent-list__cta" target="_blank" rel="noopener noreferrer">
+            Request demo
+            <svg class="icon icon--sm" aria-hidden="true" data-icon="external-link"></svg>
+        </a>
+    </li>
+    {% elif intent == "trial" and row.trial_url %}
     <li class="product-intent-list__item product-intent-list__item--{{ product.accent|default:'default' }}">
         <div class="product-intent-list__copy">
             <p class="product-intent-list__name">{{ product.name }}</p>
@@ -20,21 +36,6 @@
             <svg class="icon icon--sm" aria-hidden="true" data-icon="external-link"></svg>
         </a>
     </li>
-    {% elif intent == "trial" and product.slug == "microfinance-core" and row.demo_url %}
-    <li class="product-intent-list__item product-intent-list__item--{{ product.accent|default:'default' }}">
-        <div class="product-intent-list__copy">
-            <p class="product-intent-list__name">{{ product.name }}</p>
-            {% if product.tagline %}
-            <p class="product-intent-list__tagline">{{ product.tagline }}</p>
-            {% elif product.short_description %}
-            <p class="product-intent-list__tagline">{{ product.short_description|truncatewords:14 }}</p>
-            {% endif %}
-        </div>
-        <a href="{{ row.demo_url }}" class="btn btn--primary btn--md product-intent-list__cta" target="_blank" rel="noopener noreferrer">
-            Request CoreTrust Demo
-            <svg class="icon icon--sm" aria-hidden="true" data-icon="external-link"></svg>
-        </a>
-    </li>
     {% elif intent == "demo" and row.demo_url %}
     <li class="product-intent-list__item product-intent-list__item--{{ product.accent|default:'default' }}">
         <div class="product-intent-list__copy">
@@ -46,7 +47,7 @@
             {% endif %}
         </div>
         <a href="{{ row.demo_url }}" class="btn btn--primary btn--md product-intent-list__cta" target="_blank" rel="noopener noreferrer">
-            {% if product.slug == "microfinance-core" %}Request CoreTrust Demo{% else %}Demo {{ product.name }}{% endif %}
+            Demo {{ product.name }}
             <svg class="icon icon--sm" aria-hidden="true" data-icon="external-link"></svg>
         </a>
     </li>
