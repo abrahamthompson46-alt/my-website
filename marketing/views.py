@@ -179,6 +179,11 @@ class SuccessStoryListView(SEOContextMixin, ListView):
             return redirect("marketing:hub")
         return super().get(request, *args, **kwargs)
 
+    def dispatch(self, request, *args, **kwargs):
+        if not self.get_queryset().exists():
+            return redirect("marketing:hub")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["breadcrumb_items"] = [
@@ -223,6 +228,11 @@ class CaseStudyListView(SEOContextMixin, ListView):
         if not self.get_queryset().exists():
             return redirect("marketing:hub")
         return super().get(request, *args, **kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.get_queryset().exists():
+            return redirect("marketing:hub")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

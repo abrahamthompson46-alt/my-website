@@ -82,6 +82,22 @@ class HomepageServiceTests(TestCase):
         )
         self.assertFalse(should_show_home_news([article]))
 
+    def test_should_hide_hospital_management_2_0_blog(self):
+        from marketing.models import BlogPost, BlogCategory, Author
+
+        author = Author.objects.create(full_name="Editor", slug="editor-hm", is_published=True)
+        category = BlogCategory.objects.create(name="Updates", slug="updates-hm")
+        post = BlogPost.objects.create(
+            title="Introducing Hospital Management 2.0",
+            slug="introducing-hospital-management-2-0",
+            category=category,
+            author=author,
+            excerpt="New patient timeline.",
+            body="Placeholder.",
+            is_published=True,
+        )
+        self.assertFalse(should_show_home_news([post]))
+
     def test_should_hide_soc2_seed_blog_post(self):
         from marketing.models import BlogPost, BlogCategory, Author
 
@@ -120,10 +136,14 @@ class HomepageViewTests(TestCase):
         self.assertIn("home-hero__trust-strip", content)
         self.assertIn("home-intent", content)
         self.assertIn("request-demo", content)
+        self.assertIn("Enterprise software for organizations that scale", content)
         self.assertNotIn("organizations trust worldwide", content)
         self.assertNotIn("Why teams trust Zreta", content)
         self.assertNotIn("Built for enterprise reliability", content)
+        self.assertNotIn("The platform global organizations trust", content)
+        self.assertNotIn("Hospital Management 2.0", content)
         self.assertNotIn("home-steps", content)
+
 
 
     def test_homepage_hides_testimonials_without_verified_stories(self):

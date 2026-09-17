@@ -46,6 +46,7 @@ urlpatterns = [
     path("platform/privacy/", PrivacyCenterView.as_view(), name="privacy_center"),
     path("platform/continuity/", ContinuityView.as_view(), name="continuity"),
     path("platform/reliability/", ReliabilityView.as_view(), name="reliability"),
+    path("security/", SecurityOverviewView.as_view(), name="security_alias"),
     path("legal/privacy/", PrivacyPolicyView.as_view(), name="privacy"),
     path("legal/terms/", TermsOfServiceView.as_view(), name="terms"),
     path("legal/security/", SecurityOverviewView.as_view(), name="security"),

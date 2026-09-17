@@ -163,6 +163,12 @@ Master plan: [ZRETA_WEBSITE_ASSESSMENT_AND_PLAN.md](ZRETA_WEBSITE_ASSESSMENT_AND
 | W6-05 | Nav Live vs Coming soon labels | DONE | Product mega menu |
 | W6-06 | Product status badges on detail | DONE | Live / Early access / Coming soon |
 | W6-07 | Homepage CTA de-duplication | DONE | Removed how-it-works + bottom CTA |
+| W7-01 | Scrub “global organizations trust” in CMS sync | DONE | sync + sanitize claim scrubber |
+| W7-02 | Hospital 2.0 blocked by title + slug | DONE | filter_home_news + unpublish |
+| W7-03 | Trial language per product | DONE | ChurchHub trial vs CoreTrust demo |
+| W7-04 | Case studies empty copy | DONE | No “No case studies yet”; soft-close kept |
+| W7-05 | `/security/` alias | DONE | Same Security Center view |
+| W7-06 | system.s typo repair | DONE | sync + sanitize |
 
-**Still deferred (needs real assets/people):** customer logos, verified counts, screenshots/product tours, case studies, CoreTrust CTF rebrand (cross-repo), VPS deploy.
+**Still deferred (needs real assets/people):** customer logos, verified counts, screenshots/product tours, first verified case study, CoreTrust CTF rebrand (cross-repo), VPS deploy + sync.
 

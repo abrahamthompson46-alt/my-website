@@ -144,6 +144,7 @@ class Command(BaseCommand):
         ).update(is_published=False, show_on_home=False)
 
         NewsArticle.objects.filter(slug="enterprise-platform-expands-18-countries").update(is_published=False)
+        NewsArticle.objects.filter(title__icontains="Hospital Management 2.0").update(is_published=False)
 
         try:
             from marketing.models import BlogPost, CaseStudy, SuccessStory
@@ -155,17 +156,28 @@ class Command(BaseCommand):
                     "introducing-hospital-management-2-0",
                 ]
             ).update(is_published=False, is_featured=False)
+            BlogPost.objects.filter(title__icontains="Hospital Management 2.0").update(
+                is_published=False, is_featured=False
+            )
 
             # Seeded fictional proof must not appear as customer evidence.
             SuccessStory.objects.filter(
                 slug__in=["unity-microfinance-success"]
             ).update(is_published=False, is_featured=False)
+            SuccessStory.objects.filter(company__icontains="Unity").update(
+                is_published=False, is_featured=False
+            )
             CaseStudy.objects.filter(
-                company__icontains="Unity"
+                slug__in=["horizon-academy-case-study"]
             ).update(is_published=False, is_featured=False)
+            CaseStudy.objects.filter(client_name__icontains="Horizon").update(
+                is_published=False, is_featured=False
+            )
         except Exception:
             pass
 
+        self._scrub_unsupported_trust_claims()
+        self._fix_copy_typos()
         self._sync_platform_branding()
         self._sync_about_page()
 
@@ -173,6 +185,80 @@ class Command(BaseCommand):
             self._sync_product_featured_flags()
 
         self.stdout.write(self.style.SUCCESS("Homepage CMS content synced."))
+
+    def _scrub_unsupported_trust_claims(self):
+        """Rewrite leftover CMS slogans that outrun public proof."""
+        replacements = {
+            "The platform global organizations trust.": (
+                "Built for organizations that take operations seriously."
+            ),
+            "The platform global organizations trust": (
+                "Built for organizations that take operations seriously"
+            ),
+            "global organizations trust": "organizations that take operations seriously",
+            "Trusted by industry leaders": "Built for serious operations",
+            "organizations trust worldwide": "organizations that take operations seriously",
+            "Why teams trust Zreta": "What you can verify",
+            "Built for enterprise reliability": "Shared layer behind live products",
+        }
+        for banner in HeroBanner.objects.all():
+            changed = False
+            for field in ("eyebrow", "headline", "subheadline", "trust_text"):
+                value = getattr(banner, field) or ""
+                new_value = value
+                for old, new in replacements.items():
+                    if old in new_value:
+                        new_value = new_value.replace(old, new)
+                if new_value != value:
+                    setattr(banner, field, new_value)
+                    changed = True
+            if changed:
+                banner.save()
+
+        for section in PageSection.objects.all():
+            changed = False
+            for field in ("eyebrow", "title", "subtitle", "body"):
+                value = getattr(section, field) or ""
+                new_value = value
+                for old, new in replacements.items():
+                    if old in new_value:
+                        new_value = new_value.replace(old, new)
+                if new_value != value:
+                    setattr(section, field, new_value)
+                    changed = True
+            if changed:
+                section.save()
+
+        for item in SectionItem.objects.all():
+            changed = False
+            for field in ("title", "description"):
+                value = getattr(item, field) or ""
+                new_value = value
+                for old, new in replacements.items():
+                    if old in new_value:
+                        new_value = new_value.replace(old, new)
+                if new_value != value:
+                    setattr(item, field, new_value)
+                    changed = True
+            if changed:
+                item.save()
+
+    def _fix_copy_typos(self):
+        from products.models import Product
+
+        for product in Product.objects.all():
+            changed_fields = []
+            for field in ("short_description", "long_description", "tagline"):
+                value = getattr(product, field) or ""
+                if "system.s" in value:
+                    setattr(product, field, value.replace("system.s", "system."))
+                    changed_fields.append(field)
+            if changed_fields:
+                product.save(update_fields=[*changed_fields, "updated_at"])
+
+        for section in PageSection.objects.filter(body__contains="system.s"):
+            section.body = section.body.replace("system.s", "system.")
+            section.save(update_fields=["body", "updated_at"])
 
     def _sync_about_page(self):
         about = CMSPage.objects.filter(page_type=PageType.ABOUT).first()

@@ -34,8 +34,11 @@ WHY_CHOOSE_US = [
     },
     {
         "icon": "globe",
-        "title": "Built for how organizations operate in Africa",
-        "description": "GHS pricing, Mobile Money via Hubtel/Paystack/Flutterwave, and portal workflows suited to regional operations.",
+        "title": "Built for African organizations",
+        "description": (
+            "GHS pricing, Mobile Money via Hubtel/Paystack/Flutterwave, and human onboarding — "
+            "capabilities we actually publish, not slogans."
+        ),
         "url_name": "website:payments_platform",
     },
     {
@@ -82,9 +85,9 @@ TESTIMONIALS = []
 LATEST_NEWS = []
 
 STATISTICS = [
-    {"value": "30 days", "label": "ChurchHub demo window"},
+    {"value": "30 days", "label": "ChurchHub free trial"},
+    {"value": "Demo", "label": "CoreTrust starts with a demo"},
     {"value": "GHS", "label": "Local pricing available"},
-    {"value": "24h", "label": "Support response target"},
     {"value": "2", "label": "Live products today"},
 ]
 
@@ -126,13 +129,13 @@ HERO = {
     "eyebrow": "Enterprise software platform",
     "headline": "Zreta",
     "headline_line1": "Zreta",
-    "headline_line2": "Software for churches and microfinance institutions",
+    "headline_line2": "Enterprise software for organizations that scale",
     "subheadline": (
-        "Market, bill, and support ChurchHub and CoreTrust from one platform — "
-        "each product runs as its own live application."
+        "Build operations on secure, modular software — starting with live ChurchHub "
+        "and CoreTrust, with shared billing, portal access, and published security practices."
     ),
-    "trust_text": "30-day paths on live products · GHS pricing · Published security pages",
-    "product_pills": [],
+    "trust_text": "ChurchHub: 30-day trial · CoreTrust: request a demo · GHS pricing",
+    "product_pills": ["ChurchHub · Live", "CoreTrust · Live"],
     "cta_primary_label": "Explore products",
     "cta_primary_url": "/products/",
     "cta_secondary_label": "Request a demo",

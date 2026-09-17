@@ -35,16 +35,8 @@
             <div class="cluster product-hero__actions">
                 {% include "products/partials/product_hero_actions.html" %}
             </div>
-            <ul class="product-hero__trust" aria-label="Trial highlights">
-                {% if is_live_storefront %}
-                <li>Live product application</li>
-                <li>30-day path where offered</li>
-                <li>Billing via Zreta portal</li>
-                {% else %}
-                <li>On the roadmap</li>
-                <li>Not live for self-serve trial</li>
-                <li>Contact Zreta for early interest</li>
-                {% endif %}
+            <ul class="product-hero__trust" aria-label="How to start">
+                {% include "products/partials/product_trust_bullets.html" %}
             </ul>
         </div>
         {% include "products/partials/product_hero_media.html" %}
@@ -72,16 +64,8 @@
             <div class="cluster product-hero__actions">
                 {% include "products/partials/product_hero_actions.html" %}
             </div>
-            <ul class="product-hero__trust" aria-label="Trial highlights">
-                {% if is_live_storefront %}
-                <li>Live product application</li>
-                <li>30-day path where offered</li>
-                <li>Billing via Zreta portal</li>
-                {% else %}
-                <li>On the roadmap</li>
-                <li>Not live for self-serve trial</li>
-                <li>Contact Zreta for early interest</li>
-                {% endif %}
+            <ul class="product-hero__trust" aria-label="How to start">
+                {% include "products/partials/product_trust_bullets.html" %}
             </ul>
         </div>
         {% include "products/partials/product_hero_media.html" %}

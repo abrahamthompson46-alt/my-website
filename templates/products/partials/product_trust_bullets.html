@@ -1,0 +1,17 @@
+{% if product.slug == "churchhub" %}
+<li>Live product application</li>
+<li>30-day free trial on ChurchHub</li>
+<li>Billing via Zreta portal</li>
+{% elif product.slug == "microfinance-core" %}
+<li>Live product application</li>
+<li>Demo-led start on CoreTrust</li>
+<li>Billing via Zreta portal</li>
+{% elif is_live_storefront %}
+<li>Live product application</li>
+<li>Trial or demo on the product site</li>
+<li>Billing via Zreta portal</li>
+{% else %}
+<li>Coming soon</li>
+<li>Not live for self-serve trial</li>
+<li>Contact Zreta for early interest</li>
+{% endif %}

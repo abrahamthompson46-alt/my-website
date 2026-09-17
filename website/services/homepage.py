@@ -20,6 +20,13 @@ _PLACEHOLDER_NEWS_SLUGS = {
     "introducing-hospital-management-2-0",
 }
 
+_BLOCKED_NEWS_TITLE_FRAGMENTS = (
+    "hospital management 2.0",
+    "soc 2 type ii",
+    "expands to 18 countries",
+    "trusted by thousands",
+)
+
 
 def get_homepage_featured_products(limit: int = HOMEPAGE_FEATURED_LIMIT):
     """Return published live storefront products for the homepage feature strip."""
@@ -52,12 +59,27 @@ def _item_author_name(item) -> str | None:
 def _item_slug(item) -> str:
     if isinstance(item, dict):
         return item.get("slug", "")
-    return getattr(item, "slug", "")
+    return getattr(item, "slug", "") or ""
+
+
+def _item_title(item) -> str:
+    if isinstance(item, dict):
+        return (item.get("title") or "").lower()
+    return (getattr(item, "title", "") or "").lower()
 
 
 def filter_home_news(articles):
-    """Drop seeded placeholder articles from homepage news modules."""
-    return [article for article in articles if _item_slug(article) not in _PLACEHOLDER_NEWS_SLUGS]
+    """Drop seeded / contradictory articles from homepage news modules."""
+    cleaned = []
+    for article in articles:
+        slug = _item_slug(article)
+        title = _item_title(article)
+        if slug in _PLACEHOLDER_NEWS_SLUGS:
+            continue
+        if any(fragment in title for fragment in _BLOCKED_NEWS_TITLE_FRAGMENTS):
+            continue
+        cleaned.append(article)
+    return cleaned
 
 
 def should_show_home_testimonials(testimonials) -> bool:

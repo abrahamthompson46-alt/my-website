@@ -133,5 +133,8 @@ class ProductDepthTests(TestCase):
         self.assertIn("available now", content)
         self.assertIn("Customers", content)
         self.assertIn("Live product application", content)
+        self.assertIn("Demo-led start on CoreTrust", content)
         self.assertNotIn("Instant account setup", content)
+        self.assertNotIn("30-day path where offered", content)
+
 

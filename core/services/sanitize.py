@@ -427,6 +427,100 @@ def check_expire_trials(*, fix: bool = False) -> Finding:
     )
 
 
+UNSUPPORTED_TRUST_PHRASES = (
+    "global organizations trust",
+    "trusted by industry leaders",
+    "organizations trust worldwide",
+    "hospital management 2.0",
+)
+
+
+def check_unsupported_marketing_claims(*, fix: bool = False) -> Finding:
+    """Flag (and optionally scrub) slogans/posts that outrun public proof."""
+    from cms.models import HeroBanner, PageSection, SectionItem
+    from marketing.models import BlogPost, CaseStudy, SuccessStory
+
+    hits = 0
+    fixed = 0
+    samples: list[str] = []
+
+    for banner in HeroBanner.objects.all():
+        blob = " ".join(
+            [
+                banner.eyebrow or "",
+                banner.headline or "",
+                banner.subheadline or "",
+                banner.trust_text or "",
+            ]
+        ).lower()
+        if any(p in blob for p in UNSUPPORTED_TRUST_PHRASES):
+            hits += 1
+            samples.append(f"hero:{banner.pk}")
+            if fix:
+                for field in ("eyebrow", "headline", "subheadline", "trust_text"):
+                    value = getattr(banner, field) or ""
+                    lower = value.lower()
+                    if "global organizations trust" in lower:
+                        setattr(
+                            banner,
+                            field,
+                            "Built for organizations that take operations seriously.",
+                        )
+                    elif "trusted by industry leaders" in lower:
+                        setattr(banner, field, "Built for serious operations")
+                banner.save()
+                fixed += 1
+
+    hospital_posts = BlogPost.objects.filter(
+        Q(title__icontains="Hospital Management 2.0")
+        | Q(slug="introducing-hospital-management-2-0")
+    )
+    hits += hospital_posts.count()
+    samples.extend(f"blog:{pk}" for pk in hospital_posts.values_list("pk", flat=True)[:3])
+    if fix and hospital_posts.exists():
+        fixed += hospital_posts.update(is_published=False, is_featured=False)
+
+    seeded_stories = SuccessStory.objects.filter(
+        Q(slug="unity-microfinance-success") | Q(company__icontains="Unity"),
+        is_published=True,
+    )
+    seeded_cases = CaseStudy.objects.filter(
+        Q(slug="horizon-academy-case-study") | Q(client_name__icontains="Horizon"),
+        is_published=True,
+    )
+    hits += seeded_stories.count() + seeded_cases.count()
+    if fix:
+        fixed += seeded_stories.update(is_published=False, is_featured=False)
+        fixed += seeded_cases.update(is_published=False, is_featured=False)
+
+    typo_products = Product.objects.filter(
+        Q(long_description__contains="system.s")
+        | Q(short_description__contains="system.s")
+        | Q(tagline__contains="system.s")
+    )
+    hits += typo_products.count()
+    if fix:
+        for product in typo_products:
+            for field in ("short_description", "long_description", "tagline"):
+                value = getattr(product, field) or ""
+                if "system.s" in value:
+                    setattr(product, field, value.replace("system.s", "system."))
+            product.save()
+            fixed += 1
+
+    return Finding(
+        code="unsupported_marketing_claims",
+        severity="warning" if hits else "info",
+        message=(
+            f"{hits} unsupported marketing claim / contradiction row(s)"
+            + (f"; repaired {fixed}" if fix else "")
+        ),
+        count=hits,
+        sample_ids=samples[:8],
+        fixed=fixed,
+    )
+
+
 CHECKS: list[Callable[..., Finding]] = [
     check_null_organizations,
     check_license_org_alignment,
@@ -435,6 +529,7 @@ CHECKS: list[Callable[..., Finding]] = [
     check_featured_products,
     check_coretrust_catalog,
     check_stale_microfinance_copy,
+    check_unsupported_marketing_claims,
     check_expire_trials,
 ]
 
