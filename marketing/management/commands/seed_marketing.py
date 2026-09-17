@@ -55,7 +55,7 @@ class Command(BaseCommand):
         for name, slug in [("SaaS", "saas"), ("Enterprise", "enterprise"), ("Security", "security")]:
             tags[name] = BlogTag.objects.create(name=name, slug=slug)
 
-posts = [
+        posts = [
             (
                 "Inside Zreta's Hospital Management Roadmap",
                 "updates",
