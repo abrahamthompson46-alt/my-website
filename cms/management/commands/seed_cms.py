@@ -71,13 +71,13 @@ class Command(BaseCommand):
 
         section_defs = [
             ("featured_products", "Products", "Live products on Zreta", "ChurchHub and CoreTrust are live today — each with shared billing, security, and customer portal access."),
-            ("why_choose_us", "Why Choose Us", "Built for enterprise reliability", "Security, modular design, and support you can verify on this site."),
-            ("industries", "Industries", "Solutions for every sector", "Purpose-built products for your industry."),
+            ("why_choose_us", "Platform", "Shared layer behind live products", "Security, billing, and operations practices you can open — including what we mean by reliability."),
+            ("industries", "Industries", "Solutions by sector", "Outcome-led pages for churches, microfinance, education, and healthcare."),
             ("testimonials", "Testimonials", "What our customers say", "Verified customer stories appear here as they are published."),
             ("latest_news", "Latest News", "From our blog", "Product updates, guides, and company news."),
             ("statistics", "Platform", "Built for serious operations", "Shared standards across every Zreta product."),
             ("cta", "", CTA["title"], CTA["subtitle"]),
-            ("trust_signals", "Why teams trust Zreta", "Built for real operations", "Payments, security, and support you can verify on this site."),
+            ("trust_signals", "Evidence", "What you can verify", "Open these pages — each item points to something published on this site."),
             ("start_trial", START_TRIAL["eyebrow"], START_TRIAL["title"], START_TRIAL["subtitle"]),
             ("request_demo", REQUEST_DEMO["eyebrow"], REQUEST_DEMO["title"], REQUEST_DEMO["subtitle"]),
             ("newsletter", "", NEWSLETTER["title"], NEWSLETTER["subtitle"]),
@@ -96,11 +96,15 @@ class Command(BaseCommand):
             )
 
         for i, item in enumerate(WHY_CHOOSE_US):
+            extra = {}
+            if item.get("url_name"):
+                extra["url_name"] = item["url_name"]
             SectionItem.objects.create(
                 section=sections["why_choose_us"],
                 title=item["title"],
                 description=item["description"],
                 icon=item["icon"],
+                extra_data=extra,
                 sort_order=i,
             )
 
@@ -126,11 +130,15 @@ class Command(BaseCommand):
             )
 
         for i, item in enumerate(TRUST_SIGNALS):
+            extra = {}
+            if item.get("url_name"):
+                extra["url_name"] = item["url_name"]
             SectionItem.objects.create(
                 section=sections["trust_signals"],
                 title=item["title"],
                 description=item["description"],
                 icon=item["icon"],
+                extra_data=extra,
                 sort_order=i,
             )
 

@@ -55,10 +55,15 @@ class Command(BaseCommand):
         for name, slug in [("SaaS", "saas"), ("Enterprise", "enterprise"), ("Security", "security")]:
             tags[name] = BlogTag.objects.create(name=name, slug=slug)
 
-        posts = [
-            ("Introducing Hospital Management 2.0", "updates", "New patient timeline, lab integrations, and billing automation.", True),
-            ("How to scale microfinance operations", "guides", "A practical framework for cloud-native core banking migration.", False),
-            ("How Zreta approaches platform security", "company", "An overview of authentication, audit logging, and operational controls.", False),
+posts = [
+            (
+                "Hospital Management: what we're building",
+                "updates",
+                "A look at the Hospital Management roadmap on Zreta — not a live release announcement.",
+                False,
+            ),
+            ("How to scale microfinance operations", "guides", "A practical framework for evaluating cloud-native microfinance operations.", False),
+            ("How Zreta approaches platform security", "company", "An overview of authentication, audit logging, and operational controls.", True),
         ]
         for i, (title, cat_key, excerpt, featured) in enumerate(posts):
             post = BlogPost.objects.create(
@@ -90,18 +95,19 @@ class Command(BaseCommand):
             is_published=True,
         )
 
+        # Do not seed fictional customer proof as published.
         SuccessStory.objects.create(
             title="Unity Microfinance saves 20 hours per week",
             slug="unity-microfinance-success",
             company="Unity Microfinance",
             industry="Financial Services",
             quote="We consolidated five legacy systems into one platform.",
-            excerpt="How Unity Microfinance streamlined operations across branches with CoreTrust.",
-            body="Unity Microfinance deployed CoreTrust across 12 branches with full operational reporting.",
+            excerpt="Placeholder seed — unpublished until a verified story exists.",
+            body="Placeholder seed — unpublished until a verified story exists.",
             result_metric="20 hours saved weekly on reporting",
             product=products[1] if len(products) > 1 else product,
-            is_featured=True,
-            is_published=True,
+            is_featured=False,
+            is_published=False,
         )
 
         CaseStudy.objects.create(
@@ -110,13 +116,13 @@ class Command(BaseCommand):
             client_name="Horizon Academy",
             industry="Education",
             challenge="Manual fee tracking caused delays and reconciliation errors.",
-            solution="Deployed School Management with parent portal and mobile payments.",
-            results="60% reduction in fee collection delays within one term.",
-            excerpt="Horizon Academy transformed fee operations with School Management.",
-            body="Full implementation across 2,000 students in under 8 weeks.",
+            solution="Placeholder seed — unpublished until a verified case study exists.",
+            results="Placeholder.",
+            excerpt="Placeholder seed — unpublished until a verified case study exists.",
+            body="Placeholder seed — unpublished until a verified case study exists.",
             product=products[2] if len(products) > 2 else product,
-            is_featured=True,
-            is_published=True,
+            is_featured=False,
+            is_published=False,
         )
 
         WhitePaper.objects.create(

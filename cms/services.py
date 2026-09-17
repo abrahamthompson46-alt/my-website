@@ -187,6 +187,7 @@ def build_home_context():
                 "icon": item.icon or "check-circle",
                 "title": item.title,
                 "description": item.description,
+                "url_name": (item.extra_data or {}).get("url_name", ""),
             }
             for item in trust_items
         ]

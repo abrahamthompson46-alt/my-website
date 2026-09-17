@@ -22,33 +22,27 @@ FEATURED_PRODUCTS = [
 WHY_CHOOSE_US = [
     {
         "icon": "shield-check",
-        "title": "Security-first platform",
-        "description": "Email verification, staff MFA, audit logging, CSRF protection, and published security documentation.",
+        "title": "Security you can open",
+        "description": "Staff MFA, audit logging, CSRF protection, and a published Security Center — not slogans alone.",
+        "url_name": "website:security",
     },
     {
         "icon": "layers",
-        "title": "Modular by design",
-        "description": "Choose ChurchHub or CoreTrust today — more industry products are on the roadmap — with shared billing, portal, and support on Zreta.",
+        "title": "Modular live products",
+        "description": "ChurchHub and CoreTrust are live applications today. Shared billing and portal sit on Zreta.",
+        "url_name": "website:architecture",
     },
     {
         "icon": "globe",
-        "title": "Built for Africa & beyond",
-        "description": "GHS pricing, regional payment gateways, and workflows designed for emerging markets.",
+        "title": "Built for how organizations operate in Africa",
+        "description": "GHS pricing, Mobile Money via Hubtel/Paystack/Flutterwave, and portal workflows suited to regional operations.",
+        "url_name": "website:payments_platform",
     },
     {
-        "icon": "headphones",
-        "title": "Human onboarding",
-        "description": "Self-serve trials plus guided demos and support tickets with published response targets.",
-    },
-    {
-        "icon": "zap",
-        "title": "Fast time to value",
-        "description": "Start on the live ChurchHub or CoreTrust product site, then manage billing in your Zreta portal.",
-    },
-    {
-        "icon": "bar-chart",
-        "title": "Operations visibility",
-        "description": "Control Room and Ops dashboards for demos, subscriptions, and platform activity.",
+        "icon": "activity",
+        "title": "Enterprise reliability — defined",
+        "description": "See what Zreta publishes on access control, backups, status, and support targets.",
+        "url_name": "website:reliability",
     },
 ]
 
@@ -95,10 +89,30 @@ STATISTICS = [
 ]
 
 TRUST_SIGNALS = [
-    {"icon": "credit-card", "title": "GHS pricing", "description": "Transparent plans in Ghanaian cedi where listed."},
-    {"icon": "smartphone", "title": "Mobile Money ready", "description": "Hubtel, Paystack, and Flutterwave integrations."},
-    {"icon": "shield-check", "title": "Staff MFA", "description": "Multi-factor authentication for platform administrators."},
-    {"icon": "lock", "title": "Security overview", "description": "Published security, privacy, and status pages."},
+    {
+        "icon": "shield-check",
+        "title": "Security",
+        "description": "Staff MFA, audit logging, and a published Security Center.",
+        "url_name": "website:security",
+    },
+    {
+        "icon": "smartphone",
+        "title": "Payments",
+        "description": "GHS plans where listed; Hubtel, Paystack, and Flutterwave ready.",
+        "url_name": "website:payments_platform",
+    },
+    {
+        "icon": "activity",
+        "title": "Operations",
+        "description": "Published system status and support response targets.",
+        "url_name": "website:status",
+    },
+    {
+        "icon": "layers",
+        "title": "Architecture",
+        "description": "Zreta shared billing/security layer with live ChurchHub and CoreTrust apps.",
+        "url_name": "website:architecture",
+    },
 ]
 
 TRUST_STRIP = [
@@ -126,8 +140,8 @@ HERO = {
 }
 
 CTA = {
-    "title": "Ready to modernize your operations?",
-    "subtitle": "Start a trial or request a demo on the live ChurchHub or CoreTrust product sites.",
+    "title": "Ready to evaluate a live product?",
+    "subtitle": "ChurchHub and CoreTrust are live. Start on the product site, then manage billing in Zreta.",
 }
 
 START_TRIAL = {

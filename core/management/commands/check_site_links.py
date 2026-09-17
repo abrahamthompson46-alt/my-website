@@ -101,6 +101,7 @@ class Command(BaseCommand):
             ("website:onboarding", {}),
             ("website:privacy_center", {}),
             ("website:continuity", {}),
+            ("website:reliability", {}),
             ("website:security", {}),
             ("website:status", {}),
             ("website:solution_churches", {}),

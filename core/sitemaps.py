@@ -21,6 +21,7 @@ class StaticViewSitemap(Sitemap):
             "website:onboarding",
             "website:privacy_center",
             "website:continuity",
+            "website:reliability",
             "website:status",
             "website:solution_churches",
             "website:solution_microfinance",

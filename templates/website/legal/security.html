@@ -1,48 +1,95 @@
 {% extends "website/legal/base_legal.html" %}
 
 {% block legal_body %}
-<p>{{ SITE_NAME }} applies layered security controls across authentication, infrastructure, and operations. This Security Center summarizes buyer-relevant practices — not a certification claim (we do not assert SOC 2 here).</p>
+<p>{{ SITE_NAME }} Security Center documents buyer-relevant controls for the marketing and billing platform. It is not a certification claim (we do not assert SOC 2 here). Product applications such as ChurchHub and CoreTrust may publish additional controls on their own domains.</p>
 
 <h2>Security Center map</h2>
 <ul>
-    <li><a href="{% url 'website:privacy_center' %}">Privacy Center</a> — policies and data requests</li>
-    <li><a href="{% url 'website:status' %}">System status</a> — live component probes</li>
-    <li><a href="{% url 'website:continuity' %}">Business continuity</a> — backups without overclaim</li>
-    <li><a href="{% url 'website:enterprise' %}">Enterprise readiness</a> — live vs roadmap controls</li>
-    <li><a href="{% url 'documentation:index' %}">Documentation</a> — operator and API notes</li>
+    <li><a href="#authentication">Authentication</a></li>
+    <li><a href="#mfa">MFA</a></li>
+    <li><a href="#authorization">Authorization</a></li>
+    <li><a href="#data-isolation">Data isolation</a></li>
+    <li><a href="#encryption">Encryption</a></li>
+    <li><a href="#audit">Audit logging</a></li>
+    <li><a href="#backups">Backups</a></li>
+    <li><a href="#disaster-recovery">Disaster recovery</a></li>
+    <li><a href="#monitoring">Monitoring</a></li>
+    <li><a href="#incident-response">Incident response</a></li>
+    <li><a href="#privacy">Privacy</a></li>
+    <li><a href="#disclosure">Responsible disclosure</a></li>
 </ul>
+<p>Related: <a href="{% url 'website:reliability' %}">Reliability</a> · <a href="{% url 'website:privacy_center' %}">Privacy Center</a> · <a href="{% url 'website:status' %}">Status</a> · <a href="{% url 'website:continuity' %}">Continuity</a> · <a href="{% url 'website:enterprise' %}">Enterprise readiness</a></p>
 
-<h2>Authentication &amp; access</h2>
+<h2 id="authentication">Authentication</h2>
 <ul>
     <li>Email verification required for customer portal access.</li>
+    <li>Login rate limiting and account lockout.</li>
+    <li>Session tracking and revocation (including Redis-backed sessions in production).</li>
+</ul>
+
+<h2 id="mfa">MFA</h2>
+<ul>
     <li>Staff accounts require two-factor authentication (TOTP + backup codes).</li>
-    <li>Login rate limiting, account lockout, and session tracking/revocation.</li>
-    <li>Role-based access control for staff and operations areas.</li>
+    <li>MFA challenges are audited.</li>
 </ul>
 
-<h2>Application security</h2>
+<h2 id="authorization">Authorization</h2>
 <ul>
-    <li>CSRF protection on authenticated and public forms.</li>
-    <li>Security headers including CSP without inline scripts, HSTS (production), and secure cookies.</li>
-    <li>Audit logging for authentication events, payments, demo submissions, and admin changes.</li>
-    <li>Public endpoint rate limits for checkout, contact, newsletter, and webhooks.</li>
-    <li>Demo forms protected with honeypot and per-IP rate limits.</li>
+    <li>Role-based access control for staff, operations, and control-room areas.</li>
+    <li>Organization-scoped customer portal resources where tenancy applies.</li>
 </ul>
 
-<h2>Data protection</h2>
+<h2 id="data-isolation">Data isolation</h2>
 <ul>
-    <li>Passwords stored using Django's secure hashing framework.</li>
-    <li>Production deployments use PostgreSQL (with SSL mode and statement timeout settings), Redis, TLS, and restricted server access.</li>
-    <li>Payment card data is handled by configured payment gateways — not stored on this marketing platform.</li>
-    <li>Payment proof uploads are served through authenticated downloads, not public media URLs.</li>
+    <li>Customer billing and portal data is scoped to authenticated accounts and organizations.</li>
+    <li>Payment proof uploads are private — served only through authenticated download views, not public media URLs.</li>
+    <li>Live product application data (ChurchHub, CoreTrust) is isolated in those products’ deployments.</li>
 </ul>
 
-<h2>Encryption &amp; transport</h2>
+<h2 id="encryption">Encryption</h2>
 <ul>
     <li>HTTPS/TLS for production traffic.</li>
     <li>Secure cookie flags in production settings.</li>
+    <li>Passwords stored with Django’s secure hashing framework.</li>
+    <li>Payment card data is processed by configured gateways — not stored as raw PAN on this platform.</li>
 </ul>
 
-<h2>Responsible disclosure</h2>
+<h2 id="audit">Audit logging</h2>
+<ul>
+    <li>Authentication events, payments, demo submissions, outbound funnel clicks, and admin product changes.</li>
+    <li>Append-only audit log design for security-sensitive events.</li>
+</ul>
+
+<h2 id="backups">Backups</h2>
+<ul>
+    <li>Operator backup procedures for the marketing and billing platform database and application state.</li>
+    <li>See <a href="{% url 'website:continuity' %}">business continuity</a> for published limits.</li>
+</ul>
+
+<h2 id="disaster-recovery">Disaster recovery</h2>
+<ul>
+    <li>We do not publish invented RPO/RTO figures here.</li>
+    <li>Signed enterprise agreements may specify contractual recovery targets separately.</li>
+    <li>Product-application DR for ChurchHub/CoreTrust is owned by those deployments.</li>
+</ul>
+
+<h2 id="monitoring">Monitoring</h2>
+<ul>
+    <li>Public component status page and <a href="{% url 'health_check' %}">/health/</a> probe.</li>
+    <li>No fake historical uptime percentages on the marketing site.</li>
+</ul>
+
+<h2 id="incident-response">Incident response</h2>
+<ul>
+    <li>Support tickets and published SLA first-response targets.</li>
+    <li>Security issues should use the disclosure channel below.</li>
+</ul>
+
+<h2 id="privacy">Privacy</h2>
+<ul>
+    <li><a href="{% url 'website:privacy' %}">Privacy Policy</a> and <a href="{% url 'website:privacy_center' %}">Privacy Center</a>.</li>
+</ul>
+
+<h2 id="disclosure">Responsible disclosure</h2>
 <p>Report suspected vulnerabilities to <a href="mailto:{{ SUPPORT_EMAIL|default:'security@zreta.com' }}">{{ SUPPORT_EMAIL|default:"security@zreta.com" }}</a>. Include steps to reproduce and impact assessment. We do not operate a paid bug bounty unless separately announced.</p>
 {% endblock %}

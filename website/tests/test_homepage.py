@@ -116,11 +116,15 @@ class HomepageViewTests(TestCase):
         self.assertIn("Explore products", content)
         self.assertIn("Request a demo", content)
         self.assertIn("home-trust", content)
+        self.assertIn("What you can verify", content)
         self.assertIn("home-hero__trust-strip", content)
         self.assertIn("home-intent", content)
-        self.assertIn("home-steps", content)
         self.assertIn("request-demo", content)
         self.assertNotIn("organizations trust worldwide", content)
+        self.assertNotIn("Why teams trust Zreta", content)
+        self.assertNotIn("Built for enterprise reliability", content)
+        self.assertNotIn("home-steps", content)
+
 
     def test_homepage_hides_testimonials_without_verified_stories(self):
         Testimonial.objects.create(

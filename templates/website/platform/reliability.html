@@ -1,0 +1,47 @@
+{% extends "website/legal/base_legal.html" %}
+
+{% block legal_body %}
+<p>When we say Zreta aims for enterprise reliability, we mean specific, published practices — not a vague slogan. This page maps that claim to what you can verify today.</p>
+
+<h2>Access control &amp; auditability</h2>
+<ul>
+    <li>Customer portal email verification.</li>
+    <li>Staff multi-factor authentication (TOTP + backup codes).</li>
+    <li>Role-based access for staff and operations areas.</li>
+    <li>Audit logging for authentication, payments, demos, and admin changes.</li>
+</ul>
+<p><a href="{% url 'website:security' %}">Security Center</a></p>
+
+<h2>Data protection</h2>
+<ul>
+    <li>TLS in production; secure cookies; CSRF on forms.</li>
+    <li>Passwords hashed with Django’s framework.</li>
+    <li>Payment card data handled by gateways — not stored as raw PAN here.</li>
+    <li>Payment proofs served only through authenticated downloads.</li>
+</ul>
+
+<h2>Backups &amp; continuity</h2>
+<ul>
+    <li>Operator backup procedures for the marketing and billing platform.</li>
+    <li>We do not invent RPO/RTO percentages on this page without a signed agreement.</li>
+    <li>ChurchHub and CoreTrust application continuity is owned by those product deployments.</li>
+</ul>
+<p><a href="{% url 'website:continuity' %}">Business continuity</a></p>
+
+<h2>Monitoring &amp; status</h2>
+<ul>
+    <li>Public <a href="{% url 'website:status' %}">system status</a> with component probes.</li>
+    <li>Health endpoint for operators.</li>
+    <li>No invented historical uptime charts.</li>
+</ul>
+
+<h2>Support &amp; incident path</h2>
+<ul>
+    <li>Published first-response targets on the <a href="{% url 'website:sla' %}">Support SLA</a>.</li>
+    <li>Customer portal tickets and Support Center entry points.</li>
+    <li>Security disclosure contact on the Security Center.</li>
+</ul>
+
+<h2>Honest limits</h2>
+<p>Roadmap products (ERP, School, Hospital, HR) are labelled as such. Product-application engines for ChurchHub and CoreTrust are external. This reliability page describes the Zreta storefront and billing platform unless stated otherwise.</p>
+{% endblock %}

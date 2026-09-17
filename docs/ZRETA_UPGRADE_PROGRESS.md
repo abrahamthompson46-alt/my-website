@@ -156,6 +156,13 @@ Master plan: [ZRETA_WEBSITE_ASSESSMENT_AND_PLAN.md](ZRETA_WEBSITE_ASSESSMENT_AND
 | W4-07 | Status page component list | DONE | External products labelled; no fake uptime charts |
 | W5-01 | Soft-close empty case studies / success stories | DONE | Redirect to Resources hub when empty |
 | W5-02 | Outbound trial/demo funnel instrumentation | DONE | `/go/<slug>/<intent>/` + Ops Analytics |
+| W6-01 | Evidence-led “What you can verify” | DONE | Replaces “Why teams trust Zreta” |
+| W6-02 | Reliability page for enterprise claim | DONE | `/platform/reliability/` |
+| W6-03 | Security Center TOC expansion | DONE | Auth → disclosure map |
+| W6-04 | Unpublish Hospital 2.0 contradiction | DONE | sync + seed rewrite |
+| W6-05 | Nav Live vs Coming soon labels | DONE | Product mega menu |
+| W6-06 | Product status badges on detail | DONE | Live / Early access / Coming soon |
+| W6-07 | Homepage CTA de-duplication | DONE | Removed how-it-works + bottom CTA |
 
-**Deferred (explicit):** real screenshot galleries, demo videos, invented case studies, CoreTrust product-site CTF rebrand (cross-repo), VPS deploy (operator).
+**Still deferred (needs real assets/people):** customer logos, verified counts, screenshots/product tours, case studies, CoreTrust CTF rebrand (cross-repo), VPS deploy.
 

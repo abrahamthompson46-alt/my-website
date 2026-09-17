@@ -17,6 +17,7 @@ _PLACEHOLDER_TESTIMONIAL_AUTHORS = {
 _PLACEHOLDER_NEWS_SLUGS = {
     "enterprise-platform-expands-18-countries",
     "enterprise-platform-achieves-soc-2-type-ii",
+    "introducing-hospital-management-2-0",
 }
 
 

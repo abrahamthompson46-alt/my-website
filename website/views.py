@@ -131,6 +131,13 @@ class ContinuityView(LegalPageMixin):
     seo_description = "What Zreta publishes about backups and continuity for the marketing and billing platform."
 
 
+class ReliabilityView(LegalPageMixin):
+    template_name = "website/platform/reliability.html"
+    page_title = "Enterprise reliability"
+    seo_title = "Enterprise reliability"
+    seo_description = "What Zreta means by enterprise reliability — access control, backups, status, and support you can verify."
+
+
 class SolutionLandingView(SEOContextMixin, TemplateView):
     template_name = "website/solution.html"
     solution_key = ""

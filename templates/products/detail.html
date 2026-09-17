@@ -20,6 +20,15 @@
             {% if cms_hero.eyebrow %}<p class="product-hero__category">{{ cms_hero.eyebrow }}</p>{% elif product.category %}
             <p class="product-hero__category">{{ product.category.name }}</p>
             {% endif %}
+            {% if product.status == "ga" %}
+            {% ui_badge label="Live — available now" variant="success" %}
+            {% elif product.status == "beta" %}
+            {% ui_badge label="Early access — limited availability" variant="primary" %}
+            {% elif product.status == "coming_soon" %}
+            {% ui_badge label="Coming soon — join the waitlist" variant="warning" %}
+            {% else %}
+            {% ui_badge label="Roadmap" variant="warning" %}
+            {% endif %}
             <h1 class="product-hero__title">{{ cms_hero.headline|default:product.name }}</h1>
             {% if cms_hero.subheadline %}<p class="product-hero__tagline">{{ cms_hero.subheadline }}</p>{% elif product.tagline %}<p class="product-hero__tagline">{{ product.tagline }}</p>{% endif %}
             {% if product.short_description %}<p class="product-hero__desc">{{ product.short_description }}</p>{% endif %}
@@ -47,6 +56,15 @@
         <div class="product-hero__content">
             {% if product.category %}
             <p class="product-hero__category">{{ product.category.name }}</p>
+            {% endif %}
+            {% if product.status == "ga" %}
+            {% ui_badge label="Live — available now" variant="success" %}
+            {% elif product.status == "beta" %}
+            {% ui_badge label="Early access — limited availability" variant="primary" %}
+            {% elif product.status == "coming_soon" %}
+            {% ui_badge label="Coming soon — join the waitlist" variant="warning" %}
+            {% else %}
+            {% ui_badge label="Roadmap" variant="warning" %}
             {% endif %}
             <h1 class="product-hero__title">{{ product.name }}</h1>
             {% if product.tagline %}<p class="product-hero__tagline">{{ product.tagline }}</p>{% endif %}
@@ -86,6 +104,13 @@
             <h2 class="section__title">How this product fits Zreta</h2>
             <p class="section__subtitle">{{ product_depth.external_notice }}</p>
         </header>
+        {% if product_depth.modules %}
+        <ul class="cluster" style="list-style: none; padding: 0; margin: var(--space-6) 0 0; justify-content: center; flex-wrap: wrap; gap: var(--space-2);">
+            {% for module in product_depth.modules %}
+            <li>{% ui_badge label=module variant="primary" %}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         <div class="grid grid--2" style="margin-top: var(--space-8);">
             {% for depth in product_depth.sections %}
             <article class="feature-block">
@@ -95,6 +120,11 @@
             </article>
             {% endfor %}
         </div>
+        {% if not product_screenshots %}
+        <p class="text-muted" style="margin-top: var(--space-8); text-align: center;">
+            Product screenshots appear here when the product team publishes real UI captures — we do not invent them.
+        </p>
+        {% endif %}
     </div>
 </section>
 {% endif %}

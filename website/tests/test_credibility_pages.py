@@ -96,6 +96,20 @@ class CredibilityPagesTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response["Location"], reverse("marketing:hub"))
 
+    def test_reliability_page(self):
+        response = self.client.get(reverse("website:reliability"))
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode()
+        self.assertIn("enterprise reliability", content.lower())
+        self.assertIn("Security Center", content)
+
+    def test_security_center_has_map_anchors(self):
+        response = self.client.get(reverse("website:security"))
+        content = response.content.decode()
+        self.assertIn('id="mfa"', content)
+        self.assertIn('id="audit"', content)
+        self.assertIn('id="disclosure"', content)
+
 
 class ProductDepthTests(TestCase):
     def setUp(self):
@@ -115,5 +129,9 @@ class ProductDepthTests(TestCase):
         content = response.content.decode()
         self.assertIn("How this product fits Zreta", content)
         self.assertIn("Loan lifecycle", content)
+        self.assertIn("Live", content)
+        self.assertIn("available now", content)
+        self.assertIn("Customers", content)
         self.assertIn("Live product application", content)
         self.assertNotIn("Instant account setup", content)
+

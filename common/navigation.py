@@ -10,20 +10,20 @@ PUBLIC_HEADER_NAV = [
         "type": "mega",
         "columns": [
             {
-                "title": "Live now",
+                "title": "Live",
                 "links": [
-                    {"label": "ChurchHub", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}, "accent": "churchhub"},
-                    {"label": "CoreTrust", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}, "accent": "microfinance"},
+                    {"label": "ChurchHub · Live", "url_name": "products:detail", "url_kwargs": {"slug": "churchhub"}, "accent": "churchhub"},
+                    {"label": "CoreTrust · Live", "url_name": "products:detail", "url_kwargs": {"slug": "microfinance-core"}, "accent": "microfinance"},
                     {"label": "All products", "url_name": "products:list"},
                 ],
             },
             {
                 "title": "Roadmap",
                 "links": [
-                    {"label": "ERP Suite", "url_name": "products:detail", "url_kwargs": {"slug": "erp-suite"}, "accent": "erp"},
-                    {"label": "School Management", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}, "accent": "school"},
-                    {"label": "Hospital Management", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}, "accent": "hospital"},
-                    {"label": "HR & Payroll", "url_name": "products:detail", "url_kwargs": {"slug": "hr-payroll"}, "accent": "hr"},
+                    {"label": "ERP Suite · Coming soon", "url_name": "products:detail", "url_kwargs": {"slug": "erp-suite"}, "accent": "erp"},
+                    {"label": "School Management · Coming soon", "url_name": "products:detail", "url_kwargs": {"slug": "school-management"}, "accent": "school"},
+                    {"label": "Hospital Management · Coming soon", "url_name": "products:detail", "url_kwargs": {"slug": "hospital-management"}, "accent": "hospital"},
+                    {"label": "HR & Payroll · Coming soon", "url_name": "products:detail", "url_kwargs": {"slug": "hr-payroll"}, "accent": "hr"},
                 ],
             },
             {
@@ -63,6 +63,7 @@ PUBLIC_HEADER_NAV = [
                 "links": [
                     {"label": "Architecture", "url_name": "website:architecture"},
                     {"label": "Security Center", "url_name": "website:security"},
+                    {"label": "Reliability", "url_name": "website:reliability"},
                     {"label": "Payments & billing", "url_name": "website:payments_platform"},
                     {"label": "API & integrations", "url_name": "website:integrations"},
                     {"label": "System status", "url_name": "website:status"},
@@ -112,6 +113,7 @@ PUBLIC_FOOTER_COLUMNS = [
         "links": [
             {"label": "Architecture", "url_name": "website:architecture"},
             {"label": "Security Center", "url_name": "website:security"},
+            {"label": "Reliability", "url_name": "website:reliability"},
             {"label": "Support", "url_name": "support:index"},
             {"label": "SLA", "url_name": "website:sla"},
             {"label": "System status", "url_name": "website:status"},

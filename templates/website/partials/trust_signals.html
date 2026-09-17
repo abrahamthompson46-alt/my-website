@@ -1,6 +1,8 @@
+{% load ui_tags %}
+
 <section class="section section--alt home-trust" aria-labelledby="trust-heading">
     <div class="container">
-        {% include "cms/partials/section_header.html" with section=trust_signals_section eyebrow="Why teams trust Zreta" title="Built for real operations" subtitle="Payments, security, and support you can verify on this site." %}
+        {% include "cms/partials/section_header.html" with section=trust_signals_section eyebrow="Evidence" title="What you can verify" subtitle="Open these pages — each item points to something published on this site." %}
 
         <div class="grid grid--4 home-trust__grid">
             {% for signal in trust_signals %}
@@ -10,6 +12,15 @@
                 </span>
                 <h3 class="home-trust__title">{{ signal.title }}</h3>
                 <p class="home-trust__text">{{ signal.description }}</p>
+                {% if signal.url_name %}
+                <p style="margin-top: var(--space-3);">
+                    <a href="{% url signal.url_name %}" class="btn btn--link btn--sm">Verify</a>
+                </p>
+                {% elif signal.extra_data.url_name %}
+                <p style="margin-top: var(--space-3);">
+                    <a href="{% url signal.extra_data.url_name %}" class="btn btn--link btn--sm">Verify</a>
+                </p>
+                {% endif %}
             </article>
             {% endfor %}
         </div>

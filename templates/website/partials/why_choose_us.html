@@ -1,19 +1,32 @@
 {% load ui_tags graphics_tags %}
 
-<section class="section section--alt home-why" aria-labelledby="why-heading">
+<section class="section home-why" aria-labelledby="why-heading">
     <div class="container">
-        {% include "cms/partials/section_header.html" with section=why_choose_us_section eyebrow="Why Choose Us" title="Built for enterprise reliability" subtitle="Security, modular design, and support you can verify on this site." %}
+        {% include "cms/partials/section_header.html" with section=why_choose_us_section eyebrow="Platform" title="Shared layer behind live products" subtitle="Security, billing, and operations practices you can open — including what we mean by reliability." %}
 
-        <div class="grid grid--3 home-why__grid">
+        <div class="grid grid--2 home-why__grid">
             {% for item in why_choose_us %}
             <div class="feature-block">
                 {% if item.icon %}
                 {% ui_icon_badge icon=item.icon size="md" extra_class="feature-block__icon" %}
                 {% endif %}
-                <h3 class="feature-block__title">{{ item.title }}</h3>
+                <h3 class="feature-block__title">
+                    {% if item.url_name %}
+                    <a href="{% url item.url_name %}">{{ item.title }}</a>
+                    {% elif item.extra_data.url_name %}
+                    <a href="{% url item.extra_data.url_name %}">{{ item.title }}</a>
+                    {% else %}
+                    {{ item.title }}
+                    {% endif %}
+                </h3>
                 <p class="feature-block__description">{{ item.description }}</p>
             </div>
             {% endfor %}
         </div>
+        <p class="cluster" style="margin-top: var(--space-8);">
+            <a href="{% url 'website:reliability' %}" class="btn btn--secondary btn--md">Enterprise reliability →</a>
+            <a href="{% url 'website:architecture' %}" class="btn btn--ghost btn--md">Platform architecture</a>
+            <a href="{% url 'website:security' %}" class="btn btn--ghost btn--md">Security Center</a>
+        </p>
     </div>
 </section>

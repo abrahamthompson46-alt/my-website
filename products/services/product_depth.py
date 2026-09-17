@@ -6,6 +6,15 @@ PRODUCT_DEPTH = {
             "ChurchHub is a live product application. Zreta markets and bills it; "
             "membership, giving, and church administration run on the ChurchHub site."
         ),
+        "modules": [
+            "Members & households",
+            "Giving & remittance",
+            "Events & groups",
+            "Communications",
+            "Roles & access",
+            "Reports",
+            "Billing via Zreta",
+        ],
         "sections": [
             {
                 "title": "Membership & households",
@@ -15,6 +24,11 @@ PRODUCT_DEPTH = {
             {
                 "title": "Giving & accountability",
                 "body": "Track giving and remittance with clearer financial accountability for church treasurers.",
+                "scope": "external",
+            },
+            {
+                "title": "Church operations",
+                "body": "Coordinate events, groups, and day-to-day church administration in ChurchHub.",
                 "scope": "external",
             },
             {
@@ -29,20 +43,43 @@ PRODUCT_DEPTH = {
             "CoreTrust is Zreta’s live microfinance product. Loan, savings, and collections "
             "workflows run in the CoreTrust application — not inside this marketing monolith."
         ),
+        "modules": [
+            "Customers",
+            "Savings",
+            "Loans",
+            "Credit",
+            "Collections",
+            "Accounting",
+            "Branches",
+            "Reports",
+            "Audit",
+            "Security",
+            "Billing via Zreta",
+        ],
         "sections": [
             {
-                "title": "Loan lifecycle",
-                "body": "Digitize applications through repayment for MFIs, SACCOs, and cooperatives evaluating CoreTrust.",
+                "title": "Customers & branches",
+                "body": "Maintain customer records and branch operations inside CoreTrust for MFIs, SACCOs, and cooperatives.",
                 "scope": "external",
             },
             {
-                "title": "Savings & collections",
-                "body": "Coordinate savings, collections, and operational reporting inside the CoreTrust product.",
+                "title": "Savings & credit",
+                "body": "Operate savings products and credit workflows in the CoreTrust application.",
                 "scope": "external",
             },
             {
-                "title": "Compliance posture (honest)",
-                "body": "Treat CoreTrust as the system of record for MFI operations. Zreta publishes platform security and billing controls; product-specific regulatory certifications are owned by the CoreTrust deployment.",
+                "title": "Loan lifecycle & collections",
+                "body": "Digitize applications through repayment and coordinate collections and operational reporting.",
+                "scope": "external",
+            },
+            {
+                "title": "Accounting, reports & audit",
+                "body": "Use CoreTrust as the operational system of record for accounting views, reports, and audit trails owned by that product.",
+                "scope": "external",
+            },
+            {
+                "title": "Security posture (honest)",
+                "body": "Zreta publishes platform security and billing controls. Product-specific regulatory certifications and CoreTrust app security details are owned by the CoreTrust deployment.",
                 "scope": "external",
             },
             {

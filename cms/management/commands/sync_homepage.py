@@ -116,10 +116,28 @@ class Command(BaseCommand):
 
         trust_section = self._get_or_create_section(page, "trust_signals", sort_order=9)
         trust_section.is_active = True
-        trust_section.eyebrow = "Why teams trust Zreta"
-        trust_section.title = "Built for real operations"
-        trust_section.subtitle = "Payments, security, and support you can verify on this site."
+        trust_section.eyebrow = "Evidence"
+        trust_section.title = "What you can verify"
+        trust_section.subtitle = "Open these pages — each item points to something published on this site."
         trust_section.save()
+
+        why_section = PageSection.objects.filter(page=page, section_key="why_choose_us").first()
+        if why_section:
+            why_section.eyebrow = "Platform"
+            why_section.title = "Shared layer behind live products"
+            why_section.subtitle = "Security, billing, and operations practices you can open — including what we mean by reliability."
+            why_section.is_active = True
+            why_section.save()
+
+        how_section = PageSection.objects.filter(page=page, section_key="how_it_works").first()
+        if how_section:
+            how_section.is_active = False
+            how_section.save(update_fields=["is_active", "updated_at"])
+
+        cta_section = PageSection.objects.filter(page=page, section_key="cta").first()
+        if cta_section:
+            cta_section.is_active = False
+            cta_section.save(update_fields=["is_active", "updated_at"])
 
         Testimonial.objects.filter(
             author_name__in=["Sarah Okonkwo", "Rev. James Mwangi", "Dr. Amina Hassan"]
@@ -128,14 +146,23 @@ class Command(BaseCommand):
         NewsArticle.objects.filter(slug="enterprise-platform-expands-18-countries").update(is_published=False)
 
         try:
-            from marketing.models import BlogPost
+            from marketing.models import BlogPost, CaseStudy, SuccessStory
 
             BlogPost.objects.filter(
                 slug__in=[
                     "enterprise-platform-achieves-soc-2-type-ii",
                     "enterprise-platform-expands-18-countries",
+                    "introducing-hospital-management-2-0",
                 ]
-            ).update(is_published=False)
+            ).update(is_published=False, is_featured=False)
+
+            # Seeded fictional proof must not appear as customer evidence.
+            SuccessStory.objects.filter(
+                slug__in=["unity-microfinance-success"]
+            ).update(is_published=False, is_featured=False)
+            CaseStudy.objects.filter(
+                company__icontains="Unity"
+            ).update(is_published=False, is_featured=False)
         except Exception:
             pass
 
@@ -234,14 +261,19 @@ class Command(BaseCommand):
             item_factory(section, item, i)
 
     def _why_item(self, section, item, index):
+        extra = {}
+        if item.get("url_name"):
+            extra["url_name"] = item["url_name"]
         SectionItem.objects.create(
             section=section,
             title=item["title"],
             description=item["description"],
             icon=item["icon"],
+            extra_data=extra,
             sort_order=index,
             is_active=True,
         )
+
 
     def _industry_item(self, section, item, index):
         extra = {"products": item["products"]}
@@ -267,11 +299,15 @@ class Command(BaseCommand):
         )
 
     def _trust_item(self, section, item, index):
+        extra = {}
+        if item.get("url_name"):
+            extra["url_name"] = item["url_name"]
         SectionItem.objects.create(
             section=section,
             title=item["title"],
             description=item["description"],
             icon=item["icon"],
+            extra_data=extra,
             sort_order=index,
             is_active=True,
         )

@@ -23,6 +23,33 @@
 <section class="section section--alt">
     <div class="container">
         <header class="section__header">
+            <h2 class="section__title">Why Zreta exists</h2>
+            <p class="section__subtitle">A shared commercial and trust layer for modular industry products.</p>
+        </header>
+        <div class="grid grid--2" style="margin-top: var(--space-8);">
+            <article class="feature-block">
+                <h3 class="feature-block__title">What we are building</h3>
+                <p class="feature-block__description">Zreta.com markets, bills, and supports modular products. Live products run as their own applications; Zreta provides the storefront, portal, documentation, and shared security practices.</p>
+            </article>
+            <article class="feature-block">
+                <h3 class="feature-block__title">Where we operate</h3>
+                <p class="feature-block__description">Africa-first commercial packaging — GHS pricing and Mobile Money gateways — with products useful beyond the region.</p>
+            </article>
+            <article class="feature-block">
+                <h3 class="feature-block__title">Engineering philosophy</h3>
+                <p class="feature-block__description">Prefer modular live products over one monolith claiming every engine. Publish Live vs Coming soon honestly.</p>
+            </article>
+            <article class="feature-block">
+                <h3 class="feature-block__title">Security philosophy</h3>
+                <p class="feature-block__description">Surface real controls — MFA, audit logs, private payment proofs, status — instead of unverifiable global trust claims. See the Security Center.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <header class="section__header">
             <h2 class="section__title">Company facts</h2>
             <p class="section__subtitle">What a buyer can verify without a sales call.</p>
         </header>
@@ -32,12 +59,12 @@
                 <p class="feature-block__description">Subscriptions and access to modular products via zreta.com, with shared billing, customer portal, documentation, and support tooling.</p>
             </article>
             <article class="feature-block">
-                <h3 class="feature-block__title">What is external</h3>
-                <p class="feature-block__description">ChurchHub and CoreTrust run as separate product applications. Zreta does not claim those engines live inside this marketing monolith.</p>
+                <h3 class="feature-block__title">Live products today</h3>
+                <p class="feature-block__description">ChurchHub and CoreTrust. Roadmap products (ERP, School, Hospital, HR) are labelled Coming soon until GA.</p>
             </article>
             <article class="feature-block">
-                <h3 class="feature-block__title">Where we focus</h3>
-                <p class="feature-block__description">Africa-first commercial packaging (GHS pricing, Mobile Money gateways) with products useful beyond the region.</p>
+                <h3 class="feature-block__title">What is external</h3>
+                <p class="feature-block__description">ChurchHub and CoreTrust run as separate product applications. Zreta does not claim those engines live inside this marketing monolith.</p>
             </article>
             <article class="feature-block">
                 <h3 class="feature-block__title">How to reach us</h3>
@@ -49,7 +76,7 @@
 
 {% for key, data in sections.items %}
 {% if key != "team" %}
-<section class="section{% if forloop.counter0|divisibleby:2 %}{% else %} section--alt{% endif %}">
+<section class="section{% if forloop.counter0|divisibleby:2 %} section--alt{% endif %}">
     <div class="container{% if data.section.body %} container-prose{% endif %}">
         {% include "cms/partials/section_header.html" with section=data.section %}
         {% if data.section.body %}
@@ -102,8 +129,9 @@
 
 <section class="section">
     <div class="container cluster">
-        <a href="{% url 'website:onboarding' %}" class="btn btn--primary">Enterprise onboarding</a>
+        <a href="{% url 'website:architecture' %}" class="btn btn--primary">Platform architecture</a>
         <a href="{% url 'website:security' %}" class="btn btn--secondary">Security Center</a>
+        <a href="{% url 'website:onboarding' %}" class="btn btn--ghost">Enterprise onboarding</a>
         <a href="{% url 'products:list' %}" class="btn btn--ghost">View products</a>
     </div>
 </section>
