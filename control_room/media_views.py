@@ -1,5 +1,7 @@
 """Control room product media management (screenshots, templates, videos)."""
 
+import logging
+
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -10,6 +12,8 @@ from control_room.mixins import ControlRoomMixin, PlatformSettingsMixin
 from control_room.services import log_control_change
 from products.models import Product
 from products.models.media import ProductScreenshot, ProductVideo, ScreenshotKind
+
+logger = logging.getLogger(__name__)
 
 
 class _ProductMediaMixin:
@@ -28,6 +32,38 @@ class _ProductMediaMixin:
             },
             {"label": label},
         ]
+
+    def _save_uploaded_media(self, form, *, product_field: bool = True):
+        """
+        Persist an uploaded media object, converting storage failures into form errors
+        instead of an unhandled 500 (common when MEDIA_ROOT is not writable).
+        """
+        self.object = form.save(commit=False)
+        if product_field:
+            self.object.product = self.product
+        try:
+            self.object.save()
+        except OSError as exc:
+            logger.exception(
+                "Media upload failed for product=%s user=%s",
+                getattr(self.product, "slug", None),
+                getattr(self.request.user, "pk", None),
+            )
+            field = "image" if "image" in form.fields else ("thumbnail" if "thumbnail" in form.fields else None)
+            message = (
+                "Could not save the file on the server. Media storage may be missing "
+                "write permission for the app user. Ask an operator to run: "
+                "sudo chown -R marketing:marketing-runtime /var/www/marketing-site/media "
+                "&& sudo chmod -R ug+rwX /var/www/marketing-site/media"
+            )
+            if field:
+                form.add_error(field, message)
+            else:
+                form.add_error(None, message)
+            # Surface the exception class for operators without leaking paths.
+            form.add_error(None, f"Storage error: {exc.__class__.__name__}.")
+            return None
+        return self.object
 
 
 class ProductScreenshotListView(ControlRoomMixin, _ProductMediaMixin, ListView):
@@ -87,9 +123,8 @@ class ProductScreenshotCreateView(PlatformSettingsMixin, _ProductMediaMixin, Cre
         return context
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.product = self.product
-        self.object.save()
+        if self._save_uploaded_media(form) is None:
+            return self.form_invalid(form)
         log_control_change(
             self.request.user,
             area="products",
@@ -130,7 +165,8 @@ class ProductScreenshotUpdateView(PlatformSettingsMixin, _ProductMediaMixin, Upd
         return context
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        if self._save_uploaded_media(form, product_field=False) is None:
+            return self.form_invalid(form)
         log_control_change(
             self.request.user,
             area="products",
@@ -139,7 +175,7 @@ class ProductScreenshotUpdateView(PlatformSettingsMixin, _ProductMediaMixin, Upd
             details={"product_id": str(self.product.pk), "screenshot_id": str(self.object.pk)},
         )
         messages.success(self.request, "Screenshot saved.")
-        return response
+        return redirect(self.get_success_url())
 
 
 class ProductScreenshotDeleteView(PlatformSettingsMixin, _ProductMediaMixin, DeleteView):
@@ -208,9 +244,8 @@ class ProductVideoCreateView(PlatformSettingsMixin, _ProductMediaMixin, CreateVi
         return context
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.product = self.product
-        self.object.save()
+        if self._save_uploaded_media(form) is None:
+            return self.form_invalid(form)
         log_control_change(
             self.request.user,
             area="products",
@@ -248,7 +283,8 @@ class ProductVideoUpdateView(PlatformSettingsMixin, _ProductMediaMixin, UpdateVi
         return context
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        if self._save_uploaded_media(form, product_field=False) is None:
+            return self.form_invalid(form)
         log_control_change(
             self.request.user,
             area="products",
@@ -257,7 +293,7 @@ class ProductVideoUpdateView(PlatformSettingsMixin, _ProductMediaMixin, UpdateVi
             details={"product_id": str(self.product.pk), "video_id": str(self.object.pk)},
         )
         messages.success(self.request, "Video saved.")
-        return response
+        return redirect(self.get_success_url())
 
 
 class ProductVideoDeleteView(PlatformSettingsMixin, _ProductMediaMixin, DeleteView):

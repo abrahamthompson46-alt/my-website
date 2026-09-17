@@ -1,10 +1,22 @@
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.urls import reverse
+from io import BytesIO
+from unittest import mock
+
+from PIL import Image
 
 from accounts.models import Role, User
 from accounts.services.email import get_or_create_security_profile
 from accounts.services.rbac import assign_role
-from products.models import PricingPlan, Product, ProductCategory
+from products.models import Product, ProductCategory
+from products.models.media import ProductScreenshot
+
+
+def _png_upload(name="dashboard.png"):
+    buffer = BytesIO()
+    Image.new("RGB", (32, 32), color=(30, 58, 95)).save(buffer, format="PNG")
+    return SimpleUploadedFile(name, buffer.getvalue(), content_type="image/png")
 
 
 class ProductMediaViewTests(TestCase):
@@ -25,8 +37,8 @@ class ProductMediaViewTests(TestCase):
 
         category = ProductCategory.objects.create(name="Platform", slug="platform")
         self.product = Product.objects.create(
-            name="ChurchHub",
-            slug="churchhub",
+            name="CoreTrust",
+            slug="microfinance-core",
             category=category,
             is_published=True,
         )
@@ -53,3 +65,50 @@ class ProductMediaViewTests(TestCase):
         url = reverse("control_room:product_screenshot_create", kwargs={"product_pk": self.product.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_screenshot_upload_succeeds(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            with override_settings(MEDIA_ROOT=tmp):
+                url = reverse(
+                    "control_room:product_screenshot_create",
+                    kwargs={"product_pk": self.product.pk},
+                )
+                response = self.client.post(
+                    url,
+                    {
+                        "title": "Dashboard",
+                        "alt_text": "CoreTrust dashboard overview",
+                        "image": _png_upload(),
+                        "caption": "",
+                        "kind": "screenshot",
+                        "sort_order": 1,
+                    },
+                )
+                self.assertEqual(response.status_code, 302)
+                self.assertEqual(ProductScreenshot.objects.filter(product=self.product).count(), 1)
+
+    def test_screenshot_upload_surfaces_storage_errors(self):
+        url = reverse(
+            "control_room:product_screenshot_create",
+            kwargs={"product_pk": self.product.pk},
+        )
+        with mock.patch(
+            "products.models.media.ProductScreenshot.save",
+            side_effect=PermissionError("Permission denied"),
+        ):
+            response = self.client.post(
+                url,
+                {
+                    "title": "Dashboard",
+                    "alt_text": "CoreTrust dashboard overview",
+                    "image": _png_upload("fail.png"),
+                    "caption": "",
+                    "kind": "screenshot",
+                    "sort_order": 1,
+                },
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Could not save the file on the server")
+        self.assertEqual(ProductScreenshot.objects.count(), 0)

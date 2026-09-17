@@ -87,6 +87,18 @@ sudo -u "$APP_USER" bash -c "
     test -d '$APP_DIR/staticfiles/images' || (echo 'collectstatic failed' && exit 1)
 "
 
+echo "==> Ensuring media directory is writable by app user..."
+MEDIA_GROUP="marketing-runtime"
+if ! getent group "$MEDIA_GROUP" >/dev/null 2>&1; then
+    MEDIA_GROUP="www-data"
+fi
+mkdir -p "$APP_DIR/media/products/screenshots" \
+         "$APP_DIR/media/products/video-thumbs" \
+         "$APP_DIR/media/products/heroes" \
+         "$APP_DIR/media/brand"
+chown -R "$APP_USER:$MEDIA_GROUP" "$APP_DIR/media"
+chmod -R ug+rwX "$APP_DIR/media"
+
 echo "==> Installing systemd service..."
 cp deploy/systemd/marketing-site.service /etc/systemd/system/marketing-site.service
 systemctl daemon-reload

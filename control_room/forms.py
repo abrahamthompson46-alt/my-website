@@ -253,6 +253,12 @@ class ProductScreenshotForm(BaseModelForm):
         fields = ["title", "alt_text", "image", "caption", "kind", "sort_order", "is_featured"]
         widgets = {
             "caption": forms.Textarea(attrs={"rows": 2}),
+            "image": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control",
+                    "accept": "image/png,image/jpeg,image/webp,image/gif",
+                }
+            ),
         }
 
 
