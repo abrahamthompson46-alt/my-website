@@ -4,7 +4,45 @@
 {% block breadcrumbs %}{% ui_breadcrumbs items=breadcrumb_items %}{% endblock %}
 {% block content %}
 {% include "operations/partials/page_header.html" with title="Products" %}
-<p class="ops-page-header__subtitle" style="margin-top:-1.5rem;margin-bottom:2rem;">{{ published }} published · {{ total }} total</p>
-<div class="ops-panel"><div class="ops-panel__body ops-table-wrap"><table class="ops-table"><thead><tr><th>Product</th><th>Category</th><th>Status</th><th>Subscriptions</th><th>Demos</th><th></th></tr></thead><tbody>{% for p in products %}<tr><td><strong>{{ p.name }}</strong></td><td>{% if p.category %}{{ p.category.name }}{% else %}—{% endif %}</td><td>{% if p.is_published %}Published{% else %}Draft{% endif %}</td><td>{{ p.subscription_count }}</td><td>{{ p.demo_count }}</td><td><a href="{% url 'control_room:product_detail' p.pk %}">Track activity</a></td></tr>{% empty %}<tr><td colspan="6">No products.</td></tr>{% endfor %}</tbody></table></div></div>
-<p style="margin-top:1rem;"><a href="{% url 'control_room:products' %}">Manage products in Control Room →</a></p>
+<p class="ops-page-header__subtitle" style="margin-top:-1rem;margin-bottom:1.25rem;">{{ published }} published · {{ total }} total</p>
+
+<div class="ops-panel">
+    <div class="ops-panel__body ops-panel__body--flush ops-table-wrap">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th class="ops-table__num">Subscriptions</th>
+                    <th class="ops-table__num">Demos</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td class="ops-table__primary">{{ p.name }}</td>
+                    <td class="ops-table__muted">{% if p.category %}{{ p.category.name }}{% else %}—{% endif %}</td>
+                    <td>
+                        {% if p.is_published %}
+                        <span class="ops-badge ops-badge--success">Published</span>
+                        {% else %}
+                        <span class="ops-badge ops-badge--muted">Draft</span>
+                        {% endif %}
+                    </td>
+                    <td class="ops-table__num">{{ p.subscription_count }}</td>
+                    <td class="ops-table__num">{{ p.demo_count }}</td>
+                    <td class="ops-table__actions">
+                        <a href="{% url 'control_room:product_detail' p.pk %}">Track activity</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="ops-table__muted">No products.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="ops-footer-link"><a href="{% url 'control_room:products' %}">Manage products in Control Room →</a></p>
 {% endblock %}

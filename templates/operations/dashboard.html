@@ -81,19 +81,27 @@
             <h2 class="ops-panel__title">Recent activity</h2>
             {% ui_button label="All logs" url_name="operations:activity" variant="ghost" size="sm" %}
         </div>
-        <div class="ops-panel__body ops-panel__body--flush">
-            {% for item in recent_activity %}
-            <div class="ops-activity-item">
-                <span class="ops-activity-item__icon"><svg class="icon icon--sm" data-icon="{{ item.icon }}"></svg></span>
-                <div class="ops-activity-item__content">
-                    <p class="ops-activity-item__title">{{ item.title }}</p>
-                    <p class="ops-activity-item__meta">{{ item.meta }}</p>
-                </div>
-                <time class="ops-activity-item__time">{{ item.timestamp|naturaltime }}</time>
-            </div>
-            {% empty %}
-            <p class="ops-panel__body text-secondary">No recent activity.</p>
-            {% endfor %}
+        <div class="ops-panel__body ops-panel__body--flush ops-table-wrap">
+            <table class="ops-table">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Details</th>
+                        <th>When</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in recent_activity %}
+                    <tr>
+                        <td class="ops-table__primary">{{ item.title }}</td>
+                        <td class="ops-table__muted">{{ item.meta }}</td>
+                        <td class="ops-table__nowrap ops-table__muted">{{ item.timestamp|naturaltime }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="ops-table__muted">No recent activity.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </section>
 
@@ -101,16 +109,33 @@
         <div class="ops-panel__header">
             <h2 class="ops-panel__title">Subscriptions by product</h2>
         </div>
-        <div class="ops-panel__body stack">
-            {% for row in product_breakdown %}
-            <div class="ops-progress-row">
-                <span>{{ row.product__name|default:"Unknown" }}</span>
-                <div class="ops-progress"><div class="ops-progress__fill" style="width: {% widthratio row.count stats.active_subscriptions|default:1 100 %}%;"></div></div>
-                <span class="ops-progress__value">{{ row.count }}</span>
-            </div>
-            {% empty %}
-            <p class="text-secondary">No subscription data.</p>
-            {% endfor %}
+        <div class="ops-panel__body ops-panel__body--flush ops-table-wrap">
+            <table class="ops-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Share</th>
+                        <th class="ops-table__num">Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in product_breakdown %}
+                    <tr>
+                        <td class="ops-table__primary">{{ row.product__name|default:"Unknown" }}</td>
+                        <td>
+                            <div class="ops-table__bar" title="{{ row.count }} of {{ stats.active_subscriptions|default:0 }}">
+                                <div class="ops-table__bar-track">
+                                    <div class="ops-table__bar-fill" style="width: {% widthratio row.count stats.active_subscriptions|default:1 100 %}%;"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="ops-table__num">{{ row.count }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="ops-table__muted">No subscription data.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </section>
 </div>

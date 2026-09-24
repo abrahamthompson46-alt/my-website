@@ -37,17 +37,19 @@
 
 .control-main {
   max-width: 1400px;
+  background: var(--surface-section);
 }
 
 .control-stat__value {
-  font-size: var(--text-xl);
+  font-size: var(--text-heading-sm);
 }
 
 .control-alert {
-  padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-  border: 1px solid var(--color-border-subtle);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--border-default);
+  font-size: var(--text-body-sm);
 }
 
 .control-alert--warning {
@@ -309,12 +311,13 @@
 
 /* Super Dashboard */
 .layout-control-room {
-  background: var(--color-surface-base);
+  background: var(--surface-section);
 }
 
 .control-main {
   max-width: 1480px;
-  padding-bottom: var(--space-10);
+  padding-bottom: var(--space-8);
+  background: var(--surface-section);
 }
 
 .superdash-hero {
@@ -1098,9 +1101,9 @@
 
 /* Contextual page help */
 .control-help {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
   border: 1px solid var(--color-primary-200);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--color-primary-50) 0%, #ffffff 100%);
   overflow: hidden;
 }
